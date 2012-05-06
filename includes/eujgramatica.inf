@@ -1,0 +1,396 @@
+!=============================================================================== 
+!                               LICENCIA / LICENSE 
+!=============================================================================== 
+! 
+! "EL ULTIMO JEDI" 
+! 
+! Copyright (c) 2011 José Vicente Ruiz (joruiru) 
+! 
+! This program is free software: you can redistribute it and/or modify 
+! it under the terms of the GNU General Public License as published by 
+! the Free Software Foundation, either version 3 of the License, or 
+! (at your option) any later version. 
+! 
+! This program is distributed in the hope that it will be useful, 
+! but WITHOUT ANY WARRANTY; without even the implied warranty of 
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+! GNU General Public License for more details. 
+! 
+! You should have received a copy of the GNU General Public License 
+! along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+! 
+!=============================================================================== 
+! Plantilla v3 para la Libreria Inform 6/11 + Libreria Española INFSP6 
+! ** Creada por Eliuk Blau (DreamBytes Adventures) ** 
+!=============================================================================== 
+! 
+!=============================================================================== 
+!  EL ULTIMO JEDI 
+!  Codigo Fuente 
+!=============================================================================== 
+! 
+!  Archivo :  eujgramatica.inf 
+!  Fecha   :  2012/05/06
+!  Version :  1.111009 
+!  Autor   :  Josevi Ruiz 
+!  e-Mail  :  joruiru AT gmail DOT com 
+! 
+!  Descripcion: Fichero con la gramática y las rutinas de gramática para 
+!               EL ULTIMO JEDI. 
+! 
+!=============================================================================== 
+! 
+!  Log: 
+!  2012/05/06  Joruiru - Se crea el archivo. 
+! 
+!-------------------------------------------------------------------------------
+!
+!===============================================================================
+! (10) Verbos y Gramaticas Propias del Juego
+!-------------------------------------------------------------------------------
+Verb meta 'ayuda' 'ayudarme' 'ayudame' * -> Ayuda;
+VerboIrregular "obtener ayuda con el juego"
+  with imperativo 'ayuda' 'ayudarme' 'ayudame';
+
+! Extend 'pregunta' first
+!   * creature 'sobre'/'por' scope=AskTopicsScope   -> Ask
+!   * 'a//' creature 'sobre'/'por' scope=AskTopicsScope -> Ask
+!   * 'sobre'/'por' scope=AskTopicsScope 'a//' creature -> Ask reverse
+!   * 'a//' creature 'acerca' 'de' scope=AskTopicsScope -> Ask;
+
+! Extend 'responde' first
+!   * 'a//' creature scope=AskTopicsScope -> Answer reverse
+!   * scope=AskTopicsScope 'a//' creature -> Answer;
+!   
+! Extend 'habla' first
+!     * creature 'de' scope=AskTopicsScope        -> Tell
+!     * creature 'sobre' scope=AskTopicsScope        -> Tell
+!     * creature scope=AskTopicsScope                       -> Tell
+!     * 'a//' creature 'de'/'sobre' scope=AskTopicsScope -> Tell
+!     * 'a//' creature  scope=AskTopicsScope        -> Tell
+!     * 'con' creature 'sobre' scope=AskTopicsScope    -> Tell
+!     * 'con' creature 'de' scope=AskTopicsScope        -> Tell
+!     * 'con' creature 'acerca' 'de' scope=AskTopicsScope -> Tell
+!     * 'sobre' scope=AskTopicsScope 'con' creature    -> Tell reverse
+!     * 'acerca' 'de' scope=AskTopicsScope 'con' creature -> Tell reverse
+!     * 'de' scope=AskTopicsScope 'con'/'a//' creature    -> Tell reverse
+!     * scope=AskTopicsScope 'a//' creature        -> Tell reverse;
+
+Extend 'habla' replace
+    * creature 'de' topic        -> Tell
+    * creature 'sobre' topic        -> Tell
+    * creature topic                       -> Tell
+    * creature                          -> HablaMal
+    * 'a//' creature 'de'/'sobre' topic -> Tell
+    * 'a//' creature  topic        -> Tell
+    * 'con' creature 'sobre' topic    -> Tell
+    * 'con' creature 'de' topic        -> Tell
+    * 'con' creature 'acerca' 'de' topic -> Tell
+    * 'con'/'a//' creature         -> HablaMal
+    * 'sobre' topic 'con' creature    -> Tell reverse
+    * 'acerca' 'de' topic 'con' creature -> Tell reverse
+    * 'de' topic 'con'/'a//' creature    -> Tell reverse
+    * topic 'a//' creature        -> Tell reverse;
+    
+Extend 'pregunta' replace
+    * creature 'sobre'/'por'/'como' topic      -> Ask
+    * creature                          -> PreguntaMal
+    * 'a//' creature 'sobre'/'por'/'como' topic -> Ask
+    * 'a//' creature                     -> PreguntaMal
+    * 'sobre'/'por' topic 'a//' creature -> Ask reverse
+    * topic 'a//' creature        -> Ask reverse
+    * 'a//' creature 'acerca' 'de' topic -> Ask;
+  
+Extend 'llena' first
+  * noun 'con'/'de' noun   -> Fill;
+
+Extend 'lanza' first
+  * held    -> ThrowAt;
+
+Verb 'vierte' 
+   * noun 'en' noun      ->   Insert
+   * noun 'dentro' 'de' noun   ->    Insert;
+
+VerboIrregular "vertir" with imperativo 'vierte';
+
+Verb 'siente' 
+   *       ->   ExFuerza
+   * noun  ->   Sentir
+   * 'a//' noun  ->   Sentir;
+ 
+VerboIrregular "sentir" with imperativo 'siente';
+
+Extend 'sube' last
+   * 'a' creature      ->   Levitar;
+
+! Extend 'lanza' first
+!    * noun 'a'/'contra' noun     ->   ThrowAt;
+   
+Verb 'eleva' 'levanta' 'alza' 
+   * noun              -> Levitar
+   * 'a' creature      -> Levitar;
+   
+Verb 'levita' 'atrae' 
+   *                 -> Levitar
+   * noun            -> Levitar
+   * 'a' creature    -> Levitar;
+   
+Verb 'arranca'
+   * noun            -> Levitar;
+
+Verb 'concentra'
+   *       ->   ExFuerza
+   * 'en' noun                             -> Concentrar;
+   
+Extend 'salta' replace
+    *                                    -> Jump
+    * 'fuera'                            -> Jump
+    * 'afuera'                           -> Jump
+    * noun                               -> JumpOver
+    * 'a//' noun                         -> Enter
+    * 'sobre' noun                       -> JumpOver
+    * 'por' 'encima' 'de' noun           -> JumpOver
+    * 'a//' 'otro' 'lado' 'de' noun      -> JumpOver;  
+
+Verb 'saltar' 
+    *                                    -> Jump
+    * 'fuera'                            -> Jump
+    * 'afuera'                           -> Jump
+    * noun                               -> JumpOver
+    * 'a//' noun                         -> Enter
+    * 'sobre' noun                       -> JumpOver
+    * 'por' 'encima' 'de' noun           -> JumpOver
+    * 'a//' 'otro' 'lado' 'de' noun      -> JumpOver; 
+
+Extend 'trepa' first
+    *             -> TrepaMal;
+        
+Verb 'usa'
+    * 'la' 'fuerza' 'para' topic  ->  UsoFuerzaPara
+    * 'fuerza' 'para' topic  ->  UsoFuerzaPara
+    * 'la' 'fuerza' 'con'/'en' noun  ->  UsoFuerza
+    * 'fuerza' 'con'/'en' noun  ->  UsoFuerza;
+    
+Verb 'escondete' 'ocultate' 'esconderse' 'ocultarse' 'esconderte' 'ocultarte' 'esconderme' 'ocultarme' 'escondeme' 'ocultame'
+  * 'en'/'entre' noun                 -> Esconder;
+
+VerboIrregular "esconder" with imperativo 'escondete' 'ocultate' 'esconderse' 'ocultarse' 'esconderte' 'ocultarte' 'esconderme' 'ocultarme' 'escondeme' 'ocultame';
+VerboIrregular "ocultar" with imperativo 'escondete' 'ocultate' 'esconderse' 'ocultarse' 'esconderte' 'ocultarte' 'esconderme' 'ocultarme' 'escondeme' 'ocultame';
+
+Verb 'sigue' 'sigueme' 
+  *                  -> Seguir;
+  
+Verb 'quieto' 'quedar' 'quedate' 
+  *                  -> Quieto
+  * 'aqui'/'quieto'  -> Quieto;
+  
+Extend 'ataca' replace
+  * 'a//' objetivo   -> Attack
+  * 'a//' creature   -> Attack
+  * noun                     -> Attack
+  * noun 'con'/'usando' noun -> Attack
+  * 'a//' noun 'con'/'usando' noun -> Attack;
+
+Extend 'golpea' replace
+  * 'a//' objetivo   -> Attack
+  * 'a//' creature   -> Attack
+  * noun                  -> Attack
+  * noun 'con'/'usando' noun -> Attack
+  * 'a//' noun 'con'/'usando' noun -> Attack;
+    
+Verb 'aturde'
+    * creature                    -> Aturdir
+    * 'a//' creature              -> Aturdir;
+VerboIrregular "aturdir" with imperativo 'aturde';
+
+Verb 'engana' 'convence' 'persuade' 'controla'
+    * creature                    -> Enganyar
+    * 'a//' creature                    -> Enganyar
+    * 'mental'/'mentalmente' 'a//'/'en'/'sobre'/'contra' creature -> Enganyar
+    * 'mental'/'mentalmente' creature -> Enganyar;
+VerboIrregular "persuadir" with imperativo 'persuade';
+VerboIrregular "enganar" with imperativo 'engana';
+VerboIrregular "control" with imperativo 'controla';
+
+! Extend 'salta' last
+!     * 'a//' 'otro' 'lado' 'de' noun        -> JumpOver;  
+    
+Verb 'cura' 'sana' 'curate' 'sanate' 'saname' 'curame' 'curarme' 'sanarme' 'curarte' 'sanarte'
+    *                                      -> Sanar
+    * creature                             -> Sanar
+    * 'a//' creature                       -> Sanar;
+
+Verb 'dispara'
+    *                                     -> DispararMal
+    * noun                                 -> Disparar
+    * 'a//'/'contra' noun                  -> Disparar
+    * 'a//'/'contra' noun 'con'/'usando' noun   -> Disparar;
+    
+Verb 'apunta' 
+    * noun                                 -> Apuntar
+    * 'a//'/'contra' noun                  -> Apuntar;
+
+Verb 'huye' = 'corre';
+VerboIrregular "huir" with imperativo 'huye';
+
+Verb 'pilota' 'conduce' 'guia'
+    * noun                                 -> Pilotar;
+VerboIrregular "conducir" with imperativo 'conduce';
+
+Verb 'gilipollas' 'guarro' 'imbecil'
+  *               -> Strong;
+
+Verb meta 'sonido' 'sonidos'
+  *                                      -> Sonido
+  * 'on' / 'encendido' / 'si'            -> EncenderSonido
+  * 'off' / 'apagado' / 'no'             -> ApagarSonido;
+!===============================================================================
+! (11) Rutinas de Acciones Propias del Juego
+!-------------------------------------------------------------------------------
+[ AyudaSub ;
+    !"Este juego tiene una solución casi ridícula. ¡Vamos, inténtalo!";
+    !MostrarAyuda(location);
+    closeGraphicWindow();
+      barra_estado.numero_lineas = 26;
+  barra_estado.dibujar();
+  ZIPI_Empezar();
+  barra_estado.numero_lineas = 1;
+  barra_estado.dibujar();
+  BorrarPantalla();
+  openGraphicWindow(40);
+  <<Look>>;
+];
+
+[ UsoFuerzaSub ;
+    "Un Jedi no debe usar la Fuerza para beneficio propio.";
+];
+
+Array StringBuffer1->102; ! Temporary string buffers
+
+[ StrCmp len first second i j k l aux;
+   j=0;
+   aux=second.print_to_array(StringBuffer1,102);
+
+   if (len<aux) k=len;
+   else k=aux;
+   for(i=0:i<k&&j==0:i++){l=i+4;
+    j=((StringBuffer1->l)-(first->i));}
+   return j;
+];
+
+[ UsoFuerzaParaSub w;
+ !tema=AveriguarTema(FuerzaTopics);
+ wn = consult_from;
+ w = WordAddress(wn);
+
+ if (StrCmp(WordLength(wn),w,"subir")==0 || StrCmp(WordLength(wn),w,"saltar")==0 || StrCmp(WordLength(wn),w,"trepar")==0
+    || StrCmp(WordLength(wn),w,"levitar")==0 || StrCmp(WordLength(wn),w,"escalar")==0 || StrCmp(WordLength(wn),w,"salir")==0) 
+   "Uno de los poderes de la Fuerza es SALTAR donde otras criaturas no pueden alcanzar.";
+ if (StrCmp(WordLength(wn),w,"engañar")==0 || StrCmp(WordLength(wn),w,"convencer")==0 || StrCmp(WordLength(wn),w,"persuadir")==0
+    || StrCmp(WordLength(wn),w,"confundir")==0 ) 
+   "La Fuerza te permite CONVENCER o CONFUNDIR a seres inteligentes de mentalidad débil.";
+ if (StrCmp(WordLength(wn),w,"atacar")==0 || StrCmp(WordLength(wn),w,"pegar")==0 || StrCmp(WordLength(wn),w,"aturdir")==0
+    || StrCmp(WordLength(wn),w,"empujar")==0 || StrCmp(WordLength(wn),w,"matar")==0) 
+   "Canalizando la Fuerza puedes lanzar una ráfaga para ATURDIR o EMPUJAR a tu enemigo.";
+ if (StrCmp(WordLength(wn),w,"sentir")==0 || StrCmp(WordLength(wn),w,"concentrar")==0 || StrCmp(WordLength(wn),w,"siente")==0
+    || StrCmp(WordLength(wn),w,"concentrarse")==0 || StrCmp(WordLength(wn),w,"concentrarte")==0) 
+   "Los jedis pueden SENTIR o CONCENTRARSE en otros seres usando la Fuerza.";
+   
+ "Prueba a usar un verbo o acción más específica en vez de simplemente USAR LA FUERZA.";
+
+];
+
+[ ExFuerzaSub ;
+    <<examine oFuerza>>;
+];
+
+[ SentirSub ;
+    "Un Jedi no debe usar la Fuerza para beneficio propio.";
+];
+
+[ ConcentrarSub ;
+    "A pesar de tus intentos, eso no responde a la Fuerza.";
+];
+
+[ LevitarSub ;
+    "Un maestro Jedi como tú debería saber que la Fuerza no hará levitar eso.";
+];
+
+[ EsconderSub ;
+    "¿Donde te quieres esconder?";
+];
+
+[ SeguirSub ;
+    "Se supone que perteneces a una de las millones de razas inteligentes que habitan en la galaxia. Pedir que te siga es absurdo.";
+];
+
+[ QuietoSub ;
+    "Se supone que perteneces a una de las millones de razas inteligentes que habitan en la galaxia. Pedir que se quede quieto es absurdo.";
+];
+
+[ AturdirSub ;
+    "Un maestro Jedi como tú debería saber que la Fuerza no aturde a cosas inanimadas.";
+];
+
+[ EnganyarSub ;
+    "Un maestro Jedi como tú debería saber que la Fuerza no engaña a cosas inanimadas.";
+];
+
+[ SanarSub ;
+    "Un maestro Jedi como tú debería saber que la Fuerza no sana cosas inanimadas.";
+];
+
+[ DispararSub ;
+  if (location~=CazaVwingN && location~=CazaVwingS && location~=CazaVwingE && location~=CazaVwingO && location~=CazaVwingP && location~=CazaVwing) {
+    "Notas como crecen en tu interior las ganas de arrasarlo todo, pero consigues controlarte y centrarte en tu objetivo.";
+  } else {
+	"No tienes ningún arma de fuego para disparar.";
+  }
+];
+
+[ DispararMalSub ;
+    "Debes indicar el objetivo al que quieres disparar.";
+];
+
+[ PilotarSub ;
+    "Normalmente una nave se pilota moviendo la palanca de mando de la cabina.";
+];
+
+[ ApuntarSub ;
+    "Tienes el objetivo entre ceja y ceja.";
+];
+
+[ HablaMalSub ;
+    "Para hablar con cualquier personaje usa HABLA CON personaje SOBRE algo.";
+];
+
+[ PreguntaMalSub ;
+    "Para preguntar algo a cualquier personaje usa PREGUNTA A personaje POR algo.";
+];
+
+[ TrepaMalSub ;
+    "Para trepar usa la forma TREPA A/POR algo.";
+];
+
+[ SonidoSub;
+  print "[Por favor, usa la forma ~";
+  style bold;
+  print "SONIDO SI";
+  style roman;
+  print "~ o ~";
+  style bold;
+  print "SONIDO NO";
+  style roman;
+  "~ para activar o desactivar, respectivamente, todos los efectos sonoros.]";
+];
+
+[ EncenderSonidoSub;
+  Damusix.ActivarAudio();
+  "[Activados todos los efectos sonoros.]";
+];
+
+
+[ ApagarSonidoSub;
+  Damusix.DesactivarAudio();
+  "[Desactivados todos los efectos sonoros.]";
+];
