@@ -56,6 +56,7 @@
 !=============================================================================== 
 ! 
 !  Log: 
+!  2012/05/06  Joruiru - Se mueve la gramática a un fichero separado. 
 !  2011/12/09  Joruiru - Revisión de textos de la zona de Half-Axe. 
 !  2011/10/24  Joruiru - Se migra el manejo de sonidos a DAMUSIX. 
 !              Se añade el resto de temas de la BSO y algunos efectos ambientales.
@@ -243,7 +244,7 @@ Include "barra";
 Include "Decorado";
 !Include "array";          ! Necesario para escr
 !Include ">Escr_NG.h";
-Include ">Pistas.h";
+Include "includes/Pistas.h";
 
 !==============================================================================
 ! ELIUK: AHORA QUE SGW+DMX ESTA INCLUIDA, ES HORA DE HACER EL REEPLAZO
