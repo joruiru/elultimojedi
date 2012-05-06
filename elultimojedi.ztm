@@ -1,0 +1,375 @@
+<INTRO>
+Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para continuar, o ~Q~ para salir.
+</INTRO>
+
+<MENU>Sistema de pistas interactivas
+
+  <MENU>Información general - Lee esto primero
+
+    <TEXTO>¿Cómo funciona este sistema de pistas?
+      ^- Te puedes desplazar por los menús usando las flechas del cursor arriba y abajo.
+      ^- Para seleccionar una opción del menú, puedes pulsar las teclas ~Entrar~ o ~P~.
+      ^- Para volver al menú anterior, o salir del sistema de pistas, pulsa ~Q~.
+      ^- Cuando estés leyendo pistas, pulsa ~P~ para ver la pista siguiente (si es que
+        hay más), o pulsa ~Q~ para retroceder a la pantalla anterior.
+    </TEXTO>
+
+    <TEXTO>Acciones y órdenes
+      ^EL ULTIMO JEDI es una aventura conversacional que te sumerge en el universo
+      ^de STAR WARS, donde tú eres el protagonista y con el que podrás interactuar
+      ^introduciendo órdenes con el teclado.
+      
+      Dichas órdenes tienen una sintaxis típica de «VERBO» o «VERBO NOMBRE», aunque
+      ^pueden construirse órdenes mucho más complejas si fuese necesario.
+      
+      Algunos ejemplos:
+      
+      > COGE LA CAJA DE HERRAMIENTAS
+      ^> ABRE EL ARMARIO
+      ^> COGE EL TRAJE ROJO Y PONTELO
+      ^> SACA TODO DE DENTRO DEL ARMARIO
+      
+      Los verbos se pueden escribir en imperativo («COGE») o infinitivo («COGER»), si bien
+      se recomienda la primera opción, más que nada porque resulta más corta. Y los
+      artículos («EL», «LA») se pueden poner, aunque no son necesarios.
+
+    </TEXTO>
+
+    <TEXTO>Algunas acciones frecuentes
+      ^Las siguientes son algunas de las acciones que se utilizan de manera más frecuente en
+      una aventura conversacional:
+
+      COGE tal . . . .: Coger el objeto 'tal'.
+      ^DEJA tal . . . .: Dejar el objeto 'tal'.
+      ^ABRE tal . . . .: Abrir 'tal' (normalmente una puerta o algún recipiente cerrado).
+      ^CIERRA tal . . .: Cerrar 'tal' (normalmente una puerta o algún recipiente abierto).
+      ^METE tal EN cual: Meter el objeto 'tal' dentro de 'cual' (por ejemplo, una caja).
+      ^SACA tal DE cual: Sacar el objeto 'tal' de dentro de 'cual' (por ejemplo, una caja).
+      ^PONTE tal . . . : Ponerse el objeto 'tal' (normalmente una prenda de ropa).
+      ^QUITATE tal . . : Quitarse el objeto 'tal' (normalmente una prenda de ropa).
+      ^ENTRA . . . . . : Entrar dentro de algún sitio, posiblemente a través de una puerta.
+      ^SAL . . . . . . : Salir de algún sitio, posiblemente a través de una puerta.
+      ^EXAMINA tal (o
+      ^EX tal o X tal) : Describir el objeto 'tal' con detalle.
+      ^INVENTARIO (o I): Mostrar un listado con los objetos que posees actualmente.
+    </TEXTO>
+
+    <TEXTO>Moverse por el mundo
+      ^El mundo de EL ULTIMO JEDI está compuesto por multitud de localidades  
+      interconectadas entre sí. Las salidas desde tu localidad actual se muestran siempre
+      a continuación de la descripción de dicha localidad. Para moverte de una localidad
+      a otra, simplemente teclea la salida correspondiente.
+      
+      Por ejemplo: supongamos que tu localidad actual tiene como salidas «norte» y
+      «afuera». En ese caso, para moverte hacia la localidad situada al norte de la
+      actual, puedes teclear las órdenes NORTE, VETE AL NORTE, IR AL NORTE o simplemente
+      N. Y para salir fuera, puedes teclear SAL, SALIR o FUERA. Los puntos cardinales se
+      pueden abreviar a N, S, E, O, NE, SE, NO y SO.
+    </TEXTO>
+
+    <TEXTO>Interactuar con otros personajes del juego
+      ^A veces, será necesario enviar órdenes a algún personaje (por ejemplo, a Bomo).
+      ^En tal caso, deberás indicar el nombre del personaje seguido de una coma,
+      y a continuación la orden que deseas enviarle:
+      
+      > BOMO, VE AL NORTE
+      ^> BOMO, SIGUEME
+      
+      Para hablar con un personaje, o bien preguntarle algo, se usa la misma sintaxis:
+
+      > BOMO, HABLAME DE TI
+      ^> BOMO, QUE OPINAS SOBRE LOS JEDIS
+      
+      Aunque también puedes usar esta sintaxis:
+      
+      >PREGUNTA AL COMANDANTE POR EL PRISIONERO
+      ^>HABLA AL COMANDANTE SOBRE EL PRISIONERO
+
+      Saber trabajar conjuntamente con los personajes es crucial para alcanzar el éxito
+      ^en esta aventura.
+    </TEXTO>
+
+    <TEXTO>Algunos comandos útiles
+      ^SONIDO SI/NO . . . . : Activar o desactivar todos los efectos sonoros.
+      ^SONIDO FONDO SI/NO . : Activar o desactivar el sonido de fondo.
+      ^SALIDAS (o X) . . . .: Mostrar las salidas visibles en la localidad actual.
+      ^SAVE (o GUARDAR) . . : Almacenar la situación actual en un archivo externo, para
+      ^                       poder volver a él en cualquier momento.
+      ^LOAD (o RECUPERAR) . : Recuperar una situación previamente guardada con SAVE o
+      ^                       GUARDAR.
+      ^AYUDA . . . . . . . .: Por si alguna vez te encuentras atascado.
+      ^REINICIAR . . . . . .: Volver a empezar desde el principio.
+      ^ACABAR (o FIN) . . . : Salir de la aventura (cuidado: no guarda la situación actual).^
+    </TEXTO>
+    
+    <TEXTO>Consejos y ayudas
+      ^- Examina todo lo que encuentres. Varias veces si hace falta.
+      ^- Recoge todos los objetos que puedas; podrían serte de utilidad.
+      ^- Habla con los demás personajes de la aventura. A veces te darán pistas útiles.
+      ^- El azar es parte de esta aventura. Tenlo en cuenta a la hora de llevar a cabo
+      ^  determinadas acciones.
+      ^- Graba frecuentemente tu situación con la orden GUARDAR. Nunca se sabe lo que
+      ^  puedes encontrarte tras esa esquina...
+      ^- Si te encuentras con algún fallo o no sabes cómo avanzar, puedes plantear tus
+      ^  dudas en el foro del CAAD o en joruiru@gmail.com.^
+    </TEXTO>
+    
+  </MENU>
+
+  <NADA>
+
+  <MENU>En el paso de Half-Axe
+  
+    <PREG>¿Qué tengo que hacer en la batalla de Half-Axe?
+      <PISTA>Examina todo lo que te rodea (eso siempre).
+      <PISTA>Pero, básicamente, lo que tienes que hacer es entorpecer el avance del enemigo.
+      <PISTA>Quizás los enormes árboles te puedan servir para tu propósito...
+      <PISTA>... tienes dos formas de utilizarlos: con tu sable láser o con la Fuerza.
+      <PISTA>~CORTA EL ARBOL CON EL SABLE~.
+    
+    <PREG>¿Cómo salgo del agujero?
+      <PISTA>Recuerda, eres un jedi...
+      <PISTA>Un jedi tiene poderes que le hacen llegar donde para otros es imposible...
+      <PISTA>Prueba a SALTAR.
+     
+    <PREG>¿Cómo saco a Bomo del agujero?
+      <PISTA>No puedes dejar a Bomo abandonado en el agujero.
+      <PISTA>Nuevamente, recuerda que eres un jedi...
+      <PISTA>La Fuerza le permite a un jedi controlar objetos en el aire.
+      <PISTA>~LEVITAR A BOMO~.
+      
+  </MENU>
+   
+  <MENU>En Cadgel Meadows
+   
+    <PREG>¿Cómo entro a Cadgel Meadows?
+      <PISTA>Hay varias formas de entrar al puerto espacial.
+      <PISTA>Un muro rodea el puerto espacial. La entrada principal está en el lado este del recinto.
+      <PISTA>La entrada está protegida por soldados imperiales...
+      <PISTA>...pero tu eres un jedi!!
+      <PISTA>Puedes usar la Fuerza para evitar los muros.
+      <PISTA>También puedes usar la Fuerza para engañar a los soldados.
+      <PISTA>También puedes entrar de una forma más mundana.
+      <PISTA>Si te disfrazas de soldado imperial y usas a Bomo como prisionero, podrían dejarte entrar.
+
+    <PREG>¿Y una vez dentro?
+      <PISTA>Tienes que averiguar dónde tienen a los nosaurianos.
+      <PISTA>El comandante al mando dispone de toda la información.
+      <PISTA>Aunque también las tripulaciones de las naves retenidas podrían saber algo.
+
+    <MENU>¿Cómo avanzo en la investigación?
+    
+      <PREG>¿Cómo hablo con el comandante al mando?
+        <PISTA>Tienes que entrar al cuartel de mando.
+        <PISTA>Sólo los soldados imperiales pueden entrar al cuartel de mando.
+        <PISTA>Tendrás que disfrazarte de soldado clon para poder entrar...
+        <PISTA>...sin embargo yendo solo el Comandante Vill no te recibirá.
+        <PISTA>Debes usar a Bomo como prisionero para llamar la antención del Comandante Vill.
+        
+      <PREG>¿Cómo hablo con la tripulación del alguna nave?
+        <PISTA>Sólo hay una nave a la que podrás entrar.
+        <PISTA>Prueba en alguno de los hangares de Cadgel Meadows...
+        <PISTA>...concretamente en el hangar Este.
+        <PISTA>Se trata de la Uhumele.
+        <PISTA>Sin embargo no podrás entrar hasta que te deshagas de la mujer que vigila la entrada a la nave.
+        <PISTA>Hablando con ella no conseguirás nada... y menos aún si cree que eres un soldado imperial.
+        <PISTA>Tendrás que entrar violentamente.
+
+      <PREG>¿Dónde están los nosaurianos?
+        <PISTA>Debes hablar con el capitán de la Uhumele.
+        <PISTA>Sin embargo, no le ha gustado mucho que entréis por la fuerza en su nave.
+        <PISTA>Debes ganarte su confianza para que responda a tus preguntas.
+        <PISTA>Si le hablas de que sois supervivientes de la batalla de Half-Axe, te lo ganarás.
+        <PISTA>O si le decís que buscáis a la familia de Bomo también.
+
+      <PREG>¿Ya sé donde tienen a los nosaurianos. ¿Y ahora??
+        <PISTA>Tendrás que salir del puerto espacial...
+        <PISTA>...y para ello necesitarás una nave.
+        <PISTA>El capitán de la Uhumele está dispuesto a ayudar.
+        <PISTA>Sin embargo, los soldados imperiales tienen bloqueadas todas las naves...
+        <PISTA>...y destruirán a cualquier nave que intente escapar.
+
+    </MENU>
+    
+  </MENU>
+
+  <MENU>Escapando de Cadgel Meadows
+
+    <PREG>¿Cómo escapamos del bloqueo?
+      <PISTA>El capitán de la Uhumele tiene un plan.
+      <PISTA>Si todas las naves bloqueadas huyen a la vez, es imposible que los soldados imperiales disparen a todas.
+      <PISTA>Sin embargo hay una nave que colabora con los imperiales y os delataría en cuanto se entere del plan.
+      <PISTA>Se trata de la Valance.
+      <PISTA>Tendrás que destruir esa nave.
+      
+    <PREG>Ya sé cómo escapar... ¿cómo continúo?
+      <PISTA>Tienes que destruir la Valance
+      <PISTA>Necesitas una nave para atacarla.
+      <PISTA>Una nave de combate, un caza, es justo lo que necesitas.
+      <PISTA>Tienes que robar el caza que hay en el hangar norte.
+      <PISTA>Pero necesitas parecer un soldado clon para poder acercarte.
+    
+    <PREG>¿Disfrazarme de soldado clon?
+      <PISTA>Necesitas un traje de soldado imperial.
+      <PISTA>Un traje de la Legión 501, concretamente.
+      <PISTA>Hay un soldado de la Legión 501 que patrulla por el exterior de Cadgel Meadows.
+      <PISTA>Si le atacas y le vences puedes ponerte su traje.
+      
+    <PREG>¿Y ahora?
+      <PISTA>Súbete al caza.
+      <PISTA>Sobrevuela el hangar sur y localiza la Valance.
+      <PISTA>Abre fuego sobre la Valance
+      <PISTA>~DISPARA A LA VALANCE~
+      
+  </MENU>
+      
+  <NADA>
+
+  <MENU>La FUERZA
+    <TEXTO>Poderes de la Fuerza
+      ^Las siguientes son algunos de los poderes que proporciona la Fuerza a un jedi:
+
+      LEVITA tal . . . . .: Mantienes el objeto 'tal' suspendido en el aire.
+      ^SIENTE tal . . . . .: Puedes sentir la Fuerza fluir sobre el objeto 'tal' (normalmente
+                              algún ser vivo).
+      ^CONCENTRATE EN tal .: Puedes sentir la Fuerza fluir sobre el objeto 'tal' (normalmente
+                              algún ser vivo).
+      ^ENGAÑAR A tal. . . .: Confundes la mente de 'tal' (normalmente un ser inteligente).
+      ^PERSUADIR A tal. . .: Confundes la mente de 'tal' (normalmente un ser inteligente).
+      ^SANA A tal . . . . .: Curas las heridas de 'tal'.
+      ^ATURDE A tal . . . .: Lanzas una ráfaga a distancia para tumbar a 'tal'.
+      ^EMPUJA A tal . . . .: Lanzas una ráfaga a distancia para tumbar a 'tal'.
+      ^SALTA . . . . . . . : Saltas alturas imposibles.
+   </TEXTO>
+  </MENU>
+  
+  <NADA>
+    
+  <MENU>Información adicional (mapas y solución)
+  
+    <MENU>Mapas (sólo para casos de extrema necesidad)
+    
+      <TEXTO>El Paso de Half-Axe
+      
+        <NOFONT>
+              +----------+  +----------+                        
+              |   CIMA   |--|  CAMINO  | -> (al exterior de Cadgel Meadows) 
+              +----------+  +----------+                        
+                    |        
+                    |
+              +----------+
+              |  LADERA  | <- (agujero)
+              +----------+
+                    |
+                    |
+              +----------+ 
+              |   PASO   | (localidad de inicio)
+              +----------+ 
+                  
+        </NOFONT>
+      </TEXTO>
+
+      <MENU>Puerto Espacial de Cadgel Meadows
+        
+        <TEXTO>Exterior de Cadgel Meadows
+        
+          <NOFONT>
+                     
+                                 +------------+
+                                 | EXT. NORTE |
+                                 +------------+
+                                /    (muro)    \ 
+                  +------------+                +-----------+
+   (al camino) <- | EXT. OESTE |(muro)          | EXT. ESTE | (Acceso Hangar Este)
+                  +------------+                +-----------+
+                                \    (muro)    /  
+                                 +------------+
+                                 |  EXT. SUR  |
+                                 +------------+
+          </NOFONT>
+        </TEXTO>
+
+        <TEXTO>Interior de Cadgel Meadows
+        
+          <NOFONT>
+
+                          (caza V-wing)
+                        +--------------+    +---------------+
+                        | HANGAR NORTE |  > | CUARTEL MANDO |
+                        +--------------+    +---------------+
+                               |         
+    +--------------+    +--------------+    +---------------+
+    | HANGAR OESTE | -- |    PISTA -   | -- |  HANGAR ESTE  | (Acceso al Exterior)
+    +--------------+    +--------------+    +---------------+
+           \/                  |    
+    +--------------+    +--------------+ 
+    | INT. UHUMELE |    |  HANGAR SUR  |
+    +--------------+    +--------------+ 
+
+          </NOFONT>
+        </TEXTO>
+      </MENU>
+        
+    </MENU>
+    
+    <NADA>
+    
+    <MENU>Solución (prohibido leer esto)
+      <TEXTO>En el Paso de Half-Axe
+^Corta uno de los enormes árboles con el sable láser (también puedes arrancarlo usando
+la Fuerza).
+^Vete al norte, a la ladera. Allí vuelve a intentar hacer lo mismo con otro árbol, pero
+los imperiales se te adelantarán y dispararán, haciendo que caigas al agujero.
+^Para salir del agujero debes saltar al exterior.
+^Saca a Bomo haciéndolo levitar con la Fuerza.
+^Ve al norte y luego hacia el oeste, hasta que llegues al exterior de Cadgel Meadows.
+      </TEXTO>
+
+      <MENU>Puerto Espacial de Cadgel Meadows
+
+        <TEXTO>Exterior de Cadgel Meadows
+^Antes de entrar al complejo debes encontrar al soldado que hace guardia por el
+exterior. Va dando vueltas al complejo en esta dirección: este-norte-oeste-sur, por
+lo que yendo en dirección contraria te lo encontrarás.
+^Ataca al guardia y róbale su traja de soldado clon.
+^Ve a la parte este del complejo y engaña a los guardias para que te dejen entrar cuando
+te den el alto.
+        </TEXTO>
+
+        <TEXTO>Entrando al cuartel de mando
+^El cuartel de mando está en el hangar norte.
+^Para poder entrar necesitas ir disfrazado de soldado clon y usar a Bomo como prisionero.
+^Pregúntale al comandante qué hacer con el prisionero, para que te cuente dónde se han
+llevado al resto.
+^Sal y vuelve al hangar este.
+        </TEXTO>
+
+        <TEXTO>En la Uhumele
+^Para entrar en la Uhumele debes esperar a que se abra la rampa de acceso y salga Crys.
+^Debes ir sin el traje de clon, o si no Crys al verte cerrará la rampa y volverá dentro.
+^Con Crys fuera, debes atacarla para dejarla inconsciente y tener acceso libre al interior.
+^Dile al capitán de la Uhumele que venís de la batalla de Half-Axe, con lo que os ayudará.
+^Dile que necesitáis ir a Orbax IV en busca de la famila de Bomo.
+^Pregúntale por el plan para escapar del bloqueo en el puerto espacial
+        </TEXTO>
+
+        <TEXTO>La huida final
+^Debes ir al hangar norte a robar un caza V-wing.
+^Solo puedes acercarte al caza yendo disfrazado de clon.
+^Dentro del caza mueve la palanca de mando hacia arriba para despegar.
+^Mueve la palanca hacia delante para avanzar hasta la pista.
+^Mueve la palanca hacia delante para avanzar hasta el hangar sur.
+^Dispara a la Valance, para provocar el caos y que el resto de naves despeguen...
+
+******** FIN ********
+
+        </TEXTO>
+
+      </MENU>
+
+    </MENU>
+    
+  </MENU>
+  
+</MENU>
+
