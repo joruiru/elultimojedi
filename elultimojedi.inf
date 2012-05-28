@@ -5650,6 +5650,26 @@ with  describe
    }
 ];
 
+! Funcion: RandomEffectsLabyrinth
+! Función que muestra efectos ambientales aleatorios para dar la sensación
+! de un mundo vivo. Estos efectos ambientales son simplemente eso, ambientación,
+! sin ser relevantes para en el hilo argumental de la aventura.
+! Parametros: prob - Probabilidad (0-100) de que ocurra un evento
+!
+[ RandomEffectsLabyrinth prob;
+  if (random(100) < prob) {
+	  switch (random(5)) {
+		  1: print "^Unos pequeños animales carroñeros, parecidos a ratas pero algo más grandes, cruzan corriendo desde el callejón de la parte sur,
+	          desapareciendo rápidamente por la parte norte.^";
+		  2: print "^Una ráfaga de aire viciado que proviene del callejón sur levanta un remolino de polvo a su paso. Cuando el viento se calma,
+		      la porquería levantada vuelve a posarse en el suelo.^";
+		  3: print "^De repente, lo que parece ser un lejano y ahogado grito de lamento llega proviniente del callejón sur.^";
+		  4: print "^Un robot de vigilancia AC1 aparece volando por el callejón sur y, siguiendo su camino, se marcha por la parte norte.^";
+		  5: print "^Un droide de mantenimiento MN-2E llega desde el sur. Una vez ha recogido del suelo algo de basura, se marcha por el norte.^";
+	  }
+  };
+];
+
 [QuejasBomo tipo msg;
    msg="";
    if (tipo == 1) {
