@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log: 
+!  2012/05/29  Joruiru - Se añaden efectos ambientales aleatorios a la zona del
+!              laberinto en Orvax IV. 
 !  2012/05/06  Joruiru - Se mueve la gramática a un fichero separado. 
 !  2011/12/09  Joruiru - Revisión de textos de la zona de Half-Axe. 
 !  2011/10/24  Joruiru - Se migra el manejo de sonidos a DAMUSIX. 
@@ -5648,6 +5650,30 @@ with  describe
 	      mensajes_aleatorios = false; ! ELIUK: avisamos que estan desactivados
       };
    }
+];
+
+! Funcion: RandomEffectsLabyrinth
+! Función que muestra efectos ambientales aleatorios para dar la sensación
+! de un mundo vivo. Estos efectos ambientales son simplemente eso, ambientación,
+! sin ser relevantes para en el hilo argumental de la aventura.
+! Parametros: prob - Probabilidad (0-100) de que ocurra un evento
+!
+[ RandomEffectsLabyrinth prob;
+  if (random(100) < prob) {
+	  switch (random(7)) {
+		  1: print "^Unos pequeños animales carroñeros, parecidos a ratas pero algo más grandes, cruzan corriendo desde el callejón de la parte sur,
+	          desapareciendo rápidamente por la parte norte.^";
+		  2: print "^Una ráfaga de aire viciado que proviene del callejón sur levanta un remolino de polvo a su paso. Cuando el viento se calma,
+		      la porquería levantada vuelve a posarse en el suelo.^";
+		  3: print "^De repente, crees oir lo que parece ser un lejano y ahogado grito de lamento proviniente del callejón sur.^";
+		  4: print "^Un robot de vigilancia AC1 aparece volando por el callejón sur y, siguiendo su camino, se marcha por la parte norte.^";
+		  5: print "^Un droide de mantenimiento MN-2E llega desde el sur. Una vez ha recogido del suelo algo de basura, se marcha por el norte.^";
+		  6: print "^Una unidad R4 se acerca a tu posición desde el callejón situado al sur. Emite su habitual sonido cuando pasa por tu lado, antes
+		      de desaparecer por la parte norte.^";
+		  7: print "^Un par de seres que no logras distinguir bien, seguramente traficantes o contrabandistas, se ocultan rápidamente entre las sombras 
+		      que hay hacia el sur en cuanto te ven acercarte.^";
+	  }
+  };
 ];
 
 [QuejasBomo tipo msg;
