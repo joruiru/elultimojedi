@@ -5068,6 +5068,18 @@ with
   d_to NivelInfO4_1,
 ;
 
+Object decorado_rampa AccesoNivInfO4
+class decorado
+with  describe
+       'rampa' "Una hermosa cabellera blanca." G_FEMENINO
+       'acceso' "En el derecho destaca una marca típica de esclavo." 0,
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
+;
+
+
 Lugar NivelInfO4_1 "Nivel inferior de Orvax IV"
 with 
   description "El nivel inferior es la zona más antigua de Orvax IV y, en consecuencia, donde los viejos vicios florecen con más vigor.
