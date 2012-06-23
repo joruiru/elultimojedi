@@ -5072,7 +5072,7 @@ Object decorado_rampa AccesoNivInfO4
 class decorado
 with  describe
        'rampa' "Una rampa comunica el nivel superior con el inferior de Orvax IV." G_FEMENINO
-       'acceso' "Una rampa comunica el nivel superior con el inferior de Orvax IV." 0,
+       'acceso' "Una rampa comunica el nivel superior con el inferior de Orvax IV." 0, 
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
