@@ -5255,7 +5255,7 @@ with  describe
     examine: rfalse;
     default: "No conviene hacer eso.";
   ],
-;
+; 
 
 Object decorado_nivinfO4 limbo
 class decorado
