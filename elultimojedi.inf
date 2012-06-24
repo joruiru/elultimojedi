@@ -5062,7 +5062,6 @@ with  describe
 
 Lugar AccesoNivInfO4 "Acceso al nivel inferior"
 with 
-  !name 'cantina',
   description "Una rampa comunica el nivel superior con el inferior de Orvax IV.",
   u_to CalleO4_2,
   d_to NivelInfO4_1,
@@ -5072,7 +5071,7 @@ Object decorado_rampa AccesoNivInfO4
 class decorado
 with  describe
        'rampa' "Una rampa comunica el nivel superior con el inferior de Orvax IV." G_FEMENINO
-       'acceso' "Una rampa comunica el nivel superior con el inferior de Orvax IV." 0,
+       'acceso' "Una rampa comunica el nivel superior con el inferior de Orvax IV." 0, 
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
@@ -5088,22 +5087,51 @@ with
   s_to NivelInfO4_2,
 ;
 
+Object decorado_nivelinferior NivelInfO4_1
+class decorado
+with  describe
+       'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
+       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
+       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
+;
+
 Lugar NivelInfO4_2 "Nivel inferior de Orvax IV"
 with 
   description "Las calles se vuelven cada vez más estrechas y agobiantes. Las destartaladas estructuras y los seres de aspecto igualmente 
            indeseable no te ayudan a minimizar esa sensación.",
   describe [;
     self.Lugar::describe();
-    if (random(2)==1) {
-	    print "^Unos pequeños animales carroñeros, parecidos a ratas pero más grandes, cruzan corriendo desde el callejón de la parte sur,
-	          desapareciendo rápidamente por la parte norte.^";
-    };
+!     if (random(2)==1) {
+! 	    print "^Unos pequeños animales carroñeros, parecidos a ratas pero más grandes, cruzan corriendo desde el callejón de la parte sur,
+! 	          desapareciendo rápidamente por la parte norte.^";
+!     };
+    RandomEffectsLabyrinth(60);
     rtrue;
   ],
   n_to NivelInfO4_1,
   s_to NivelInfO4_3,
   e_to NivelInfO4_2,
   w_to NivelInfO4_2,  
+;
+
+Object decorado_nivelinferior2 NivelInfO4_2
+class decorado
+with  describe
+       'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
+       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
+       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
 ;
 
 Lugar NivelInfO4_3 "Nivel inferior de Orvax IV"
@@ -5122,6 +5150,20 @@ with
   s_to NivelInfO4_3,
   e_to NivelInfO4_2,
   w_to NivelInfO4,  
+;
+
+Object decorado_nivelinferior3 NivelInfO4_3
+class decorado
+with  describe
+       'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
+       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
+       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
 ;
 
 Lugar NivelInfO4 "Nivel inferior de Orvax IV"
@@ -5195,6 +5237,24 @@ with
 	          cabezas lucen numerosos cuernos, orejas grandes, una boca llena de dientes afilados y cuatro brillantes ojos rojos.";
     }
   ], 
+;
+
+Object decorado_nivelinferior4 NivelInfO4
+class decorado
+with  describe
+       'calabozo' "Unos guardias bloquean el único paso a la zona donde podrían estar retenidos los esclavos." 0
+       'calabozos' "Unos guardias bloquean el único paso a la zona donde podrían estar retenidos los esclavos." G_PLURAL
+       'acceso' "Unos guardias bloquean el único paso a la zona donde podrían estar retenidos los esclavos." 0
+       'accesos' "Unos guardias bloquean el único paso a la zona donde podrían estar retenidos los esclavos." G_PLURAL
+       'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
+       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
+       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
 ;
 
 Object decorado_nivinfO4 limbo
@@ -5671,7 +5731,7 @@ with  describe
 ! Parametros: prob - Probabilidad (0-100) de que ocurra un evento
 !
 [ RandomEffectsLabyrinth prob;
-  if (random(100) < prob) {
+  if (random(100)-1 < prob) {
 	  switch (random(7)) {
 		  1: print "^Unos pequeños animales carroñeros, parecidos a ratas pero algo más grandes, cruzan corriendo desde el callejón de la parte sur,
 	          desapareciendo rápidamente por la parte norte.^";
