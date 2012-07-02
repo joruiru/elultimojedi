@@ -5255,7 +5255,7 @@ with  describe
     examine: rfalse;
     default: "No conviene hacer eso.";
   ],
-; 
+;  
 
 Object decorado_nivinfO4 limbo
 class decorado
@@ -5505,13 +5505,17 @@ with
 Object decorado_cantinaO4 CantinaO4
 class decorado
 with  describe
+       'piloto' "Pilotos de todos los rincones de la galaxia esperando alquilar su nave para algún transporte." 0
        'pilotos' "Pilotos de todos los rincones de la galaxia esperando alquilar su nave para algún transporte." G_PLURAL
+       'contrabandista' "Las cantinas son el lugar perfecto para sus negocios ocultos." 0
        'contrabandistas' "Las cantinas son el lugar perfecto para sus negocios ocultos." G_PLURAL
+       'seres' "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar." G_PLURAL
        'habitantes' "Vienen aquí a beber mientras se juegan su dinero." G_PLURAL
        'clientes' "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar." G_PLURAL
        'iluminacion' "La iluminación es escasa para producir tinieblas donde realizar negocios poco legales." G_FEMENINO
        'banda' "Cuatro músicos Bith amenizan el local." G_FEMENINO
        'bith' "Cuatro músicos Bith amenizan el local." G_PLURAL
+       'musico' "Cuatro músicos Bith amenizan el local." G_PLURAL
        'musicos' "Cuatro músicos Bith amenizan el local." G_PLURAL,
   before[;
     examine: rfalse;
