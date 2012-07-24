@@ -5696,6 +5696,8 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
              };
              tema=AveriguarTema(TemasOrvax4);
 	         switch(tema) {
+               t_misionO4: print "^Jaxf Seval: ", (s_underline) "~Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
+                        vendió a la hija de Bomo.~^";
                t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
