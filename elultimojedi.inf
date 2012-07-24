@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log: 
+!  2012/07/23  Joruiru - Se añade Jaxf Seval como el rival para jugar al Dejarik
+!              en la cantina.
 !  2012/05/29  Joruiru - Se añaden efectos ambientales aleatorios a la zona del
 !              laberinto en Orvax IV. 
 !  2012/05/06  Joruiru - Se mueve la gramática a un fichero separado. 
@@ -4799,6 +4801,7 @@ Object oMeettoO4 "Meetto" limbo
                  t_esclavosO4: print "^Meetto: ", (s_underline) "~Mmmm... Esa información te costará dinero.~^";
                  t_dineroO4: print "^Meetto: ",(s_underline) "~Cuanto más traigas mejor... Tengo una familia que alimentar y el negocio
                         no va muy bien en estos tiempos oscuros.~"; 
+                        move oJaxfSevalO4 to CantinaO4;
                  t_repuestosO4: print "^Meetto: ",(s_underline) "~Tengo de todo lo que necesites... soy el único que vende repuestos
                         en este planeta.~"; 
                  t_sottaO4: print "^Meetto: ",(s_underline) "~Mmmm... Esa información te costará dinero.~"; 
@@ -4871,6 +4874,9 @@ with
               adentra en los suburbios de la ciudad. Una cantina ocupa un lugar preferencial en esta calle.",
   w_to PlazaO4,
   in_to CantinaO4,
+  before [;
+    go: if (noun==e_obj) "Será mejor que te quedes por esta zona. Adentrarse en los suburbios no parece buena idea.";
+  ],
 ;
 
 Object -> oCantinaO4 "Cantina"
@@ -5596,10 +5602,13 @@ Object oSnifflesO4 "Sniffles" CantinaO4
                      move oMeettoO4 to PlazaO4;
              t_dineroO4: print "^Sniffles: ",(s_underline) "~Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
                          partidas al Dejarik.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
              t_dejarikO4: print "^Sniffles: ",(s_underline) "~¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
                          estoy aquí. A mi me desplumaría enseguida.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
              t_apuestasO4: print "^Sniffles: ",(s_underline) "~Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
                          advierto que no ha perdido ninguna partida desde que estoy aquí.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
              default: print "^Sniffles: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
            };
            } else {
@@ -5625,10 +5634,13 @@ Object oSnifflesO4 "Sniffles" CantinaO4
 	                     move oMeettoO4 to PlazaO4;
                  t_dineroO4: print "^Sniffles: ",(s_underline) "~Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
                              partidas al Dejarik.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
                  t_dejarikO4: print "^Sniffles: ",(s_underline) "~¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
                          estoy aquí. A mi me desplumaría enseguida.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
                  t_apuestasO4: print "^Sniffles: ",(s_underline) "~Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
                          advierto que no ha perdido ninguna partida desde que estoy aquí.~"; 
+                         move oJaxfSevalO4 to CantinaO4;
 	             default: print "^Sniffles: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
 	           };
            }
@@ -5665,6 +5677,46 @@ with  describe
     default: print "No conviene hacer eso."; rtrue;
   ],
 ;
+
+Object oJaxfSevalO4 "Jaxfr Seval" limbo
+  with
+    name 'jaxf' 'seval' 'humano' 'jugador' 'apostante',
+    description "En un rincón poco iluminado de la cantina, un humano de mediana edad, pelo negro y de complexión fuerte se encuentra
+       sentado frente a una mesa ocupada por un tablero de Dejarik y algunos vasos. No tiene pinta de ser alguien del que uno podría
+       fiarse, pero... ¿acaso alguno de todos los seres que hay en la cantina es de fiar?", 
+    bonif_defensiva 15,
+    bonif_ofensiva 15,
+    vida 50,
+    dado_golpe 1 6 0, !1d6+0
+    life [tema;
+	    Attack: "Deberías pasar inadvertido en estos tiempos oscuros... Lo que menos te conviene ahora mismo es montar un jaleo.^";
+        tell,answer,
+        ask: if (self.vida==0) {
+	           "Jaxf Seval yace inconsciente en el suelo. Dificilmente responderá a tus preguntas.^";
+             };
+             tema=AveriguarTema(TemasOrvax4);
+	         switch(tema) {
+               t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+               t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+               t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+               default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
+                        en la mesa y juguemos.~^"; 
+           };
+           rtrue;
+    ],
+    orders [;
+      Mild, Strong: "Ahora mismo no te conviene montar ningún jaleo.^";
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+      Sanar,
+      Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.^";
+	  Push, Aturdir: "Ahora mismo no te conviene montar ningún jaleo.^";
+      Enganyar: "La persuasión mediante la Fuerza sólo funciona con seres de mente débil.^";
+      Sentir, 
+      Concentrar: "La Fuerza habita en el interior de todos los seres vivos.^";
+    ],
+has animate proper objetivo transparent;
 
 !===============================================================================
 ! (9) Otras Rutinas Reemplazadas; Rutinas Propias del Juego
@@ -6568,6 +6620,7 @@ Object -> t_dineroO4 "dinero"  with name 'dinero' 'creditos';
 Object -> t_repuestosO4 "repuestos"  with name 'pieza' 'piezas' 'repuesto' 'repuestos' 'nave' 'naves';
 Object -> t_dejarikO4 "dejarik"  with name 'dejarik' 'juego';
 Object -> t_apuestasO4 "apuestas"  with name 'apostar' 'apuesta' 'apuestas';
+Object -> t_jaxfsevalO4 "Jaxf Seval"  with name 'jaxf' 'seval' 'humano' 'jugador' 'apostante';
 Object -> t_sottaO4 "Sotta el Hutt"  with name 'sotta' 'hutt';
 
 
