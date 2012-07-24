@@ -5688,6 +5688,7 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
     bonif_ofensiva 15,
     vida 50,
     dado_golpe 1 6 0, !1d6+0
+    jugando 0, !0:No se ha iniciado partida 1:Turno 1 2:Turno 2 3:Turno3 4:Otra partida
     life [tema;
 	    Attack: "Deberías pasar inadvertido en estos tiempos oscuros... Lo que menos te conviene ahora mismo es montar un jaleo.^";
         tell,answer,
@@ -5695,14 +5696,25 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
 	           "Jaxf Seval yace inconsciente en el suelo. Dificilmente responderá a tus preguntas.^";
              };
              tema=AveriguarTema(TemasOrvax4);
-	         switch(tema) {
-               t_misionO4: print "^Jaxf Seval: ", (s_underline) "~Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
-                        vendió a la hija de Bomo.~^";
-               t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-               t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-               t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-               default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
-                        en la mesa y juguemos.~^"; 
+             if (self.jugando==0) {
+	           switch(tema) {
+                 t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+                 t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+                 t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+                 default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
+                          en la mesa y juguemos.~^";
+             } else {
+	             if (self.jugando==4) {
+	               switch(tema) {
+                     t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
+                     t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
+                     t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
+                     default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
+                              en la mesa y juguemos otra partida.~^";
+	             } else {
+                     print "^Jaxf Seval: ", (s_underline) "~¡Cállate! ¡Estamos jugando!.~^";
+	             }
+             } 
            };
            rtrue;
     ],
