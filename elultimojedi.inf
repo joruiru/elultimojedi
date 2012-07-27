@@ -5703,7 +5703,7 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
                  t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                  t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                  t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-                 t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Quieres apostarte tu nave? Tráeme el módulo de control y jugaré contigo.~"; 
+                 t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Quieres apostar tu nave? Tráeme el módulo de control y jugaré contigo.~"; 
                  default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
                           en la mesa y juguemos.~^";
                }
