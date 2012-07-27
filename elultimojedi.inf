@@ -4805,6 +4805,7 @@ Object oMeettoO4 "Meetto" limbo
                  t_repuestosO4: print "^Meetto: ",(s_underline) "~Tengo de todo lo que necesites... soy el único que vende repuestos
                         en este planeta.~"; 
                  t_sottaO4: print "^Meetto: ",(s_underline) "~Mmmm... Esa información te costará dinero.~"; 
+                 t_uhumeleO4: print "^Meetto: ",(s_underline) "~Sólo acepto créditos de la república contantes y sonantes.~"; 
                  default: switch (random(2)) {
 	                        1: print "^Meetto: ", (s_underline) "~Lo siento. Sólo vendo repuestos para naves. Tengo cualquier pieza que
                                  necesites.~^";
@@ -4830,6 +4831,7 @@ Object oMeettoO4 "Meetto" limbo
                  t_sottaO4: print "^Meetto: ",(s_underline) "~Sotta el Hutt es un tipo peligroso. Controla todo el mercado de esclavos en
                         este planeta. No se hace ninguna transacción sin su consentimiento. Lo puedes encontrar en su fortaleza, en la parte
                         Este de la ciudad.~"; 
+                 t_uhumeleaO4: print "^Meetto: ",(s_underline) "~No hace falta que vayas con rodeos. Tú no has venido a por repuestos para tu nave.~"; 
                  default: switch (random(2)) {
 	                        1: print "^Meetto: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
 	                        2: print "^Meetto: ", (s_underline) "~Mmmm... pensaba que estabas interesado en obtener información sobre los 
@@ -5701,22 +5703,26 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
                  t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                  t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
                  t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
+                 t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Quieres apostarte tu nave? Tráeme el módulo de control y jugaré contigo.~"; 
                  default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
                           en la mesa y juguemos.~^";
+               }
              } else {
 	             if (self.jugando==4) {
 	               switch(tema) {
                      t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
                      t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
                      t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
+                     t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
+                                  una nave como esa! ¡Nunca la recuperarás!~"; 
                      default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
                               en la mesa y juguemos otra partida.~^";
+                   }
 	             } else {
                      print "^Jaxf Seval: ", (s_underline) "~¡Cállate! ¡Estamos jugando!.~^";
 	             }
-             } 
-           };
-           rtrue;
+             };
+             rtrue;
     ],
     orders [;
       Mild, Strong: "Ahora mismo no te conviene montar ningún jaleo.^";
@@ -5731,6 +5737,22 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
       Concentrar: "La Fuerza habita en el interior de todos los seres vivos.^";
     ],
 has animate proper objetivo transparent;
+
+Object decorado_JaxfSevalO4 oJaxfSevalO4
+class decorado
+with  describe
+       'mesa' "Una mesa de madera como cualquier otra de las que hay en la cantina." G_FEMENINO
+       'tablero' "Sobre el tablero descansan las fichas de Dejarik." 0
+       'dejarik' "Sobre el tablero descansan las fichas de Dejarik." 0
+       'vaso' "Hay varios vasos sobre la mesa, lo que indica que Jaxf Seval lleva un buen rato en la cantina." 0
+       'vasos' "Hay varios vasos sobre la mesa, lo que indica que Jaxf Seval lleva un buen rato en la cantina." G_PLURAL
+       'fichas' "Las fichas del Dejarik son holográficas y tienen la forma de diferentes criaturas. Descansan sobre el tablero." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
+;
+
 
 !===============================================================================
 ! (9) Otras Rutinas Reemplazadas; Rutinas Propias del Juego
@@ -6632,10 +6654,12 @@ Object -> t_meettoO4 "Meetto"  with name 'meetto' 'toydariano' 'mercader' 'vende
 Object -> t_esclavosO4 "esclavos"  with name 'esclavos' 'mercado' 'trafico';
 Object -> t_dineroO4 "dinero"  with name 'dinero' 'creditos';
 Object -> t_repuestosO4 "repuestos"  with name 'pieza' 'piezas' 'repuesto' 'repuestos' 'nave' 'naves';
-Object -> t_dejarikO4 "dejarik"  with name 'dejarik' 'juego';
+Object -> t_dejarikO4 "dejarik"  with name 'dejarik' 'juego' 'jugar';
 Object -> t_apuestasO4 "apuestas"  with name 'apostar' 'apuesta' 'apuestas';
 Object -> t_jaxfsevalO4 "Jaxf Seval"  with name 'jaxf' 'seval' 'humano' 'jugador' 'apostante';
 Object -> t_sottaO4 "Sotta el Hutt"  with name 'sotta' 'hutt';
+Object  -> t_uhumeleO4 "uhumele" with name 'nave' 'transporte' 'uhumele' 'modulo' 'control';
+
 
 
 
