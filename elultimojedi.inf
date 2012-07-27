@@ -4831,7 +4831,7 @@ Object oMeettoO4 "Meetto" limbo
                  t_sottaO4: print "^Meetto: ",(s_underline) "~Sotta el Hutt es un tipo peligroso. Controla todo el mercado de esclavos en
                         este planeta. No se hace ninguna transacción sin su consentimiento. Lo puedes encontrar en su fortaleza, en la parte
                         Este de la ciudad.~"; 
-                 t_uhumeleO4: print "^Meetto: ",(s_underline) "~No hace falta que vayas con rodeos. Tú no has venido a por repuestos para tu nave.~"; 
+                 t_uhumeleO4: print "^Meetto: ",(s_underline) "~No hace falta que vayas con rodeos. Tú no has venido a por repuestos para tu nave.~";
                  default: switch (random(2)) {
 	                        1: print "^Meetto: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
 	                        2: print "^Meetto: ", (s_underline) "~Mmmm... pensaba que estabas interesado en obtener información sobre los 
@@ -5714,7 +5714,7 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
                      t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
                      t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
                      t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
-                                  una nave como esa! ¡Nunca la recuperarás!~"; 
+                                  una nave como esa! ¡Nunca la recuperarás! ¡Jajajaja!~"; 
                      default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
                               en la mesa y juguemos otra partida.~^";
                    }
