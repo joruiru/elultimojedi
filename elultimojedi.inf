@@ -5738,10 +5738,27 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
     ],
 has animate proper objetivo transparent;
 
-Object decorado_JaxfSevalO4 oJaxfSevalO4
+Object oMesaO4 "Mesa" CantinaO4
+  with
+    name 'mesa',
+    adjectives 'madera' 'jugador' 'tablero' 'jaxf' 'seval',
+    description "Una mesa de madera como cualquier otra de las que hay en la cantina.", 
+    before [;
+      Sanar: "La sanación mediante la Fuerza sólo funciona con seres vivos.";
+	  Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.^";
+      Enganyar: "La persuasión mediante la Fuerza sólo funciona con seres vivos.^";
+      Sentir, 
+      Concentrar: "A pesar de tus esfuerzos, no sientes nada con la mesa.^";
+      Push, Aturdir,
+	  Attack: "Deberías pasar inadvertido en estos tiempos oscuros... Lo que menos te conviene ahora mismo es montar un jaleo.^";
+	  receive: rtrue;
+	  letgo: "Será mejor que no robes nada de la mesa.";
+    ],
+has scenery supporter;
+
+Object decorado_JaxfSevalO4 oMesaO4
 class decorado
 with  describe
-       'mesa' "Una mesa de madera como cualquier otra de las que hay en la cantina." G_FEMENINO
        'tablero' "Sobre el tablero descansan las fichas de Dejarik." 0
        'dejarik' "Sobre el tablero descansan las fichas de Dejarik." 0
        'vaso' "Hay varios vasos sobre la mesa, lo que indica que Jaxf Seval lleva un buen rato en la cantina." 0
@@ -5752,6 +5769,7 @@ with  describe
     default: print "No conviene hacer eso."; rtrue;
   ],
 ;
+
 
 
 !===============================================================================
