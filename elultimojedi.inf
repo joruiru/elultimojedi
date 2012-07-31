@@ -4765,6 +4765,13 @@ with
   out_to PuertoO4,
 ;
 
+Object oModuloControlO4 "Módulo de control" limbo
+  with
+    name 'módulo' 'control',
+    adjectives 'uhumele' 'control',
+    description "El módulo de control de la Uhumele lleva en su interior un disco óptico necesario para poner en marcha la nave.", 
+;
+
 Lugar PlazaO4 "Plaza Principal de Orvax IV"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
