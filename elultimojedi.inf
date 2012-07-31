@@ -4770,6 +4770,17 @@ Object oModuloControlO4 "Módulo de control" limbo
     name 'módulo' 'control',
     adjectives 'uhumele' 'control',
     description "El módulo de control de la Uhumele lleva en su interior un disco óptico necesario para poner en marcha la nave.", 
+    before [;
+      take,
+      remove: if (self in oMesaO4) "Será mejor que no quites nada de la mesa.";
+      puton,
+      insert: if (second==oMesaO4) "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
+              créditos y dice: Está bien, juguemos.";
+      give: if (second==oJaxfSevalO4) "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
+              créditos y dice: Está bien, juguemos.";
+            else
+             "No puedes ir entregando el módulo de control de la Uhumele a cualquiera.";
+    ],
 ;
 
 Lugar PlazaO4 "Plaza Principal de Orvax IV"
