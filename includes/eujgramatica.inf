@@ -40,7 +40,9 @@
 ! 
 !=============================================================================== 
 ! 
-!  Log: 
+!  Log:
+!  2012/08/14  Joruiru - Se añade la funcion StrCmp2 para comparar strings y
+!              StrLen para devolver la longitud de una string.  
 !  2012/05/06  Joruiru - Se crea el archivo. 
 ! 
 !-------------------------------------------------------------------------------
@@ -237,6 +239,15 @@ Verb 'pilota' 'conduce' 'guia'
     * noun                                 -> Pilotar;
 VerboIrregular "conducir" with imperativo 'conduce';
 
+Verb 'juega' 'jugar'
+    *                                  -> JugarSin
+    * 'con'/'contra' creature          -> Jugar
+    * 'a//' 'dejarik'                  -> JugarSin
+    * 'al' 'dejarik'                   -> JugarSin
+    * 'a//' 'dejarik' 'con'/'contra' creature  -> Jugar
+    * 'al' 'dejarik' 'con'/'contra' creature   -> Jugar;
+!VerboIrregular "jugar" with imperativo 'juega';
+
 Verb 'gilipollas' 'guarro' 'imbecil'
   *               -> Strong;
 
@@ -248,10 +259,10 @@ Verb meta 'sonido' 'sonidos'
 ! (11) Rutinas de Acciones Propias del Juego
 !-------------------------------------------------------------------------------
 [ AyudaSub ;
-    !"Este juego tiene una solución casi ridícula. ¡Vamos, inténtalo!";
-    !MostrarAyuda(location);
-    closeGraphicWindow();
-      barra_estado.numero_lineas = 26;
+  !"Este juego tiene una solución casi ridícula. ¡Vamos, inténtalo!";
+  !MostrarAyuda(location);
+  closeGraphicWindow();
+  barra_estado.numero_lineas = 26;
   barra_estado.dibujar();
   ZIPI_Empezar();
   barra_estado.numero_lineas = 1;
@@ -266,6 +277,7 @@ Verb meta 'sonido' 'sonidos'
 ];
 
 Array StringBuffer1->102; ! Temporary string buffers
+Array StringBuffer2->102; ! Temporary string buffers
 
 [ StrCmp len first second i j k l aux;
    j=0;
@@ -276,6 +288,24 @@ Array StringBuffer1->102; ! Temporary string buffers
    for(i=0:i<k&&j==0:i++){l=i+4;
     j=((StringBuffer1->l)-(first->i));}
    return j;
+];
+
+[ StrCmp2 first second i j k l aux len;
+   j=0;
+   aux=second.print_to_array(StringBuffer1,102);
+   len=first.print_to_array(StringBuffer2,102);
+
+   if (len<aux) k=len;
+   else k=aux;
+   for(i=0:i<k&&j==0:i++){l=i+4;
+    j=((StringBuffer1->l)-(StringBuffer2->l));}
+   return j;
+];
+
+[ StrLen str len;
+  len=0;
+  len=str.print_to_array(StringBuffer1,102);
+  return len;
 ];
 
 [ UsoFuerzaParaSub w;
@@ -371,6 +401,15 @@ Array StringBuffer1->102; ! Temporary string buffers
 [ TrepaMalSub ;
     "Para trepar usa la forma TREPA A/POR algo.";
 ];
+
+[ JugarSub ;
+    "No es momento de ponerse a jugar a nada.";
+];
+
+[ JugarSinSub ;
+    "No es momento de ponerse a jugar a nada.";
+];
+
 
 [ SonidoSub;
   print "[Por favor, usa la forma ~";

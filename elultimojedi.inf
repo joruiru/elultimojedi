@@ -51,11 +51,16 @@
 !  Autor   :  Josevi Ruiz 
 !  e-Mail  :  joruiru AT gmail DOT com 
 ! 
-!  Descripcion: EL ULTIMO JEDI Lite Version (FICOMP 2011 Version). 
+!  Descripcion: EL ULTIMO JEDI Full Version. 
 ! 
 !=============================================================================== 
 ! 
-!  Log: 
+!  Log:
+!  2012/08/31  Joruiru - Soluciones alternativas a puzles dentro de la base y
+!              añadidas algunas muertes.
+!  2012/08/30  Joruiru - Se termina toda la parte de la base de Sotta.
+!  2012/08/15  Joruiru - Rutina HablaPersonaje y pequeñas inconsistencias 
+!  2012/08/14  Joruiru - Se programa la partida al Dejarik 
 !  2012/07/23  Joruiru - Se añade Jaxf Seval como el rival para jugar al Dejarik
 !              en la cantina.
 !  2012/05/29  Joruiru - Se añaden efectos ambientales aleatorios a la zona del
@@ -147,10 +152,10 @@ Constant TASKS_PROVIDED;
 
 ! Numero de tareas que el jugador debe realizar a lo largo
 ! del juego (por defecto: 1)
-Constant NUMBER_TASKS = 11;
+Constant NUMBER_TASKS = 21;
 
 ! Puntuacion maxima del juego (por defecto: 0)
-Constant MAX_SCORE = 115;
+Constant MAX_SCORE = 220;
 
 Constant SGW_SIN_GRAFICOS;
 
@@ -163,7 +168,7 @@ Constant SGW_SIN_GRAFICOS;
 ! Constant ROOM_SCORE = 3;
 
 ! El array que contiene los puntos por cada tarea realizada
-Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10;
+Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20;
 
 Include "Parser";
 Include "Etemas";
@@ -193,6 +198,7 @@ Global fase = 1;
 Global bomo_sigue = 1; !1: Bomo sigue al PJ cuando se mueve. 0:Bomo no sigue al PJ cuando se mueve
 Global caza_countdown = 20; !Se dan 20 turnos en el V-Wing para destruir la Valance. Cuando llegue a 0, el ejército clon destruye la nave con el PJ dentro.
 Global planeta = 1; !1: Nuevo Plympto, 2: Orvax IV
+Global reactor_countdown = 6; !Se dan 30 turnos si el reactor de la base se estropea. Cuando llegue a 0, el complejo explota matando al PJ.
 Global mensajes_aleatorios = true; ! ELIUK: flag con el estado de los mensajes aletorio
 ! para el que marco de trabajo, al mostrar las imagenes de objeto, sepa si debe reactivar
 ! el temporizador glk o si no debe hacerlo.
@@ -651,6 +657,17 @@ Include "VerbLib";
       8: "Entrar a la Uhumele.";
       9: "Robar un caza.";
       10: "Destruir la Valance.";
+      11: "Salvar a Mezgraf.";
+      12: "Descubrir a los nosaurianos capturados.";
+      13: "Liberar a los nosaurianos capturados.";
+      14: "Conseguir el módulo de control de la Uhumele.";
+      15: "Ganar al Dejarik.";
+      16: "Descubrir la base de Sotta.";
+      17: "Entrar a la base de Sotta.";
+      18: "Acabar con todos los guardias de Sotta.";
+      19: "Desbloquear el ascensor.";
+      20: "Matar a Sotta el Hutt.";
+      21: "Bomo mata a Sotta el Hutt.";
     }
 ];
 
@@ -750,8 +767,14 @@ glk_request_timer_events(0); ! desactivamos los mensajes aleatorios
       if (deadflag == 5) {
         print " Bomo y tú morís atravesados por los disparos ";
       }
-      if (deadflag == 5) {
+      if (deadflag == 6) {
         print " Mueres en la explosión de la nave ";
+      }
+      if (deadflag == 7) {
+        print " FIN DEL JUEGO ";
+      }
+      if (deadflag == 8) {
+        print " Mueres abrasado en la explosión del complejo ";
       }
 ];
 
@@ -867,6 +890,97 @@ Class GuardiaOrvax4
         Enganyar: print "Guardia: ",(s_underline) "~¿Acaso te crees un jedi intentando esos truquitos?~^"; rtrue;
     ],
 has pluralname animate;
+
+Class CadaverGamorreano(50)
+ with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
+      short_name "cadáver de un guardia de Sotta",
+      plural "cadáveres de guardias de Sotta",
+      description [x n;
+         n=0;
+         objectloop (x in parent(self)) {
+	         if (x ofclass CadaverGamorreano) n++;
+         }
+         if (n>1) 
+             "Los cadáveres de los guardias gamorreanos yacen en el suelo. Sus armas han quedado 
+              inservibles debido a los daños sufridos durante el combate.";
+         "El cadáver del guardia gamorreano yace en el suelo. Su arma ha quedado 
+         inservible debido a los daños sufridos durante el combate.";
+      ],
+      multiple 0,
+      create [m;
+        self.multiple=m;
+      ],
+      before [;
+        Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
+        Examine: rfalse;
+        default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
+      ],
+;
+
+Class Suministro(50)
+ with name 'suministro',
+      short_name "suministro",
+      plural "suministros",
+      parse_name [n w w2;
+	    n=0;
+	    w=nextWord();
+        switch (self.tipo) {
+	      1,2,3,4,5: if (w=='alimento' or 'alimentos' or 'comida') n=10; else n=-1;
+	      6,7: if (w=='arma' or 'armas') n=10; else n=-1;
+	      8: if (w=='repuesto' or 'repuestos') n=8; else n=-1;
+	      9: if (w=='granada' or 'granadas') n=1; else n=-1; !Si hay repuestos de los dos tipos a la vista responderán los repuestos generales.
+	          w2=nextWord();
+	          while (w2=='de' or 'para' or 'los' or 'el' or 'la' or 'las') w2=nextWord(); !Nos saltamos artículos y preposiciones
+	          if ((w=='granada' or 'granadas') && (w2=='energia' or 'energias')) n=10;
+	          !Si el jugador se refiere en singular y ya tiene la granada en el inventario
+	          !entonces responderá la del inventario y no ésta.
+	          if (w=='granada' && oGranadaEnergia in player) n=-1;
+	      10: if (w=='repuesto' or 'repuestos') n=6; else n=-1; !Si hay repuestos de los dos tipos a la vista responderán los repuestos generales.
+	          w2=nextWord();
+	          while (w2=='de' or 'para' or 'los' or 'el' or 'la' or 'las') w2=nextWord(); !Nos saltamos artículos y preposiciones
+	          if ((w=='repuesto' or 'repuestos') && (w2=='droide' or 'droides' or 'robot' or 'robots')) n=10;
+        }
+        return n;
+      ],
+      description [;
+        switch (self.tipo) {
+	      1,2,3,4,5: "Diferentes tipos de comida para la alimentación de los guardias y empleados de Sotta que hay en el complejo.";
+	      6,7: "Armas de diferentes tipos para los guardias que protegen la base. Ninguna le hace sombra a tu sable láser.";
+	      8: "Repuestos para el mantenimiento general del complejo. Nada interesante.";
+	      9: "Unas esferas de energía azul que explotan al ser lanzadas contra el enemigo. También lanzan impulsos electromagnéticos
+	         que inutilizan los sistemas electrónicos que se hallen cerca en el momento de la detonación. Sotta las debe haber
+	         adquirido en el sistema Naboo.";
+	      10: "Repuestos para los droides que trabajan en el complejo.";
+        };
+      ],
+      tipo 0,
+      create [m;
+        self.tipo=m;
+        !tipo: 1-5 Comida 6-7 Armas 8-Repuestos 9-Granadas de Energía 10-Repuestos droides
+        switch (self.tipo) {
+	      1,2,3,4,5: self.short_name="comida"; self.plural="comida"; give self female;
+	      6,7: self.short_name="arma"; self.plural="armas"; give self female; give self pluralname;
+	      8: self.short_name="repuesto"; self.plural="repuestos"; give self pluralname;
+	      9: self.short_name="granada de energía"; self.plural="granadas de energía"; give self female; give self pluralname;
+	      10: self.short_name="repuesto para droides"; self.plural="repuestos para droides"; give self pluralname;
+        };
+      ],
+      before [;
+        Examine: rfalse;
+        Take: switch (self.tipo) {
+	            1,2,3,4,5: "En estos momentos no necesitas comida.";
+	            6,7: "Un jedi como tú tiene suficiente con el sable láser.";
+	            8: "Son repuestos para el mantenimiento del complejo. No los necesitas para nada.";
+	            9: if (oGranadaEnergia notin player) {
+		             move oGranadaEnergia to player;
+		             "Coges una granada de energía.";
+	               };
+	               "Son lo suficientemente grandes para que sólo puedas llevar una.";
+	            10: "Son repuestos para los droides del complejo. No los necesitas para nada.";
+              };
+        default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
+      ],
+has scenery;
 
 Include "pnjmovil";
 !===============================================================================
@@ -1030,7 +1144,38 @@ Object  mySelfObj "(self object)"
         before NULL,
         after NULL,
         life NULL,
-        each_turn NULL,
+        each_turn [;
+          if (reactor_countdown<0) {
+	          if (location==EntradaBaseO4 or PasilloBaseO4 or CeldasBaseO4 or ComedorBaseO4
+	             or Pasillo3BaseO4 or AlmacenBaseO4 or SalaControlBaseO4 or Pasillo2BaseO4
+	             or SalaDescansoBaseO4 or Pasillo4BaseO4 or HabitacionesBaseO4 or SottaBaseO4) {
+		          !Se produce la explosión del reactor y el PJ está dentro de la base
+		          deadflag=8;
+		          "Una enorme explosión te sorprende. Mientras sientes cómo todo el complejo
+		          se viene abajo y cómo te envuelven las llamas, caes en la cuenta de que sólo
+		          puede ser debido a la explosión del reactor, ya que inutilizaste los sistemas
+		          que lo controlaban al lanzar la granada de energía.^
+		          Tu último pensamiento es si merecías ser un caballero Jedi habiendo cometido
+		          tantos errores y habiéndote apartado tanto de las enseñanzas de la Orden.";
+	          } else {
+		          !Se produce la explosión del reactor y el PJ está fuera de la base
+		          deadflag=7;
+		          "Oyes una tremenda explosión y el suelo de toda la ciudad tiembla. Te giras 
+		          y compruebas que viene de la base de Sotta el Hutt. El complejo entero debe
+		          haber volado por los aires. Caes en la cuenta de que puede ser debido a la 
+		          explosión del reactor, ya que inutilizaste los sistemas que lo controlaban al 
+		          lanzar la granada de energía.^
+		          Ahora ya nunca averiguarás qué ha sido de Resa, la hija de tu amigo Bomo. Y
+		          todo ha sido debido a los errores que has cometido, impropios de un Caballero
+		          Jedi. Te has apartado tanto de las enseñanzas, que ya no crees que haya sitio
+		          para ti en la Orden Jedi. Todo lo que puedes hacer ahora es recorrer el futuro
+		          paso a paso, dejando atrás todo lo que has sido.";
+	          };
+          };
+          if (planeta==2 && oInterruptorO4 has muerto) {
+	          reactor_countdown--; print "^Reactor:",reactor_countdown,"^";
+          };
+        ],
         time_out NULL,
         describe NULL,
         add_to_scope oFuerza oMiTraje, !Ponemos la Fuerza siempre al alcance del jugador
@@ -4651,15 +4796,22 @@ has nosalidas;
 !
 [FaseOrvax4 ;
  move oTrajeTrooper to limbo;
+ !move oModuloControlO4 to player;
+ give oNosaurianaCeldaO4 conocido;
+ planeta=2;
  glk_request_timer_events(0);
- playerTo(AccesoNivInfO4,2);
+ playerTo(AlmacenBaseO4,2);
+ move oGuardiasAlmacenO4 to limbo;
 ];
 
 ! Objeto para que reaccione a <<Mirar <nombre localidad>>> en Orvax IV
 Object oLocGenericoO4 "lugar"
 with
-    name 'lugar' 'sitio' 'suelo' 'puerto' 'comercio' 'comercios' 'comerciante' 'comerciantes',
-    name_f 'mercancia' 'mercancias' 'calle' 'calles',    
+    name 'lugar' 'sitio' 'suelo' 'hangar' 'puerto' 'comercio' 'comerciante' 'vendedor' 
+         'comprador' 'pasillo' 'edificio',
+    name_mp 'hangares' 'comercios' 'comerciantes' 'vendedores' 'compradores',
+    name_f 'plaza' 'mercancia' 'calle' 'celda' 'base',  
+    name_fp 'mercancias' 'calles' 'celdas', 
     description [w;
         wn = 2;
         w=NextWord();
@@ -4711,6 +4863,26 @@ with
 	                   CalleO4_2: <<look>>;
 	                   default: "Desde aquí no puedes ver ninguna calle.";
                      }
+            'pasillo': switch (location) {
+	                     PasilloBaseO4: <<look>>;
+	                     CeldasBaseO4: "El pasillo queda al este de tu posición.";
+	                     Pasillo2BaseO4: <<look>>;
+	                     Pasillo3BaseO4: <<look>>;
+	                     default: "Desde aquí no puedes ver ningun pasillo.";
+                       }
+            'celda',
+            'celdas': switch (location) {
+	                   CeldasBaseO4: "Ambas celdas están absolutamente vacías.";
+	                   default: "Desde aquí no puedes ver ninguna celda.";
+                     }
+            'base': switch (location) {
+	                  EntradaBaseO4: <<look>>;
+	                  default: "Desde aquí no puedes ver ninguna base.";
+                    }
+            'edificio': switch (location) {
+	                      EntradaBaseO4: <<look>>;
+	                      default: "No hay ningún edificio que te llame particularmente la atención.";
+                        }
             default : "Desde aquí no puedes ver eso que dices.";
         };
     ],
@@ -4733,6 +4905,10 @@ with
                de provisiones o repuestos. La Uhumele, tu nave, está atracada en uno de los hangares del puerto.",
   in_to inUhumeleO4,
   s_to PlazaO4,
+  each_turn [;
+    !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+  ],
 ;
 
 Object -> oNavesO4 "naves"
@@ -4758,30 +4934,74 @@ Object -> oUhumeleO4 "Uhumele"
     ],
 has scenery female objetivo;
 
-Lugar inUhumeleO4 "Interior de la Uhumele"
+Lugar inUhumeleO4 "Puente de mando de la Uhumele"
 with 
   description "Te encuentras en el interior de la Uhumele. Aunque por fuera la nave está poco cuidada, el interior tiene 
-              muy buen aspecto, dando sensación de amplitud, calidez y limpieza.",
+              muy buen aspecto, dando sensación de amplitud, calidez y limpieza. Aquí, en el puente, se encuentran los
+              mandos y controles principales de la nave.",
   out_to PuertoO4,
 ;
 
-Object oModuloControlO4 "Módulo de control" limbo
+Object oCuadroO4 "cuadro de mandos" inUhumeleO4
+with
+    name 'cuadro' 'mandos' 'controles' 'panel' 'mando',
+    description "El cuadro de mandos de la Uhumele es increiblemente amplio y complejo, con cientos de indicadores. En un
+                lugar privilegiado del cuadro se encuentra el módulo de control, esencial para que funcionen todos los
+                sistemas de la nave.",
+has scenery supporter container transparent open;
+
+Object oIndicadoresO4 "indicadores" inUhumeleO4
+with
+    name 'indicadores' 'indicador' 'luz' 'luces',
+    adjectives 'luminosos' 'digitales' 'luminoso' 'digital',
+    description "El puente de mando de la nave está llena de diversos indicadores luminosos y digitales, para informar de 
+                 cualquier aspecto sobre el estado de la nave, del vuelo o del armamento. En un lugar privilegiado del 
+                 cuadro se encuentra el módulo de control, esencial para que funcionen todos los sistemas de la nave.",
+has pluralname scenery;
+
+Object oNaveO4 "nave" inUhumeleO4
+with
+    name 'nave' 'uhumele',
+    description [; <<look>>;],
+    before [;
+      examine: <<examine oCuadroO4>>;
+      SwitchOn,SwitchOff: if (oModuloControlO4 notin oCuadroO4) "Sin el módulo de control en su sitio, la Uhumele es un montón de chatarra inservible.";
+                          "El resto de la tripulación está realizando tareas de mantenimiento. No conviene encender o apagar la Uhumele."; 
+    ],
+has scenery switchable;
+
+Object oModuloControlO4 "Módulo de control" oCuadroO4
   with
-    name 'módulo' 'control',
+    name 'modulo' 'control',
     adjectives 'uhumele' 'control',
     description "El módulo de control de la Uhumele lleva en su interior un disco óptico necesario para poner en marcha la nave.", 
     before [;
       take,
       remove: if (self in oMesaO4) "Será mejor que no quites nada de la mesa.";
+              give self ~concealed;
+              Achieved(14);
       puton,
-      insert: if (second==oMesaO4) "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
-              créditos y dice: Está bien, juguemos.";
-      give: if (second==oJaxfSevalO4) "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
-              créditos y dice: Está bien, juguemos.";
-            else
-             "No puedes ir entregando el módulo de control de la Uhumele a cualquiera.";
+      insert: if (second==oMesaO4) {
+	            oJaxfSevalO4.jugando=1;
+	            move self to oMesaO4;
+	            print "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
+                créditos y dice: ",(s_underline)"~Está bien, juguemos.~";
+                rtrue;
+              }
+              if (second==oCuadroO4) {
+	            give self concealed;
+	            move self to oCuadroO4;
+	            "Pones el módulo de control en su lugar. La Uhumele vuelve a estar operativa.";
+              }
+      give: if (second==oJaxfSevalO4) {
+	          oJaxfSevalO4.jugando=1;
+	          move oModuloControlO4 to oJaxfSevalO4;
+	          "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
+              créditos y dice: ",(s_underline)"~Está bien, juguemos.~";
+            } else
+              "No puedes ir entregando el módulo de control de la Uhumele a cualquiera.";
     ],
-;
+has concealed;
 
 Lugar PlazaO4 "Plaza Principal de Orvax IV"
 with
@@ -4791,6 +5011,10 @@ with
   n_to PuertoO4,
   e_to CalleO4_1,
   w_to CalleO4_2,
+  each_turn [;
+    !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+  ],
 ;
 
 Object oMeettoO4 "Meetto" limbo
@@ -4807,53 +5031,58 @@ Object oMeettoO4 "Meetto" limbo
              if (self.soborno==0) {
 	           switch(tema) {
                  t_familiabomoO4,
-                 t_prisioneroO4: print "^Meetto: ", (s_underline) "~Si quieres mi ayuda tendrás que pagar por ella.~^";
-                 t_mesaO4: print "^Meetto: ", (s_underline) "~Mmmm... Esa información te costará dinero.~^";
-                 t_resaO4: print "^Meetto: ", (s_underline) "~Mmmm... Esa información te costará dinero.~^";
-                 t_guardiasO4: print "^Meetto: ", (s_underline) "~Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.~^";
-                 t_simismoO4: print "^Meetto: ", (s_underline) "~En estos tiempos oscuros el negocio no va bien, y tengo una familia
-                        a la que alimentar.~^";
-                 t_ayudaO4: print "^Meetto: ", (s_underline) "~Si quieres mi ayuda tendrás que pagar por ella.~^";
-                 t_meettoO4: print "^Meetto: ", (s_underline) "~En estos tiempos oscuros el negocio no va bien, y tengo una familia
-                        a la que alimentar.~^";
-                 t_esclavosO4: print "^Meetto: ", (s_underline) "~Mmmm... Esa información te costará dinero.~^";
-                 t_dineroO4: print "^Meetto: ",(s_underline) "~Cuanto más traigas mejor... Tengo una familia que alimentar y el negocio
-                        no va muy bien en estos tiempos oscuros.~"; 
+                 t_prisioneroO4: HablaPersonaje("Meetto","Si quieres mi ayuda tendrás que pagar por ella.");
+                 t_mesaO4: HablaPersonaje("Meetto","Mmmm... Esa información te costará dinero.");
+                 t_resaO4: HablaPersonaje("Meetto","Mmmm... Esa información te costará dinero.");
+                 t_guardiasO4: HablaPersonaje("Meetto","Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.");
+                 t_simismoO4: HablaPersonaje("Meetto","En estos tiempos oscuros el negocio no va bien, y tengo una familia
+                        a la que alimentar.");
+                 t_ayudaO4: HablaPersonaje("Meetto","Si quieres mi ayuda tendrás que pagar por ella.");
+                 t_meettoO4: HablaPersonaje("Meetto","En estos tiempos oscuros el negocio no va bien, y tengo una familia
+                        a la que alimentar.");
+                 t_esclavosO4: HablaPersonaje("Meetto","Mmmm... Esa información te costará dinero.");
+                 t_dineroO4: HablaPersonaje("Meetto","Cuanto más traigas mejor... Tengo una familia que alimentar y el negocio
+                        no va muy bien en estos tiempos oscuros."); 
                         move oJaxfSevalO4 to CantinaO4;
-                 t_repuestosO4: print "^Meetto: ",(s_underline) "~Tengo de todo lo que necesites... soy el único que vende repuestos
-                        en este planeta.~"; 
-                 t_sottaO4: print "^Meetto: ",(s_underline) "~Mmmm... Esa información te costará dinero.~"; 
-                 t_uhumeleO4: print "^Meetto: ",(s_underline) "~Sólo acepto créditos de la república contantes y sonantes.~"; 
+                 t_repuestosO4: HablaPersonaje("Meetto","Tengo de todo lo que necesites... soy el único que vende repuestos
+                        en este planeta."); 
+                 t_sottaO4: HablaPersonaje("Meetto","Mmmm... Esa información te costará dinero."); 
+                 t_uhumeleO4: HablaPersonaje("Meetto","Sólo acepto créditos de la república contantes y sonantes."); 
+                 t_saludoO4: HablaPersonaje("Meetto","Hooola extranjero... ¿En qué puedo ayudarte? ¿Necesitas repuestos para tu nave?
+                   Tengo de todo lo que necesites... soy el único que vende repuestos en este planeta.");
+                 t_despedidaO4: HablaPersonaje("Meetto","Vuelve cuando quieras, amigo");
                  default: switch (random(2)) {
-	                        1: print "^Meetto: ", (s_underline) "~Lo siento. Sólo vendo repuestos para naves. Tengo cualquier pieza que
-                                 necesites.~^";
-	                        2: print "^Meetto: ", (s_underline) "~Mmmm... Me podría meter en problemas si te doy esa información...
-	                             Tal vez si tuviera un incentivo... El negocio no va muy bien en estos tiempos oscuros.~^";
+	                        1: HablaPersonaje("Meetto","Lo siento. Sólo vendo repuestos para naves. Tengo cualquier pieza que
+                                 necesites.");
+	                        2: HablaPersonaje("Meetto","Mmmm... Me podría meter en problemas si te doy esa información...
+	                             Tal vez si tuviera un incentivo... El negocio no va muy bien en estos tiempos oscuros.");
                           }                              
                }
              } else {
 	           switch(tema) {
                  t_familiabomoO4, t_resaO4,t_mesaO4,
-                 t_prisioneroO4: print "^Meetto: ", (s_underline) "~He oido que recientemente se ha vendido una niña nosauriana. Sotta
-                        el Hutt es quien controla todo el mercado de esclavos en este planeta.~^";
-                 t_guardiasO4: print "^Meetto: ", (s_underline) "~Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.~^";
-                 t_simismoO4: print "^Meetto: ", (s_underline) "~En estos tiempos oscuros el negocio no va bien, y tengo una familia
-                        a la que alimentar.~^";
-                 t_ayudaO4: print "^Meetto: ", (s_underline) "~¿En qué puedo ayudarte?~^";
-                 t_meettoO4: print "^Meetto: ", (s_underline) "~En estos tiempos oscuros el negocio no va bien, y tengo una familia
-                        a la que alimentar.~^";
-                 t_esclavosO4: print "^Meetto: ", (s_underline) "~En este planeta, quien controla el mercado de esclavos es Sotta el Hutt.
-                        No se hace ninguna transacción sin su consentimiento.~^";
-                 t_dineroO4: print "^Meetto: ",(s_underline) "~Tengo suficiente.~"; 
-                 t_repuestosO4: print "^Meetto: ",(s_underline) "~No hace falta que disimules. Tú no has venido a por repuestos.~"; 
-                 t_sottaO4: print "^Meetto: ",(s_underline) "~Sotta el Hutt es un tipo peligroso. Controla todo el mercado de esclavos en
+                 t_prisioneroO4: HablaPersonaje("Meetto","He oido que recientemente se ha vendido una niña nosauriana. Sotta
+                        el Hutt es quien controla todo el mercado de esclavos en este planeta.");
+                 t_guardiasO4: HablaPersonaje("Meetto","Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.");
+                 t_simismoO4: HablaPersonaje("Meetto","En estos tiempos oscuros el negocio no va bien, y tengo una familia
+                        a la que alimentar.");
+                 t_ayudaO4: HablaPersonaje("Meetto","¿En qué puedo ayudarte?");
+                 t_meettoO4: HablaPersonaje("Meetto","En estos tiempos oscuros el negocio no va bien, y tengo una familia
+                        a la que alimentar.");
+                 t_esclavosO4: HablaPersonaje("Meetto","En este planeta, quien controla el mercado de esclavos es Sotta el Hutt.
+                        No se hace ninguna transacción sin su consentimiento."); 
+                 t_dineroO4: HablaPersonaje("Meetto","Tengo suficiente. ¿En qué puedo ayudarte?"); 
+                 t_repuestosO4: HablaPersonaje("Meetto","No hace falta que disimules. Tú no has venido a por repuestos."); 
+                 t_sottaO4: HablaPersonaje("Meetto","Sotta el Hutt es un tipo peligroso. Controla todo el mercado de esclavos en
                         este planeta. No se hace ninguna transacción sin su consentimiento. Lo puedes encontrar en su fortaleza, en la parte
-                        Este de la ciudad.~"; 
-                 t_uhumeleO4: print "^Meetto: ",(s_underline) "~No hace falta que vayas con rodeos. Tú no has venido a por repuestos para tu nave.~";
+                        Este de la ciudad."); Achieved(16);
+                 t_uhumeleO4: HablaPersonaje("Meetto","No hace falta que vayas con rodeos. Tú no has venido a por repuestos para tu nave.");
+                 t_saludoO4: HablaPersonaje("Meetto","Hooola extranjero... ¿En qué puedo ayudarte?");
+                 t_despedidaO4: HablaPersonaje("Meetto","Vuelve cuando quieras, amigo");
                  default: switch (random(2)) {
-	                        1: print "^Meetto: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
-	                        2: print "^Meetto: ", (s_underline) "~Mmmm... pensaba que estabas interesado en obtener información sobre los 
-	                             nosaurianos.~^"; 
+	                        1: HablaPersonaje("Meetto","Lo siento, no te puedo contestar a eso."); 
+	                        2: HablaPersonaje("Meetto","Mmmm... pensaba que estabas interesado en obtener información sobre los 
+	                             nosaurianos."); 
                           }
                }
              };
@@ -4893,13 +5122,21 @@ with
   description "Una calle bastante transitada, ya que por el lado oeste desemboca a la plaza principal. Por el lado este se 
               adentra en los suburbios de la ciudad. Una cantina ocupa un lugar preferencial en esta calle.",
   w_to PlazaO4,
+  e_to EntradaBaseO4,
   in_to CantinaO4,
   before [;
-    go: if (noun==e_obj) "Será mejor que te quedes por esta zona. Adentrarse en los suburbios no parece buena idea.";
+    go: if (noun==e_obj && task_done->16 == 0) !Si Meetto no ha dicho aún dónde está la base de Sotta.
+           "Será mejor que te quedes por esta zona. Adentrarse en los suburbios no parece buena idea.";
+        if (noun==in_obj && oJaxfSevalO4.jugando==-10) 
+           "No es una buena idea volver a entrar en la cantina después de haber matado a Jaxf Seval ahí dentro.";
+  ],
+  each_turn [;
+    !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
   ],
 ;
 
-Object -> oCantinaO4 "Cantina"
+Object oCantinaO4 "Cantina" CalleO4_1
   with
     name 'cantina' 'bar',
     description "La cantina ocupa un lugar privilegiado en la calle. Criaturas de todos los confines de la galaxia entran
@@ -4927,6 +5164,10 @@ with
   d_to AccesoNivInfO4,
   before [;
     go: if (noun==d_obj && oGuardiasO4 in self) "Los guardias bloquean el acceso al nivel inferior.";
+  ],
+  each_turn [;
+    !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
   ],
 ;
 
@@ -4985,6 +5226,7 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 	            if (self has muerto) {
 		            move self to limbo;
 		            give player ~descubierto;
+		            Achieved(11);
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Sin mediar palabra, los guardias se lanzan a por ti.";
@@ -4995,6 +5237,7 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 	            if (self has muerto) {
 		            move self to limbo;
 		            give player ~descubierto;
+		            Achieved(11);
 	            }
                 rtrue;
     ],
@@ -5013,6 +5256,7 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 	                   if (self has muerto) {
 		                 move self to limbo;
 		                 give player ~descubierto;
+		                 Achieved(11);
 	                   }
 	                   rtrue;
         Enganyar: print "Guardia: ",(s_underline) "~¿Acaso te crees un jedi intentando esos truquitos?~^"; rtrue;
@@ -5041,17 +5285,19 @@ Object oMezgrafO4 "Mezgraf" CalleO4_2
            };
 	       switch(tema) {
              t_familiabomoO4, t_mesaO4, t_resaO4,
-             t_prisioneroO4: print "^Mezgraf: ", (s_underline) "~Tienen prisioneros a los nosaurianos en el nivel inferior de la ciudad, 
-               esperando a ser vendidos.~";
+             t_prisioneroO4: HablaPersonaje("Mezgraf","Tienen prisioneros a los nosaurianos en el nivel inferior de la ciudad, 
+               esperando a ser vendidos.");
              t_palizaO4,
-             t_guardiasO4: print "^Mezgraf: ", (s_underline) "~Esos guardias me pillaron por sorpresa cuando investigaba dónde tienen a 
-               los nosaurianos.~";
-             t_simismoO4: print "^Mezgraf: ", (s_underline) "~Sobreviviré gracias a tí. Esos guardias me pillaron por sopresa cuando 
-               investigaba dónde tienen a los nosaurianos.~";
-             t_ayudaO4: print "^Mezgraf: ", (s_underline) "~Tienen prisioneros a los nosaurianos en el nivel inferior de la ciudad, 
-               esperando a ser vendidos.~";
-             t_misionO4: print "^Mezgraf: ", (s_underline) "~Averigüé dónde están los nosaurianos.~";
-             default: print "^Mezgraf: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~"; 
+             t_guardiasO4: HablaPersonaje("Mezgraf","Esos guardias me pillaron por sorpresa cuando investigaba dónde tienen a 
+               los nosaurianos.");
+             t_simismoO4: HablaPersonaje("Mezgraf","Sobreviviré gracias a tí. Esos guardias me pillaron por sopresa cuando 
+               investigaba dónde tienen a los nosaurianos.");
+             t_ayudaO4: HablaPersonaje("Mezgraf","Tienen prisioneros a los nosaurianos en el nivel inferior de la ciudad, 
+               esperando a ser vendidos.");
+             t_misionO4: HablaPersonaje("Mezgraf","Averigüé dónde están los nosaurianos.");
+             t_saludoO4: HablaPersonaje("Mezgraf","Hola Jennir. ¿En qué puedo ayudarte?"); 
+             t_despedidaO4: HablaPersonaje("Mezgraf","Me quedaré por aquí haciendo averiguaciones."); 
+             default: HablaPersonaje("Mezgraf","Lo siento, no te puedo contestar a eso."); 
            };
            rtrue;
     ],
@@ -5103,7 +5349,6 @@ with  describe
     default: "No conviene hacer eso.";
   ],
 ;
-
 
 Lugar NivelInfO4_1 "Nivel inferior de Orvax IV"
 with 
@@ -5319,20 +5564,24 @@ with
            tema=AveriguarTema(TemasOrvax4);
 	       switch(tema) {
              t_familiabomoO4,
-             t_prisioneroO4: print "^Mixa (agonizando): ", (s_underline) "~¡Esos malditos guardias se llevaron a Resa para venderla y mataron a Mesa 
-               cuando intentaba evitar que se la llevaran!~^"; 
+             t_prisioneroO4: HablaPersonaje("Mixa (agonizando)","¡Esos malditos guardias se llevaron a Resa para venderla y mataron a Mesa 
+               cuando intentaba evitar que se la llevaran!"); 
                self.hablado=1;
-             t_mesaO4: print "^Mixa (agonizando): ", (s_underline) "~Mesa está muerta... Vinieron a llevarse a Resa y se opuso a que se llevaran
-               a su hija... ¡los guardias la mataron aquí mismo!~^"; 
+             t_mesaO4: HablaPersonaje("Mixa (agonizando)","Mesa está muerta... Vinieron a llevarse a Resa y se opuso a que se llevaran
+               a su hija... ¡los guardias la mataron aquí mismo!"); 
                self.hablado=1;
-             t_resaO4: print "^Mixa (agonizando): ", (s_underline) "~Vinieron y se llevaron a Resa. Mesa hizo todo lo posible para que no se 
-               llevaran a su hija... ¡y los guardias la mataron!~^"; 
+             t_resaO4: HablaPersonaje("Mixa (agonizando)","Vinieron y se llevaron a Resa. Mesa hizo todo lo posible para que no se 
+               llevaran a su hija... ¡y los guardias la mataron!"); 
                self.hablado=1;
              t_palizaO4,
-             t_guardiasO4: print "^Mixa (agonizando): ", (s_underline) "~¡Esos malditos guardias mataron a Mesa y se llevaron a Resa!~^"; 
+             t_guardiasO4: HablaPersonaje("Mixa (agonizando)","¡Esos malditos guardias mataron a Mesa y se llevaron a Resa!"); 
                self.hablado=1;
-             t_simismoO4: print "^Mixa (agonizando): ", (s_underline) "~Ya no puedes ayudarme... busca a Resa y sálvala.~^";
-             t_ayudaO4: print "^Mixa (agonizando): ", (s_underline) "~Ya no puedes ayudarme... busca a Resa y sálvala.~^";
+             t_simismoO4: HablaPersonaje("Mixa (agonizando)","Ya no puedes ayudarme... busca a Resa y sálvala. ¡Mataron a Mesa!"); 
+               self.hablado=1;
+             t_ayudaO4: HablaPersonaje("Mixa (agonizando)","Ya no puedes ayudarme... busca a Resa y sálvala. ¡Mataron a Mesa!"); 
+               self.hablado=1;
+             t_saludoO4: HablaPersonaje("Mixa (agonizando)","General Jennir... ¡Esos malditos guardias se llevaron a Resa para venderla 
+               y mataron a Mesa cuando intentaba evitar que se la llevaran!"); 
              default: print "^Mixa tose, expulsando sangre por la boca, mientras dice algo ininteligible.^"; 
            };
            rtrue;
@@ -5370,6 +5619,7 @@ with
   name 'celdas' 'huecos',
   description [;
        give oNosaurianosCeldaO4 ~scenery;
+       Achieved(12);
        "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.
         Buscas un poco y localizas a los nosaurianos. Todos en la misma celda.";
   ],
@@ -5428,6 +5678,7 @@ with
 	          move oGuardiasNivInfO4_2 to NivelInfO4;
 	          move decorado_nivinfO4 to NivelInfO4;
 	          move oMixaAgonizanteO4 to NivelInfO4;
+	          Achieved(13);
 	          "Con el sable láser cortas fácilmente la reja de acero que retiene a los nosaurianos.^
 	          Los nosaurianos salen corriendo hacia el exterior, alejándose de las celdas y en busca de su libertad.";
             }
@@ -5440,6 +5691,7 @@ with
 	          move oGuardiasNivInfO4_2 to NivelInfO4;
 	          move decorado_nivinfO4 to NivelInfO4;
 	          move oMixaAgonizanteO4 to NivelInfO4;
+	          Achieved(13);
 	          "Con un movimiento de tu mano y una gran concentración, consigues arrancar la reja y apartarla.^
 	          Los nosaurianos salen corriendo hacia el exterior, huyendo de las celdas y buscando su libertad.";
             }
@@ -5480,17 +5732,21 @@ with
     ask: tema=AveriguarTema(TemasOrvax4);
 	       switch(tema) {
              t_familiabomoO4,
-             t_prisioneroO4: print "^Mixa: ", (s_underline) "~¡Esos malditos guardias se llevaron a Resa para venderla y mataron a Mesa 
-               cuando intentaba evitar que se la llevaran!~^";
-             t_mesaO4: print "^Mixa: ", (s_underline) "~Mesa está muerta... Vinieron a llevarse a Resa y se opuso a que se llevaran
-               a su hija... ¡los guardias la mataron aquí mismo!~^";
-             t_resaO4: print "^Mixa: ", (s_underline) "~Vinieron y se llevaron a Resa. Mesa hizo todo lo posible para que no se 
-               llevaran a su hija... ¡y los guardias la mataron!~^";
+             t_prisioneroO4: HablaPersonaje("Mixa","¡Esos malditos guardias se llevaron a Resa para venderla y mataron a Mesa 
+               cuando intentaba evitar que se la llevaran!");
+               give self conocido;
+             t_mesaO4: HablaPersonaje("Mixa","Mesa está muerta... Vinieron a llevarse a Resa y se opuso a que se llevaran
+               a su hija... ¡los guardias la mataron aquí mismo!");
+               give self conocido;
+             t_resaO4: HablaPersonaje("Mixa","Vinieron y se llevaron a Resa. Mesa hizo todo lo posible para que no se 
+               llevaran a su hija... ¡y los guardias la mataron!");
+               give self conocido;
              t_palizaO4,
-             t_guardiasO4: print "^Mixa: ", (s_underline) "~¡Esos malditos guardias mataron a Mesa y se llevaron a Resa!~^";
-             t_simismoO4: print "^Mixa: ", (s_underline) "~Tienes que sacarnos de aquí. ¡No queremos ser vendidos como esclavos!~^";
-             t_ayudaO4: print "^Mixa: ", (s_underline) "~¡No nos dejes en esta celda! ¡No queremos ser vendidos a nadie!~^";
-             default: print "^Mixa: ", (s_underline) "~¡General Jennir! ¡Sácanos de esta celda!.~^"; 
+             t_guardiasO4: HablaPersonaje("Mixa","¡Esos malditos guardias mataron a Mesa y se llevaron a Resa!");
+               give self conocido;
+             t_simismoO4: HablaPersonaje("Mixa","Tienes que sacarnos de aquí. ¡No queremos ser vendidos como esclavos! ¡Se llevaron a Resa!");
+             t_ayudaO4: HablaPersonaje("Mixa","¡No nos dejes en esta celda! ¡No queremos ser vendidos a nadie! ¡Se llevaron a Resa!");
+             default: HablaPersonaje("Mixa","¡General Jennir! ¡Sácanos de esta celda!."); 
            };
            rtrue;
   ],
@@ -5526,11 +5782,33 @@ with
     que hay en la cantina. Un murmullo constante de conversaciones en lenguas de diferentes orígenes se mezcla con la música de la banda que
     toca en un rincón del local, formada por cuatro músicos Bith.",
   out_to CalleO4_1,
+  before [;
+    JugarSin: <<Jugar oJaxfSevalO4>>;
+    go: if (oJaxfSevalO4.jugando ~=0 or 4) {
+	      HablaPersonaje("Jaxf Seval","¿A dónde crees que vas, chaval? No te muevas de aquí hasta que terminemos la partida.");
+	      rtrue;
+        }  
+        if (oJaxfSevalO4.jugando == 4) {
+	      HablaPersonaje("Sniffles","Dass, no creo que debamos marcharnos de aquí sin la nave... 
+	            el capitán se enfadará al enterarse de que la perdido hemos perdido apostando.");
+	      rtrue;
+        }
+  ],
 ;
 
 Object decorado_cantinaO4 CantinaO4
 class decorado
 with  describe
+       'cantina' "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar. El interior está más
+          oscuro de lo que te gustaría, con rincones prácticamente entre tinieblas. Seguramente, los parroquianos habituales del lugar no quieren
+          que se les vea claramente... Bien pensado, la penumbra interior, combinada con la entrada iluminada, permite a los de dentro ver a los
+          recién llegados antes que éstos a ellos. Un murmullo constante de conversaciones en lenguas de diferentes orígenes se mezcla con la
+          música de la banda que toca en un rincón del local, formada por cuatro músicos Bith." G_FEMENINO
+       'bar' "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar. El interior está más
+          oscuro de lo que te gustaría, con rincones prácticamente entre tinieblas. Seguramente, los parroquianos habituales del lugar no quieren
+          que se les vea claramente... Bien pensado, la penumbra interior, combinada con la entrada iluminada, permite a los de dentro ver a los
+          recién llegados antes que éstos a ellos. Un murmullo constante de conversaciones en lenguas de diferentes orígenes se mezcla con la 
+          música de la banda que toca en un rincón del local, formada por cuatro músicos Bith." 0
        'piloto' "Pilotos de todos los rincones de la galaxia esperando alquilar su nave para algún transporte." 0
        'pilotos' "Pilotos de todos los rincones de la galaxia esperando alquilar su nave para algún transporte." G_PLURAL
        'contrabandista' "Las cantinas son el lugar perfecto para sus negocios ocultos." 0
@@ -5591,8 +5869,8 @@ Object oSnifflesO4 "Sniffles" CantinaO4
     life [tema;
 	    Attack: "Vuelven a invadirte los impulsos de atacar a un ser amigo... Por esta vez consigues reprimirlos, pero cada vez te cuesta más...^";
         tell,answer,
-        ask: if (oGuardiasNivInfO4_2 hasnt muerto) {
-	           print "^Sniffles: ", (s_underline) "~Lo siento Jennir, todavía no he averiguado nada útil. Déjame algo más de tiempo.~^";
+        ask: if (oNosaurianaCeldaO4 hasnt conocido && oMixaAgonizanteO4.hablado==0) {
+	           HablaPersonaje("Sniffles","Lo siento Jennir, todavía no he averiguado nada útil. Déjame algo más de tiempo.");
 	           rtrue;
 	         }
            if (self.vida==0) {
@@ -5602,66 +5880,70 @@ Object oSnifflesO4 "Sniffles" CantinaO4
            if (oMeettoO4 in limbo) {
 	       switch(tema) {
              t_familiabomoO4,
-             t_prisioneroO4: print "^Sniffles: ", (s_underline) "~Averigüé que Meetto, un mercader toydoriano, puede tener información 
-                     sobre quién vendió a la hija de Bomo.~^";
+             t_prisioneroO4: HablaPersonaje("Sniffles","Averigüé que Meetto, un mercader toydoriano, puede tener información 
+                     sobre quién vendió a la hija de Bomo.");
                      move oMeettoO4 to PlazaO4;
-             t_mesaO4: print "^Sniffles: ", (s_underline) "~Pobre Bomo... Se va a hundir cuando sepa que han matado a su mujer.~^";
-             t_resaO4: print "^Sniffles: ", (s_underline) "~Preguntando a unos y a otros he averiguado que Meetto, un comerciante 
-                     toydariano, puede proporcionarnos información sobre la hija de Bomo.~^";
+             t_mesaO4: HablaPersonaje("Sniffles","Pobre Bomo... Se va a hundir cuando sepa que han matado a su mujer.");
+             t_resaO4: HablaPersonaje("Sniffles","Preguntando a unos y a otros he averiguado que Meetto, un comerciante 
+                     toydariano, puede proporcionarnos información sobre la hija de Bomo.");
                      move oMeettoO4 to PlazaO4;
-             t_guardiasO4: print "^Sniffles: ", (s_underline) "~Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.~^";
-             t_simismoO4: print "^Sniffles: ", (s_underline) "~Estoy preguntando a unos y a otros a ver si averiguo algo.~^";
-             t_ayudaO4: print "^Sniffles: ", (s_underline) "~Meetto, un mercader toydariano, puede tener información sobre quién 
-                        vendió a la hija de Bomo.~^";
+             t_guardiasO4: HablaPersonaje("Sniffles","Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.");
+             t_simismoO4: HablaPersonaje("Sniffles","Estoy preguntando a unos y a otros a ver si averiguo algo.");
+             t_ayudaO4: HablaPersonaje("Sniffles","Meetto, un mercader toydariano, puede tener información sobre quién 
+                        vendió a la hija de Bomo.");
                         move oMeettoO4 to PlazaO4;
-             t_meettoO4: print "^Sniffles: ", (s_underline) "~Meetto es un mercader toydariano que suele estar en la plaza. He averiguado
-                         que puede tener información sobre quién vendió a la hija de Bomo.~^";
+             t_meettoO4: HablaPersonaje("Sniffles","Meetto es un mercader toydariano que suele estar en la plaza. He averiguado
+                         que puede tener información sobre quién vendió a la hija de Bomo.");
                      move oMeettoO4 to PlazaO4;
-             t_misionO4: print "^Sniffles: ", (s_underline) "~Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
-                        vendió a la hija de Bomo.~^";
+             t_misionO4: HablaPersonaje("Sniffles","Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
+                        vendió a la hija de Bomo.");
                      move oMeettoO4 to PlazaO4;
-             t_dineroO4: print "^Sniffles: ",(s_underline) "~Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
-                         partidas al Dejarik.~"; 
+             t_dineroO4: HablaPersonaje("Sniffles","Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
+                         partidas al Dejarik."); 
                          move oJaxfSevalO4 to CantinaO4;
-             t_dejarikO4: print "^Sniffles: ",(s_underline) "~¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
-                         estoy aquí. A mi me desplumaría enseguida.~"; 
+             t_dejarikO4: HablaPersonaje("Sniffles","¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
+                         estoy aquí. A mi me desplumaría enseguida."); 
                          move oJaxfSevalO4 to CantinaO4;
-             t_apuestasO4: print "^Sniffles: ",(s_underline) "~Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
-                         advierto que no ha perdido ninguna partida desde que estoy aquí.~"; 
+             t_apuestasO4: HablaPersonaje("Sniffles","Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
+                         advierto que no ha perdido ninguna partida desde que estoy aquí."); 
                          move oJaxfSevalO4 to CantinaO4;
-             default: print "^Sniffles: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
+             t_saludoO4: HablaPersonaje("Sniffles","Hola Jennir. ¿En qué puedo ayudarte?"); 
+             t_despedidaO4: HablaPersonaje("Sniffles","Me quedaré por aquí haciendo averiguaciones."); 
+             default: HablaPersonaje("Sniffles","Lo siento, no te puedo contestar a eso."); 
            };
            } else {
 		       switch(tema) {
 	             t_familiabomoO4,
-	             t_prisioneroO4: print "^Sniffles: ", (s_underline) "~Averigüé que Meetto, un mercader toydoriano, puede tener información 
-	                     sobre quién vendió a la hija de Bomo.~^";
+	             t_prisioneroO4: HablaPersonaje("Sniffles","Averigüé que Meetto, un mercader toydoriano, puede tener información 
+	                     sobre quién vendió a la hija de Bomo.");
 	                     move oMeettoO4 to PlazaO4;
-	             t_mesaO4: print "^Sniffles: ", (s_underline) "~Pobre Bomo... Se va a hundir cuando sepa que han matado a su mujer.~^";
-	             t_resaO4: print "^Sniffles: ", (s_underline) "~Preguntando a unos y a otros he averigüado que Meetto, un comerciante 
-	                     toydariano, puede proporcionarnos información sobre la hija de Bomo.~^";
+	             t_mesaO4: HablaPersonaje("Sniffles","Pobre Bomo... Se va a hundir cuando sepa que han matado a su mujer.");
+	             t_resaO4: HablaPersonaje("Sniffles","Preguntando a unos y a otros he averigüado que Meetto, un comerciante 
+	                     toydariano, puede proporcionarnos información sobre la hija de Bomo.");
 	                     move oMeettoO4 to PlazaO4;
-	             t_guardiasO4: print "^Sniffles: ", (s_underline) "~Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.~^";
-	             t_simismoO4: print "^Sniffles: ", (s_underline) "~Estoy preguntando a unos y a otros a ver si averiguo algo.~^";
-	             t_ayudaO4: print "^Sniffles: ", (s_underline) "~Meetto, un mercader toydariano, puede tener información sobre quién 
-	                        vendió a la hija de Bomo.~^";
+	             t_guardiasO4: HablaPersonaje("Sniffles","Hay patrullas por toda la ciudad. Parece que los ánimos están caldeados.");
+	             t_simismoO4: HablaPersonaje("Sniffles","Estoy preguntando a unos y a otros a ver si averiguo algo.");
+	             t_ayudaO4: HablaPersonaje("Sniffles","Meetto, un mercader toydariano, puede tener información sobre quién 
+	                        vendió a la hija de Bomo.");
 	                        move oMeettoO4 to PlazaO4;
-	             t_meettoO4: print "^Sniffles: ", (s_underline) "~Meetto es un mercader toydariano que suele estar en la plaza. He averiguado
-	                         que puede tener información sobre quién vendió a la hija de Bomo.~^";
+	             t_meettoO4: HablaPersonaje("Sniffles","Meetto es un mercader toydariano que suele estar en la plaza. He averiguado
+	                         que puede tener información sobre quién vendió a la hija de Bomo.");
 	                     move oMeettoO4 to PlazaO4;
-	             t_misionO4: print "^Sniffles: ", (s_underline) "~Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
-	                        vendió a la hija de Bomo.~^";
+	             t_misionO4: HablaPersonaje("Sniffles","Averigüé que Meetto, un mercader toydariano, puede tener información sobre quién 
+	                        vendió a la hija de Bomo.");
 	                     move oMeettoO4 to PlazaO4;
-                 t_dineroO4: print "^Sniffles: ",(s_underline) "~Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
-                             partidas al Dejarik.~"; 
+                 t_dineroO4: HablaPersonaje("Sniffles","Sé como conseguir algo de dinero. Ese humano de ahí al fondo admite apuestas en
+                             partidas al Dejarik."); 
                          move oJaxfSevalO4 to CantinaO4;
-                 t_dejarikO4: print "^Sniffles: ",(s_underline) "~¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
-                         estoy aquí. A mi me desplumaría enseguida.~"; 
+                 t_dejarikO4: HablaPersonaje("Sniffles","¿No sabes jugar? Ese tío es muy bueno. No ha perdido ninguna partida desde que
+                         estoy aquí. A mi me desplumaría enseguida."); 
                          move oJaxfSevalO4 to CantinaO4;
-                 t_apuestasO4: print "^Sniffles: ",(s_underline) "~Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
-                         advierto que no ha perdido ninguna partida desde que estoy aquí.~"; 
+                 t_apuestasO4: HablaPersonaje("Sniffles","Puedes apostar jugando al Dejarik contra ese humano de ahí al fondo. Pero te
+                         advierto que no ha perdido ninguna partida desde que estoy aquí."); 
                          move oJaxfSevalO4 to CantinaO4;
-	             default: print "^Sniffles: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~^"; 
+                 t_saludoO4: HablaPersonaje("Sniffles","Hola Jennir. ¿En qué puedo ayudarte?"); 
+                 t_despedidaO4: HablaPersonaje("Sniffles","Me quedaré por aquí haciendo averiguaciones."); 
+	             default: HablaPersonaje("Sniffles","Lo siento, no te puedo contestar a eso."); 
 	           };
            }
              rtrue;
@@ -5698,19 +5980,56 @@ with  describe
   ],
 ;
 
-Object oJaxfSevalO4 "Jaxfr Seval" limbo
+Object oJaxfSevalO4 "Jaxf Seval" limbo
   with
     name 'jaxf' 'seval' 'humano' 'jugador' 'apostante',
-    description "En un rincón poco iluminado de la cantina, un humano de mediana edad, pelo negro y de complexión fuerte se encuentra
+    description [;
+       if (self.jugando==1 or 2 or 3) "Sentado frente a ti, Jaxf Seval está concentrado en la partida de Dejarik, 
+          mirando fijamente al tablero y pensando en su próximo movimento.";
+       if (self.jugando==4) {
+	      print "Sentado en su rincón, Jaxf Seval fanfarronea y se vanagloria estruendosamente 
+          delante de todos tras haberte ganado al Dejarik. ";
+          switch (random(5)) {
+	          1: print "Las burlas de Jaxf Seval comienzan a afectarte.^";
+	          2: print "Empiezas a pensar que se merece una seria lección.^";
+	          3: print "Te sorprendes al darte cuenta de que tu mano descansa en la empuñadura de tu sable láser.^";
+	          4: print "La mano sobre tu hombro de Sniffles aborta unos crueles pensamientos para callarle la boca a Jaxf Seval.^";
+	          5: print "Su actitud empieza a molestarte un poco.^";
+          }
+          rtrue;
+       }
+       "En un rincón poco iluminado de la cantina, un humano de mediana edad, pelo negro y de complexión fuerte se encuentra
        sentado frente a una mesa ocupada por un tablero de Dejarik y algunos vasos. No tiene pinta de ser alguien del que uno podría
-       fiarse, pero... ¿acaso alguno de todos los seres que hay en la cantina es de fiar?", 
+       fiarse, pero... ¿acaso alguno de todos los seres que hay en la cantina es de fiar?";
+    ], 
     bonif_defensiva 15,
     bonif_ofensiva 15,
     vida 50,
     dado_golpe 1 6 0, !1d6+0
-    jugando 0, !0:No se ha iniciado partida 1:Turno 1 2:Turno 2 3:Turno3 4:Otra partida
+    jugando 0, !0:No se ha iniciado partida 1:Turno 1 2:Turno 2 3:Turno 3 4:Otra partida
+    dejacolor "rojo" "verde" "azul",
+    dejavalor 4 7 12,
+    dejacolorDass "rojo" "verde" "azul",
+    dejavalorDass 6 3 10,
+    puntos 0,
+    puntosDass 0,
     life [tema;
-	    Attack: "Deberías pasar inadvertido en estos tiempos oscuros... Lo que menos te conviene ahora mismo es montar un jaleo.^";
+	    Attack: if (oJaxfSevalO4.jugando == 4) {
+		          move oModuloControlO4 to player;
+		          move oCreditosO4 to player;
+		          move self to limbo;
+		          self.jugando = -10;
+		          print "Aunque lo intentas con todas tus fuerzas, la actitud fanfarrona de Jaxf Seval burlándose de ti tras haberte derrotado
+		          en la partida al Dejarik puede con tu autocontrol. Sin ni siquiera darte cuenta, sacas el sable láser y con un rápido
+		          movimiento le rebanas la cabeza. Ten sientes extrañamente bien, aunque sabes que ha sido debido al odio, y eso no 
+		          te puede traer nada bueno.^
+		          Recuperas la serenidad cuando Sniffles te grita que debéis salir de allí inmediatamente. Coges el módulo de control
+		          y el dinero de Jaxf Seval y salís corriendo al exterior de la cantina.^";
+		          EsperarTecla("^[Pulsa una tecla...]^");
+		          playerTo(CalleO4_1,2);
+		          rtrue;
+                }
+                "Deberías pasar inadvertido en estos tiempos oscuros... Lo que menos te conviene ahora mismo es montar un jaleo.^";
         tell,answer,
         ask: if (self.vida==0) {
 	           "Jaxf Seval yace inconsciente en el suelo. Dificilmente responderá a tus preguntas.^";
@@ -5718,26 +6037,34 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
              tema=AveriguarTema(TemasOrvax4);
              if (self.jugando==0) {
 	           switch(tema) {
-                 t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-                 t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-                 t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.~"; 
-                 t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Quieres apostar tu nave? Tráeme el módulo de control y jugaré contigo.~"; 
-                 default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
-                          en la mesa y juguemos.~^";
+                 t_dineroO4: HablaPersonaje("Jaxf Seval","Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos."); 
+                 t_dejarikO4: HablaPersonaje("Jaxf Seval","¿Quieres jugar contra mi? Pon tu dinero en la mesa y juguemos."); 
+                 t_apuestasO4: HablaPersonaje("Jaxf Seval","¿Crees que me puedes ganar, chaval? Pon tu dinero en la mesa y juguemos."); 
+                 t_uhumeleO4: HablaPersonaje("Jaxf Seval","¿Quieres apostar tu nave? Tráeme el módulo de control y jugaré contigo."); 
+                 t_despedidaO4: HablaPersonaje("Jaxf Seval","Vuelve cuando tengas algo con lo que apostar, chaval."); 
+                 default: switch(random(3)) {
+	                        1: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
+                               en la mesa y juguemos. También acepto cualquier tipo de mercancía como apuesta, si no tienes créditos en efectivo.");
+	                        2: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
+                               en la mesa y demuéstralo. También acepto apuestas con vehículos, si no tienes créditos en efectivo.");
+	                        3: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
+                               en la mesa y demuéstralo. También puedes traer algún objeto para que lo valore.");
+                          }
                }
              } else {
 	             if (self.jugando==4) {
 	               switch(tema) {
-                     t_dineroO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
-                     t_dejarikO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
-                     t_apuestasO4: print "^Jaxf Seval: ",(s_underline) "~¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.~"; 
-                     t_uhumeleO4: print "^Jaxf Seval: ",(s_underline) "~¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
-                                  una nave como esa! ¡Nunca la recuperarás! ¡Jajajaja!~"; 
-                     default: print "^Jaxf Seval: ", (s_underline) "~No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
-                              en la mesa y juguemos otra partida.~^";
+                     t_dineroO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
+                     t_dejarikO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
+                     t_apuestasO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
+                     t_uhumeleO4: HablaPersonaje("Jaxf Seval","¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
+                                  una nave como esa! ¡Nunca la recuperarás! ¡Jajajaja!"); 
+                     t_despedidaO4: HablaPersonaje("Jaxf Seval","¡JA, JA, JA! Vuelve cuando quieras, chaval. ¡Me encantará desplumarte otra vez!"); 
+                     default: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
+                              en la mesa y juguemos otra partida.");
                    }
 	             } else {
-                     print "^Jaxf Seval: ", (s_underline) "~¡Cállate! ¡Estamos jugando!.~^";
+                     HablaPersonaje("Jaxf Seval","¡Cállate! ¡Estamos jugando!");
 	             }
              };
              rtrue;
@@ -5752,14 +6079,57 @@ Object oJaxfSevalO4 "Jaxfr Seval" limbo
 	  Push, Aturdir: "Ahora mismo no te conviene montar ningún jaleo.^";
       Enganyar: "La persuasión mediante la Fuerza sólo funciona con seres de mente débil.^";
       Sentir, 
-      Concentrar: "La Fuerza habita en el interior de todos los seres vivos.^";
+      Concentrar: switch(self.jugando) {
+	                1: print "Jaxf Seval está pensando en jugar una ficha con valor ",(string)self.&dejacolor-->0,"/",self.&dejavalor-->0,"^"; rtrue;
+	                2: print "Jaxf Seval está pensando en jugar una ficha con valor ",(string)self.&dejacolor-->1,"/",self.&dejavalor-->1,"^"; rtrue;
+	                3: print "Jaxf Seval está pensando en jugar una ficha con valor ",(string)self.&dejacolor-->2,"/",self.&dejavalor-->2,"^"; rtrue;
+	                4: "Jaxf Seval se jacta de haberte ganado al dejarik.^";
+	                default: "La Fuerza habita en el interior de todos los seres vivos.^";
+                  }
+      Jugar: switch(self.jugando) {
+	           0: HablaPersonaje("Jaxf Seval","Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos."); rtrue;
+	           1: JugarDejarik(1); rtrue;
+	           2: JugarDejarik(2); rtrue;
+	           3: JugarDejarik(3); 
+	              if (self.puntos>self.puntosDass) {
+		            HablaPersonaje("Jaxf Seval","¡JA, JA, JA! ¡Te he ganado, chaval! ¡Y ahora tu nave es mia! ¡JA, JA, JA!");
+	                "^Jaxf se jacta de haberte derrotado al dejarik con estruendosas carcajadas.";
+                  }
+	              if (self.puntos<self.puntosDass) {
+		            move oModuloControlO4 to player;
+		            move oCreditosO4 to player;
+		            move oJaxfSevalO4 to limbo;
+		            HablaPersonaje("Jaxf Seval","¡Maldito seas! ¡Me ha ganado este turista de mierda! ¡Toma tu puto dinero y
+	                      el puto módulo de tu maldita nave!");
+	                Achieved(15);
+	                "^Tras esto, Jaxf Seval se marcha de la cantina diciendo toda una serie de improperios. No le ha sentado bien la derrota.";
+                  }
+	              rtrue;
+	           4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida.");rtrue;
+             }
     ],
 has animate proper objetivo transparent;
 
-Object oMesaO4 "Mesa" CantinaO4
+Object oCreditosO4 "creditos" oJaxfSevalO4
+  with
+    name 'dinero' 'creditos' 'tarjeta',
+    description "Una tarjeta llena de 100.000 créditos de la república. Todavía son de curso legal en Orvax IV.", 
+    before [;
+      give: if (second==oMeettoO4) {
+	          oMeettoO4.soborno=1;
+	          move self to oMeettoO4;
+	          print "^Meetto: ", (s_underline) "~Mmmm... créditos de la república... es suficiente para alimentar a mi familia.
+	                Ahora, ¿qué es lo que quieres saber?~^";
+	          rtrue;
+            } else
+              "Mejor te los guardas para una mejor ocasión.";
+    ],
+has pluralname;
+
+Object oMesaO4 "mesa" CantinaO4
   with
     name 'mesa',
-    adjectives 'madera' 'jugador' 'tablero' 'jaxf' 'seval',
+    adjectives 'madera',
     description "Una mesa de madera como cualquier otra de las que hay en la cantina.", 
     before [;
       Sanar: "La sanación mediante la Fuerza sólo funciona con seres vivos.";
@@ -5772,7 +6142,8 @@ Object oMesaO4 "Mesa" CantinaO4
 	  receive: rtrue;
 	  letgo: "Será mejor que no robes nada de la mesa.";
     ],
-has scenery supporter;
+has scenery supporter female;
+
 
 Object decorado_JaxfSevalO4 oMesaO4
 class decorado
@@ -5781,6 +6152,7 @@ with  describe
        'dejarik' "Sobre el tablero descansan las fichas de Dejarik." 0
        'vaso' "Hay varios vasos sobre la mesa, lo que indica que Jaxf Seval lleva un buen rato en la cantina." 0
        'vasos' "Hay varios vasos sobre la mesa, lo que indica que Jaxf Seval lleva un buen rato en la cantina." G_PLURAL
+       'ficha' "Las fichas del Dejarik son holográficas y tienen la forma de diferentes criaturas. Descansan sobre el tablero." G_FEMENINO
        'fichas' "Las fichas del Dejarik son holográficas y tienen la forma de diferentes criaturas. Descansan sobre el tablero." G_FEMENINO+G_PLURAL,
   before[;
     examine: rfalse;
@@ -5788,7 +6160,1325 @@ with  describe
   ],
 ;
 
+Lugar EntradaBaseO4 "Entrada a la base de Sotta el Hutt"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "La base del cacique Sotta el Hutt parece más un búnker que una vivienda, perfectamente segura. Los muros
+              de cemento y piedra conforman varias torres cilíndricas que se elevan sobre el resto del complejo. La 
+              entrada al complejo consiste en una puerta acorazada en la planta inferior de un edificio de dos alturas",
+  describe [;
+    self.Lugar::describe();
+    if (oGuardiasPuertaO4 in self) {
+	  switch(oGuardiasPuertaO4.multiple){
+	    1: print "^Un guardia gamorreano fuertemente armado protege la entrada al complejo.^";
+	    2: print "^Dos guardias gamorreanos fuertemente armados protegen la entrada al complejo.^";
+      }
+    };
+    rtrue;
+  ],
+  w_to CalleO4_1,
+  in_to PuertaAcorazadaO4,
+;
 
+Object decorado_EntradaBaseO4 EntradaBaseO4
+class decorado
+with  describe
+       'muro' "Los muros que conforman la base de Sotta el Hutt no parecen tener ninguna conexión con el exterior,
+               excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." 0
+       'muros' "Los muros que conforman la base de Sotta el Hutt no parecen tener ninguna conexión con el exterior,
+               excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." G_PLURAL
+       'torre' "Las torres de cemento y piedra se elevan sobre el resto del complejo. Ninguna, excepto una en la
+               que se puede ver un balcón en el segundo piso, parece tener ningún tipo de conexión con el exterior." G_FEMENINO
+       'torres' "Las torres de cemento y piedra se elevan sobre el resto del complejo. Ninguna, excepto una en la
+               que se puede ver un balcón en el segundo piso, parece tener ningún tipo de conexión con el exterior." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: "No conviene hacer eso.";
+  ],
+;
+
+Object oVentanaBaseO4 "ventana" EntradaBaseO4
+  with
+    name 'ventana' 'ventanal' 'cristal' 'balcon',
+    description "Unas grandes puertas de cristal dan a un balcón en el segundo piso de una de las torres, 
+                seguramente desde el que Sotta se dirige al público que le escucha en la calle.",
+    before [;
+      examine: rfalse;
+      climb: if (oGuardiasPuertaO4 in EntradaBaseO4) "Después de estudiar la posibilidad de trepar 
+                hasta la ventana, descartas la idea, ya que sería muy lento y te convertiría en un
+                blanco fácil para los guardias que protegen el complejo.";
+             print "Trepas por los muros de la base y, ya sin la amenaza de los guardias, alcanzas fácilmente 
+             el balcón del segundo piso, lo que te da acceso al interior del complejo.^";
+             playerTo(SottaBaseO4,2);
+             rtrue;
+      enter, jumpover: if (oGuardiasPuertaO4 in EntradaBaseO4) {
+                         print "Saltar hasta el balcón que da a la ventana es sin duda la mejor manera
+                             de entrar en la base de Sotta el Hutt, además de la más silenciosa. Utilizas
+                             tus poderes jedi para alcanzar de un gran salto la ventana del
+                             segundo piso, lo que te da acceso al interior del complejo.^";
+                       } else {
+                         print "Saltar hasta el balcón que da a la ventana es sin duda la mejor manera
+                             de entrar en la base de Sotta el Hutt, además de la más silenciosa. Desde
+                             un lugar apartado de la mirada de los guardias que custodian la puerta, 
+                             utilizas tus poderes jedi para alcanzar de un gran salto la ventana del
+                             segundo piso, lo que te da acceso al interior del complejo.^";
+                       }
+                       playerTo(SottaBaseO4,2);
+                       rtrue;
+      default: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias que protegen la base te lo impedirían.";
+               "El balcón está demasiado alto para alcanzarlo.";
+    ],
+has scenery female;
+
+Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
+  with description "La puerta que da acceso al interior de la base de Sotta el Hutt es de acero reforzado y, aparentemente,
+                   de un grosor importante. A un lado de la puerta se encuentra el mecanismo que la controla.",
+       name 'puerta' 'acorazada' 'porton',
+       adjectives 'acero' 'entrada',
+       when_closed "La puerta está cerrada, lo que impide el acceso al interior del complejo.",
+       when_open "La entrada al interior del complejo está despejada.",
+       door_to PasilloBaseO4,
+       door_dir in_to,
+       !with_key stone_key
+       before [;
+         attack: <<open self oSableLaser>>;
+         receive: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+                  "No parece que vaya a servir para nada.";
+         open,
+         unlock: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+                 if (self hasnt lockable && self hasnt openable)
+                   "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
+                 if (second==oSableLaser) {
+	               give self ~lockable;
+	               give self ~locked;
+	               give self ~openable;
+	               give self open;
+	               Achieved(17);
+	               "Empuñas tu sable láser y lo clavas en la puerta del complejo. Lentamente, el acero de la puerta
+	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
+	               círculo por el que poder entrar a la base.";
+                 }
+                 "Tus intentos por abrir la puerta resultan estériles.";
+         close,
+         lock: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+               if (self hasnt lockable && self hasnt openable)
+                   "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
+       ],
+has static door openable lockable locked female container objetivo;
+
+Object MecanismoPuertaO4 "mecanismo de control" EntradaBaseO4
+with
+  name 'mecanismo' 'control',
+  name_f 'ranura',
+  description "A un lado de la puerta se encuentra el mecanismo que la controla, que consiste en una ranura para introducir
+              la llave electrónica correspondiente.",
+  before [;
+      receive: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+               "No parece que vaya a servir para nada.";
+  ],
+has scenery container;
+
+Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
+  with
+    name 'guardia' 'guardias',
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
+    description [;
+      switch(self.multiple){
+	      1: "Un guardia defiende el acceso a la base de Sotta el Hutt. Es un Gamorreano, una bestia corpulenta con aspecto porcino 
+	          de aproximadamente 1-75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
+	          surjen unos prominentes colmillos inferiores.";
+	      2: "Dos guardias defienden el acceso a la base de Sotta el Hutt. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
+	          de aproximadamente 1-75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          surjen unos prominentes colmillos inferiores.";
+      }
+      rtrue;
+    ],
+    bonif_defensiva 15,
+    bonif_ofensiva 15,
+    vida 25,
+    topvida 25,
+    dado_golpe 2 6 2, !1d6+0
+    multiple 2,
+    !name_boss "el capitán",
+    name_tropa "un guardia",
+    printname [nom;
+      nom="";
+      if (self.multiple>1) nom= self.name_tropa;
+      else {
+	      if (self provides name_boss ) nom=self.name_boss;
+	      else nom=self.name_tropa;
+      } 
+      return nom;
+    ],
+    printcasename [nom;
+      nom="";
+      if (self.multiple>1) nom= Cap(self.name_tropa);
+      else {
+	      if (self provides name_boss) nom=Cap(self.name_boss);
+          else nom=Cap(self.name_tropa);
+      }
+      return nom;
+    ],
+    almorir [new_cadaver;
+      new_cadaver = CadaverGamorreano.create(2);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
+    life [i;
+	    Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
+	            if (second==oGranadaEnergia) {
+		          move oGranadaEnergia to limbo;
+	              !Se crean los cadáveres
+	              for (i=0:i<2:i++) {
+		              self.almorir(2);
+	              }
+	              move self to limbo;
+		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
+		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión.";
+	            }
+	            give self estatico;
+	            move player to parent(self);
+	            if (second == nothing) 
+	              multi_combate(player,self,oSableLaser);
+	            else
+	              multi_combate(player,self,second);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	            }
+                rtrue;
+	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, ambos guardias se lanzan a por ti.^";
+	            give self estatico;
+	            move player to parent(self);
+	            multi_combate(player,self,oSableLaser);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+                }
+                rtrue;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
+        Levitar: "Son demasiado pesados para levitarlos.^";
+	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                   give self estatico;
+	                   move player to parent(self);
+                       multi_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 move self to limbo;
+		                 give player ~descubierto;
+		                 if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		                     && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                   }
+	                   rtrue;
+        Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
+    ],
+has pluralname animate scenery;
+
+Lugar PasilloBaseO4 "Pasillo"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Un largo pasillo, perfectamente iluminado, se adentra hacia el interior de la base.",
+  out_to EntradaBaseO4,
+  e_to ComedorBaseO4,
+  w_to CeldasBaseO4,
+  s_to Pasillo2BaseO4,
+  before [;
+    go: if (noun==e_obj) {
+	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.^";
+	      playerTo(ComedorBaseO4,2);
+	      rtrue;
+        }
+  ],
+;
+
+Object decorado_PasilloBaseO4 PasilloBaseO4
+class decorado
+with  describe
+       'foco' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." 0
+       'focos' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_PLURAL
+       'luz' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO
+       'luces' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object PuertaComedorO4 "puerta" PasilloBaseO4
+  with description "Es una puerta automática como las que se pueden encontrar en el interior de muchos recintos, especialmente los militares.",
+       name 'puerta',
+       when_closed "Una puerta cerrada impide el acceso al este.",
+       door_to ComedorBaseO4,
+       door_dir e_to,
+       before [;
+         attack: <<open self>>;
+         open,
+         unlock: give self open;
+                 give self scenery;
+                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
+         close,
+         lock: give self ~open;
+               give self ~scenery;
+               "La puerta se cierra automáticamente cuando te alejas de ella.";
+       ],
+has static door openable female objetivo;
+
+Lugar CeldasBaseO4 "Celdas"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Sendos campos de fuerza de color rojo cierran lo que parecen ser dos celdas vacías.",
+  e_to PasilloBaseO4,
+;
+
+Object CamposFuerzaBaseO4 CeldasBaseO4
+with  
+  name 'campo' 'campos' 'fuerza' 'fuerzas',
+  description "Los rojizos campos de fuerza hacen de rejas para cada una de las celdas. Abrasarían a cualquiera con solo tocarlos.",
+  before[;
+    examine: rfalse;
+    touch: "Ni siquiera un jedi como tú se atrevería a tocar un campo de fuerza.";
+    default: print "No conviene hacer eso."; rtrue;
+  ],
+has scenery concealed;
+
+Lugar ComedorBaseO4 "Comedor"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "A tenor del número de sillas y mesas y de su distribución, esta amplia 
+              sala cuadrada debe ser el comedor principal del complejo. Tienes suerte
+              de que no sea hora de comida y está vacía, ya que si no podrías haberte
+              metido en un bien lío.",
+  w_to PasilloBaseO4,
+  n_to Pasillo3BaseO4,
+  s_to AlmacenBaseO4,
+;
+
+Object decorado_ComedorBaseO4 ComedorBaseO4
+class decorado
+with  describe
+       'mesa' "Numerosas mesas se distribuyen por todo el comedor de manera ordenada. Todas están limpias, sin restos de nada." G_FEMENINO
+       'mesas' "Numerosas mesas se distribuyen por todo el comedor de manera ordenada. Todas están limpias, sin restos de nada." G_FEMENINO+G_PLURAL
+       'silla' "Entre cuatro y seis sillas rodean cada una de las mesas." G_FEMENINO
+       'sillas' "Entre cuatro y seis sillas rodean cada una de las mesas." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Lugar AlmacenBaseO4 "Almacen"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Cientos de cajas embaladas ocupan casi por completo 
+        el inmenso almacen de la nave.",
+  describe [;
+    self.Lugar::describe();
+    if (oGuardiasAlmacenO4 in self) "Apresuradamente, te ocultas tras alguna de las cajas
+        al detectar la presencia de guardias de Sotta que custodian los suministros.";
+    rtrue;
+  ],
+  n_to ComedorBaseO4,
+;
+
+Object decorado_AlmacenBaseO4 AlmacenBaseO4
+class decorado
+with  describe
+       'suministro' "Hay cientos de cajas apiladas que ocupan casi toda la estancia, que deben contener los suministros que requiere
+               el funcionamiento cotidiano del complejo." 0
+       'suministros' "Hay cientos de cajas apiladas que ocupan casi toda la estancia, que deben contener los suministros que requiere
+               el funcionamiento cotidiano del complejo." G_PLURAL
+       'caja' "Hay cientos de cajas apiladas que ocupan casi toda la estancia, que deben contener los suministros que requiere
+               el funcionamiento cotidiano del complejo." G_FEMENINO
+       'cajas' "Hay cientos de cajas apiladas que ocupan casi toda la estancia, que deben contener los suministros que requiere
+               el funcionamiento cotidiano del complejo." G_FEMENINO+G_PLURAL,
+  before[new_suministro;
+    examine: rfalse;
+    Search,
+    open: if (oGuardiasAlmacenO4 in AlmacenBaseO4) "Mientras estén los guardias de Sotta, no vas a poder registrar ninguna de las cajas.";
+          new_suministro = Suministro.create(random(10));
+          if (new_suministro == nothing) "Por mucho que te esfuerzas, no puedes abrir la caja.";
+          move new_suministro to parent(self);
+          switch (new_suministro.tipo) {
+	        1,2,3,4,5: "Rompes la tapa para abrir la caja, que contiene varios tipos de comida.";
+	        6,7: "Rompes la tapa para abrir la caja, que contiene diferentes armas.";
+	        8: "Rompes la tapa para abrir la caja, que contiene repuestos de diversos tipos.";
+	        9: "Rompes la tapa para abrir la caja, que contiene granadas de energía.";
+	        10: "Rompes la tapa para abrir la caja, que contiene repuestos para droides de diferentes tipos.";
+          };
+    close: "No puedes cerrarla. Tuviste que romper la tapa para abrirla.";	 
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object oGuardiasAlmacenO4 "guardias de Sotta" AlmacenBaseO4
+  with
+    name 'guardia' 'guardias',
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
+    description [;
+      switch(self.multiple){
+	      1: "Un guardia vigila el almacén y las cajas de suministros. Es un Gamorreano, una bestia corpulenta con aspecto porcino 
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
+	          surjen unos prominentes colmillos inferiores.";
+	      2: "Dos guardias vigilan el almacén y las cajas de suministros. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          surjen unos prominentes colmillos inferiores.";
+	      3: "Tres guardias vigilan el almacén y las cajas de suministros. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          surjen unos prominentes colmillos inferiores.";
+      }
+      rtrue;
+    ],
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 35,
+    topvida 35,
+    dado_golpe 2 6 2, !1d6+0
+    multiple 3,
+    !name_boss "el capitán",
+    name_tropa "un guardia",
+    printname [nom;
+      nom="";
+      if (self.multiple>1) nom= self.name_tropa;
+      else {
+	      if (self provides name_boss ) nom=self.name_boss;
+	      else nom=self.name_tropa;
+      } 
+      return nom;
+    ],
+    printcasename [nom;
+      nom="";
+      if (self.multiple>1) nom= Cap(self.name_tropa);
+      else {
+	      if (self provides name_boss) nom=Cap(self.name_boss);
+          else nom=Cap(self.name_tropa);
+      }
+      return nom;
+    ],
+    almorir [new_cadaver;
+      new_cadaver = CadaverGamorreano.create(3);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
+    life [i;
+	    Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
+	            if (second==oGranadaEnergia) {
+		          move oGranadaEnergia to limbo;
+	              !Se crean los cadáveres
+	              for (i=0:i<3:i++) {
+		              self.almorir(3);
+	              }
+	              move self to limbo;
+		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+		          deadflag=8;
+		          "Lanzas la granada de energía contra los montones de cajas que hay en el
+		          almacen. Te pones a cubierto, justo a tiempo para oir la explosión.^
+		          Sin embargo, a la explosión que has provocado, le siguen otras explosiones
+		          encadenadas, provocadas seguramente por otras granadas de energía que están
+		          almacenadas entre la multitud de cajas del almacén. La cadena de explosiones es
+		          tan grande que no hay lugar al que poder escapar...^
+		          Mientras sientes como las llamas te envuelven, tu último pensamiento es una rabia
+		          acumulada por haber cometido semejante error impropio de un caballero Jedi. ¿Acaso
+		          no eras digno de poseer ese rango?";
+	            }
+	            give self estatico;
+	            move player to parent(self);
+	            if (second == nothing) 
+	              multi_combate(player,self,oSableLaser);
+	            else
+	              multi_combate(player,self,second);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	            }
+                rtrue;
+	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, ambos guardias se lanzan a por ti.^";
+	            give self estatico;
+	            move player to parent(self);
+	            multi_combate(player,self,oSableLaser);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+                }
+                rtrue;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
+        Levitar: "Son demasiado pesados para levitarlos.^";
+	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                   give self estatico;
+	                   move player to parent(self);
+                       multi_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 move self to limbo;
+		                 give player ~descubierto;
+		                 if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		                     && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                   }
+	                   rtrue;
+        Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
+    ],
+has pluralname animate;
+
+Object oGranadaEnergia "granada de energia" limbo
+  with
+    name 'granada' 'energia',
+    description "Es una esfera de energía azul que explota al ser lanzada contra el enemigo. También lanza impulsos electromagnéticos
+	         que inutilizan los sistemas electrónicos que se hallen cerca en el momento de la detonación.",
+    before [;
+      ThrowAt: if (second==oGuardiasPuertaO4 or oGuardiasAlmacenO4 or oGuardiasDescansoO4 or oGuardiasControlO4) <<attack second self>>;
+               if (second==nothing && location==EntradaBaseO4 && oGuardiasPuertaO4 in location) <<attack oGuardiasPuertaO4 self>>;
+               if (second==nothing && location==AlmacenBaseO4 && oGuardiasAlmacenO4 in location) <<attack oGuardiasAlmacenO4 self>>;
+               if (second==nothing && location==AlmacenBaseO4 && oGuardiasAlmacenO4 notin location) {
+	              deadflag=8;
+		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
+		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión.^
+		          Sin embargo, a la explosión que has provocado, le siguen otras explosiones
+		          encadenadas, provocadas seguramente por otras granadas de energía que están
+		          almacenadas entre la multitud de cajas del almacén. La cadena de explosiones es
+		          tan grande que no hay lugar al que poder escapar...^
+		          Mientras sientes como las llamas te envuelven, tu último pensamiento es una rabia
+		          acumulada por haber cometido semejante error impropio de un caballero Jedi. ¿Acaso
+		          no eras digno de poseer ese rango?";
+               };
+               if (second==nothing && location==SalaDescansoBaseO4 && oGuardiasDescansoO4 in location) <<attack oGuardiasDescansoO4 self>>;
+               if (second==nothing && location==SalaControlBaseO4 && oGuardiasControlO4 in location) <<attack oGuardiasControlO4 self>>;
+               if (second==nothing && location==SalaControlBaseO4 && oGuardiasControlO4 notin location) {
+	              give oInterruptorO4 muerto;
+		          "Lanzas la granada de energía al interior de la sala de control. Te pones a cubierto, 
+		          justo a tiempo para oir la explosión. Al reincorporarte puedes comprobar que todos 
+		          los terminales de la sala están inutilizados. ¡Mierda! ¿Cómo un caballero Jedi puede 
+		          cometer un error así? ¿Acaso no eres digno de ser un Jedi? ¿Qué te está pasando?^
+		          Al lanzar la granada, has olvidado que la explosión también produciría un impulso 
+		          electromagnético que inutiliza todos los sistemas que se encuentren cerca.";
+               };
+               if (second==oSottaO4) <<attack second self>>;
+               if (second==nothing && location==SottaBaseO4 && oSottaO4 in location) <<attack oSottaO4 self>>;
+               "No es una buena idea lanzar la granada de energía ahora mismo.";
+      Drop, Disrobe: "No conviene dejar un arma así en cualquier lugar.";
+    ],
+has female;
+
+Lugar Pasillo2BaseO4 "Pasillo"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "El largo pasillo termina en lo que parece ser un ascensor que lleva a la planta superior del complejo.",
+  n_to PasilloBaseO4,
+  w_to SalaDescansoBaseO4,
+  u_to oAscensorO4,
+  before [;
+    go: if (noun==w_obj) {
+	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
+	      playerTo(SalaDescansoBaseO4,2);
+	      rtrue;
+        }
+        if (noun==oAscensorO4 or u_obj) {
+	        if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+	        print "Entras en el ascensor y automáticamente se pone en movimiento. Al cabo de pocos segundos se
+                 para en el piso superior del complejo.^";
+        }
+  ],
+;
+
+Object decorado_Pasillo2BaseO4 Pasillo2BaseO4
+class decorado
+with  describe
+       'foco' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." 0
+       'focos' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_PLURAL
+       'luz' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO
+       'luces' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object PuertaSalaDescansoO4 "puerta" Pasillo2BaseO4
+  with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
+       name 'puerta',
+       when_closed "Una puerta cerrada impide el acceso al oeste.",
+       door_to SalaDescansoBaseO4,
+       door_dir w_to,
+       before [;
+         attack: <<open self>>;
+         open,
+         unlock: give self open;
+                 give self scenery;
+                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
+         close,
+         lock: give self ~open;
+               give self ~scenery;
+               "La puerta se cierra automáticamente cuando te alejas de ella.";
+       ],
+has static door openable female objetivo;
+
+Object oAscensorO4 "ascensor" Pasillo2BaseO4
+  with description [;
+                    if (oInterruptorO4 hasnt on) 
+                        "Es el ascensor que comunica las dos plantas del complejo. Desafortunadamente
+                        para ti, parece que está bloqueado por algún mecanismo de seguridad, lo que impide
+                        su uso.";
+                    "Es el ascensor que comunica las dos plantas del complejo. Parece que está activo
+                    en estos momentos, lo que permite que sea usado.";
+                   ],
+       name 'ascensor' 'elevador',
+       door_to Pasillo4BaseO4,
+       door_dir u_to,
+       before [;
+         attack: "Tú mismo destruirías la posibilidad de subir a la planta superior.";
+         receive: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+         open,
+         unlock: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+                 "Entras en el ascensor y automáticamente se pone en movimiento. Al cabo de pocos segundos se
+                 para en el piso superior del complejo.";
+         close,
+         lock: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+               "La puerta del ascensor se cierra automáticamente tras de ti cuando sales del mismo.";
+       ],
+has static scenery door openable container objetivo;
+
+Lugar SalaDescansoBaseO4 "Sala de descanso"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "La sala de descanso es una zona amplia y diáfana preparada para que los invitados, empleados y el propio Sotta el Hutt
+              puedan pasar sus momentos de ocio bailando, bebiendo y disfrutando de espectáculos varios.",
+  e_to Pasillo2BaseO4,
+;
+
+Object oGuardiasDescansoO4 "guardias de Sotta" SalaDescansoBaseO4
+  with
+    name 'guardia' 'guardias',
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
+    description "Diez guardias gamorreanos se divierten estruendosamente mientras están
+                viendo un holo-show donde un Gundark devora seres de diferentes razas. 
+                Afortunadamente, debido al escándalo que producen, no se han dado cuenta
+                de tu presencia, aunque presientes que tu suerte no durará mucho...",
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 35,
+    topvida 35,
+    dado_golpe 2 6 2, !1d6+0
+    multiple 10,
+    !name_boss "el capitán",
+    name_tropa "un guardia",
+    printname [nom;
+      nom="";
+      if (self.multiple>1) nom= self.name_tropa;
+      else {
+	      if (self provides name_boss ) nom=self.name_boss;
+	      else nom=self.name_tropa;
+      } 
+      return nom;
+    ],
+    printcasename [nom;
+      nom="";
+      if (self.multiple>1) nom= Cap(self.name_tropa);
+      else {
+	      if (self provides name_boss) nom=Cap(self.name_boss);
+          else nom=Cap(self.name_tropa);
+      }
+      return nom;
+    ],
+    almorir [new_cadaver;
+      new_cadaver = CadaverGamorreano.create(10);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
+    nivel_odio 1,
+    life [i;
+	    Attack: if (second~=nothing or oSableLaser or oGranadaEnergia) {
+		          "Podrías matar a dos o tres como mucho, pero el resto se te echaría
+	              encima antes de que pudieras causar más bajas.";
+	            }
+	            if (second==oGranadaEnergia) {
+		          move oGranadaEnergia to limbo;
+	              !Se crean los cadáveres
+	              for (i=0:i<10:i++) {
+		              self.almorir(10);
+	              }
+	              move self to limbo;
+		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+		          "Dudas antes de lanzar la granada al interior de la sala de descanso... ¿vale la
+		          pena alejarse de las enseñanzas jedi, aunque solo sea por unos momentos, para salvar
+		          la vida de la pequeña hija de tu amigo Bomo? Pero Bomo se merece que hagas todo lo
+		          que esté en tu mano para salvar a su hija, así que, alejadas todas las dudas, lanzas
+		          la granada de energía y te ocultas para ponerte a salvo, justo antes de escuchar la
+		          explosión.";
+	            }
+	            if (self.nivel_odio==1) {
+		          self.nivel_odio=2;
+	              "Aunque el factor sorpresa está de tu parte y podría igualar las fuerzas, son demasiados 
+	              guardias y tienes dudas de si podrías con todos. Además, las enseñanzas Jedi contemplan 
+	              el combate siempre como última opción. Pero, ¿valdría la pena alejarse de esas enseñanzas 
+	              por unos momentos para salvar la vida de la pequeña hija de tu amigo Bomo? ¿Se encontraron 
+	              alguna vez los que establecieron esas normas en una situación como la tuya actual?";
+                }
+                if (self.nivel_odio==2) {
+	              !Se crean los cadáveres
+	              for (i=0:i<10:i++) {
+		              self.almorir(10);
+	              }
+	              move self to limbo;
+		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	              "¡Bomo se merece que hagas todo lo que esté en tu mano para salvar la vida de su hija!
+	              Con un grito de rabia, empuñas tu sable láser y te lanzas por sorpresa contra los gamorreanos.
+	              Sientes un placentero frenesí mientras atraviesas a los guardias de Sotta con tu arma en una 
+	              desesperada lucha. Un poder como nunca antes habías sentido te inunda, aumentando tus capacidades 
+	              hasta niveles que nunca podrías haber pensado. 
+	              ^Te sientes extrañamente bien cuando, al acabar el combate, contemplas los cadáveres mutilados
+	              y humeantes de los guardias gamorreanos que se amontonan a tu alrededor.";
+                }
+	    Answer,ask,tell: "Lo único que conseguirías así sería que se abalanzaran todos contra ti.";
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
+        Levitar: "Hay demasiados guardias para usar la Fuerza contra ellos.^";
+	    Push, Aturdir: "Hay demasiados guardias para usar la Fuerza contra ellos.^";
+        Enganyar: "Hay demasiados guardias para usar la Fuerza contra ellos.^";
+    ],
+has pluralname animate;
+
+Lugar Pasillo3BaseO4 "Pasillo"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Este pasillo es exactamente igual a los otros que has visto en el resto del complejo.",
+  n_to PuertaSalaControlO4,
+  s_to ComedorBaseO4,
+  before [;
+    go: if (noun==in_obj) {
+	      <<go n_obj>>;
+        }
+  ],
+;
+
+Object decorado_Pasillo3BaseO4 Pasillo3BaseO4
+class decorado
+with  describe
+       'foco' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." 0
+       'focos' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_PLURAL
+       'luz' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO
+       'luces' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object PuertaSalaControlO4 "puerta" Pasillo3BaseO4
+  with description [;
+                    if (self hasnt open) "El acceso a esta sala está bloqueado por una puerta de seguridad. A un lado de la puerta se 
+                                         encuentra el mecanismo que la controla.";
+                    if (self has open) "La puerta de seguridad de la sala de control está inservible, por lo que se puede acceder
+                                       libremente.";
+                   ],
+       name 'puerta' 'seguridad',
+       when_closed "Una puerta cerrada impide el acceso a la sala que se encuentra al norte.",
+       when_open "La puera de seguridad está destrozada, lo que permite acceder libremente a la sala de control.",
+       door_to SalaControlBaseO4,
+       door_dir n_to,
+       before [;
+         attack: <<open self oSableLaser>>;
+         open,
+         unlock: if (self hasnt lockable && self hasnt openable)
+                   "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
+                 if (second==oSableLaser) {
+	               give self ~lockable;
+	               give self ~locked;
+	               give self ~openable;
+	               give self open;
+	               "Empuñas tu sable láser y lo clavas en la puerta de seguridad. Lentamente, el acero de la puerta
+	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
+	               círculo por el que poder acceder a la sala.";
+                 }
+                 "Tus intentos por abrir la puerta resultan estériles.";
+         close,
+         lock: if (self hasnt lockable && self hasnt openable)
+                   "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
+       ],
+has static door openable lockable locked female objetivo;
+
+Object oMecanismoPuertaSalaControlO4 "mecanismo de control" Pasillo3BaseO4
+with
+  name 'mecanismo' 'control',
+  name_f 'ranura',
+  description "A un lado de la puerta se encuentra el mecanismo que la controla, que consiste en una ranura 
+               para introducir la llave electrónica correspondiente.",
+  before [;
+      receive: "No parece que vaya a servir para nada.";
+  ],
+has scenery container;
+
+Lugar SalaControlBaseO4 "Sala de vigilancia y control"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Esta sala es el centro de seguridad y comunicaciones de la base. Desde los numerosos terminales 
+              que se encuentran en este lugar se pueden controlar todos los sistemas que existen en el complejo: 
+              el reactor de energía, las puertas interiores y exteriores, las puertas de seguridad, etc.",
+  s_to Pasillo3BaseO4,
+  before [;
+    exit: <<go s_obj>>;
+    go: if (noun==out_obj) {
+	      <<exit>>;
+        }
+  ],
+;
+
+Object decorado_SalaControlBaseO4 SalaControlBaseO4
+class decorado
+with  describe
+       'energia' [;
+                  if (oInterruptorO4 has muerto) return "El terminal que monitoriza el reactor de energía indica un mal funcionamiento del reactor,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "El terminal que monitoriza el reactor de energía no indica ningún mal funcionamiento.";] G_FEMENINO
+       'reactor' [;
+                  if (oInterruptorO4 has muerto) return "El terminal que monitoriza el reactor de energía indica un mal funcionamiento del reactor,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "El terminal que monitoriza el reactor de energía no indica ningún mal funcionamiento.";] 0
+       'sotta' [;
+                  if (oInterruptorO4 has muerto) return "Todos los sistemas están inutilizados,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "Localizas en un terminal que los aposentos privados de Sotta el Hutt se encuentran en el piso superior.";] 0
+       'hutt' [;
+                  if (oInterruptorO4 has muerto) return "Todos los sistemas están inutilizados,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "Localizas en un terminal que los aposentos privados de Sotta el Hutt se encuentran en el piso superior.";] 0
+       'terminal' [;
+                  if (oInterruptorO4 has muerto) return "Todos los sistemas están inutilizados,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "Desde estos terminales se puede controlar todo el complejo. Localizas el interruptor desde el que
+                     desbloquear el ascensor de acceso al nivel superior.";] 0
+       'terminales' [;
+                  if (oInterruptorO4 has muerto) return "Todos los sistemas están inutilizados,
+                    seguramente debido al impulso electromagnético de la granada de energía.";
+                  return "Desde estos terminales se puede controlar todo el complejo. Localizas el interruptor desde el que
+                     desbloquear el ascensor de acceso al nivel superior.";] G_PLURAL,
+  before[;
+    examine: if (oGuardiasControlO4 in SalaControlBaseO4) <<ask oGuardiasControlO4>>;
+             rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object oInterruptorO4 "interruptor" SalaControlBaseO4
+with
+  name 'interruptor' 'ascensor',
+  describe [;
+           if (self hasnt on) "El interruptor está en posición Off, lo que debe bloquear el uso del ascensor de seguridad.";
+           "El interruptor está en posición On. Ahora el ascensor de seguridad está desbloqueado.";
+  ],
+  before [;
+      Examine: self.describe(); rtrue;
+      Push: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
+            if (self has on) <<switchoff self>>;
+            <<switchon self>>;
+      SwitchOn: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
+                give self on;
+                give oAscensorO4 open;
+                Achieved(19);
+                "Activas el ascensor que da acceso al segundo piso. Ahora parece que el ascensor es utilizable.";
+      SwitchOff: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
+                 give self ~on; 
+                 give oAscensorO4 ~open;
+                 "Desactivas el ascensor que da acceso al segundo piso. Ahora el ascensor está bloqueado.";
+  ],
+has scenery switchable;
+
+Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
+  with
+    name 'guardia' 'guardias',
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
+    description [;
+      switch(self.multiple){
+	      1: "Un guardia defiende la sala de control del complejo. Es un Gamorreano, una bestia corpulenta con aspecto porcino 
+	          de aproximadamente 1-75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
+	          surjen unos prominentes colmillos inferiores.";
+	      2: "Dos guardias defienden la sala de control del complejo. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
+	          de aproximadamente 1-75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          surjen unos prominentes colmillos inferiores.";
+      }
+      rtrue;
+    ],
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 35,
+    topvida 35,
+    dado_golpe 2 6 2, !1d6+0
+    multiple 2,
+    !name_boss "el capitán",
+    name_tropa "un guardia",
+    printname [nom;
+      nom="";
+      if (self.multiple>1) nom= self.name_tropa;
+      else {
+	      if (self provides name_boss ) nom=self.name_boss;
+	      else nom=self.name_tropa;
+      } 
+      return nom;
+    ],
+    printcasename [nom;
+      nom="";
+      if (self.multiple>1) nom= Cap(self.name_tropa);
+      else {
+	      if (self provides name_boss) nom=Cap(self.name_boss);
+          else nom=Cap(self.name_tropa);
+      }
+      return nom;
+    ],
+    almorir [new_cadaver;
+      new_cadaver = CadaverGamorreano.create(2);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
+    life [i;
+	    Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
+	            if (second==oGranadaEnergia) {
+		          move oGranadaEnergia to limbo;
+	              !Se crean los cadáveres
+	              for (i=0:i<2:i++) {
+		              self.almorir(2);
+	              }
+	              move self to limbo;
+		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	              give oInterruptorO4 muerto;
+		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
+		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión. Al 
+		          reincorporarte puedes comprobar como no sólo los guardias han muerto, sino que también
+		          todos los terminales de la sala están inutilizados. ¡Mierda! ¿Cómo un caballero Jedi puede 
+		          cometer un error así? ¿Acaso no eres digno de ser un Jedi? ¿Qué te está pasando?^
+		          Al lanzar la granada, has olvidado que la explosión también produciría un impulso 
+		          electromagnético que inutiliza todos los sistemas que se encuentren cerca.";
+	            }
+	            give self estatico;
+	            move player to parent(self);
+	            if (second == nothing) 
+	              multi_combate(player,self,oSableLaser);
+	            else
+	              multi_combate(player,self,second);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	            }
+                rtrue;
+	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, ambos guardias se lanzan a por ti.^";
+	            give self estatico;
+	            move player to parent(self);
+	            multi_combate(player,self,oSableLaser);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+                }
+                rtrue;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
+        Levitar: "Son demasiado pesados para levitarlos.^";
+	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                   give self estatico;
+	                   move player to parent(self);
+                       multi_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 move self to limbo;
+		                 give player ~descubierto;
+		                 if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		                    && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                   }
+	                   rtrue;
+        Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
+    ],
+has pluralname animate;
+
+Lugar Pasillo4BaseO4 "Pasillo"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "En el lado oeste de este pasillo se encuentra el ascensor para bajar al nivel inferior del complejo.",
+  s_to PuertaHabitacionesO4,
+  e_to PuertaSottaO4,
+  d_to oAscensorPiso2O4,
+  before [;
+    go: if (noun==s_obj) {
+	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
+	      playerTo(HabitacionesBaseO4,2);
+	      rtrue;
+        }
+        if (noun==e_obj) {
+	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
+	      playerTo(SottaBaseO4,2);
+	      rtrue;
+        }
+        if (noun==oAscensorPiso2O4 or d_obj) {
+	        if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+	        print "Entras en el ascensor y automáticamente se pone en movimiento. Al cabo de pocos segundos se
+                 para en el piso inferior del complejo.^";
+	        playerTo(Pasillo2BaseO4);
+	        rtrue;
+        }
+  ],
+;
+
+Object decorado_Pasillo4BaseO4 Pasillo4BaseO4
+class decorado
+with  describe
+       'foco' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." 0
+       'focos' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_PLURAL
+       'luz' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO
+       'luces' "Las luces que iluminan el pasillo surgen de los focos que en la unión de ambas paredes con el techo." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object PuertaHabitacionesO4 "puerta" Pasillo4BaseO4
+  with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
+       name 'puerta',
+       when_closed "Una puerta cerrada impide el acceso al sur.",
+       door_to HabitacionesBaseO4,
+       door_dir s_to,
+       before [;
+         attack: <<open self>>;
+         open,
+         unlock: give self open;
+                 give self scenery;
+                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
+         close,
+         lock: give self ~open;
+               give self ~scenery;
+               "La puerta se cierra automáticamente cuando te alejas de ella.";
+       ],
+has static door openable female objetivo;
+
+Object PuertaSottaO4 "puerta" Pasillo4BaseO4
+  with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
+       name 'puerta',
+       when_closed "Una puerta cerrada impide el acceso al este.",
+       door_to SottaBaseO4,
+       door_dir e_to,
+       before [;
+         attack: <<open self>>;
+         open,
+         unlock: give self open;
+                 give self scenery;
+                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
+         close,
+         lock: give self ~open;
+               give self ~scenery;
+               "La puerta se cierra automáticamente cuando te alejas de ella.";
+       ],
+has static door openable female objetivo;
+
+Object oAscensorPiso2O4 "ascensor" Pasillo4BaseO4
+  with description [;
+                    if (oInterruptorO4 hasnt on) 
+                        "Es el ascensor que comunica los dos niveles del complejo. Desafortunadamente
+                        para ti, parece que está bloqueado por algún mecanismo de seguridad, lo que impide
+                        su uso.";
+                    "Es el ascensor que da comunica los dos niveles del complejo. Parece que está activo
+                    en estos momentos, lo que permite que sea usado.";
+                   ],
+       name 'ascensor' 'elevador',
+       door_to Pasillo2BaseO4,
+       door_dir d_to,
+       before [;
+         attack: "Tú mismo destruirías la posibilidad de bajar a la planta inferior.";
+         receive: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+         open,
+         unlock: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+                 "Entras en el ascensor y automáticamente se pone en movimiento. Al cabo de pocos segundos se
+                 para en el piso inferior del complejo.";
+         close,
+         lock: if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+               "La puerta del ascensor se cierra automáticamente tras de ti cuando sales del mismo.";
+       ],
+has static scenery door openable container objetivo;
+
+Lugar HabitacionesBaseO4 "Habitaciones"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Estas son los dormitorios de los guardias y de los sirvientes de Sotta el Hutt.
+              Afortunadamente para ti, todos deben estar haciendo sus labores y no hay nadie
+              aquí.",
+  n_to Pasillo4BaseO4,
+  before [;
+    exit: <<go n_obj>>;
+    go: if (noun==out_obj) <<exit>>;
+  ],
+;
+
+Object decorado_HabitacionesBaseO4 HabitacionesBaseO4
+class decorado
+with  describe
+       'baño' "Los baños son comunes a todas las habitaciones." 0
+       'baños' "Los baños son comunes a todas las habitaciones." G_PLURAL
+       'armario' "Junto a cada cama hay un armario metálico para que los empleados de Sotta guarden sus enseres personales." 0
+       'armarios' "Junto a cada cama hay un armario metálico para que los empleados de Sotta guarden sus enseres personales." G_PLURAL
+       'cama' "Hay un buen número de camas entre todas las habitaciones. No están nada mal. Es conocido el buen trato
+              que dispensan los Hutts a sus empleados." G_FEMENINO
+       'camas' "Hay un buen número de camas entre todas las habitaciones. No están nada mal. Es conocido el buen trato
+               que dispensan los Hutts a sus empleados." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Lugar SottaBaseO4 "Habitacion de Sotta"
+with
+  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  description "Acabas de entrar a la habitación más lujosa de todo el complejo. Sin duda alguna, estás en
+              los aposentos privados de Sotta el Hutt. Un gran ventanal da a un balcón, desde donde Sotta
+              debe dirigirse a los habitantes de Orvax IV cuando realiza alguna aparición en público.",
+  describe [;
+    self.Lugar::describe();
+    if (self hasnt visited) {
+	    "^Frente a ti, reclinándose en un estrado situado en el lado opuesto a la enorme cama, se halla Sotta el Hutt.
+	    Su cabeza es tres o cuatro veces mayor que la de un hombre. Sus ojos, amarillos y reptilescos; la piel 
+	    como de serpiente grasienta. No tiene cuello, sino una serie creciente de papadas que se expanden hasta 
+	    conformar un enorme cuerpo abotargado, henchido hasta reventar por miles de manjares. Unos brazos 
+	    atrofiados, casi inútiles, brotan del torso y los viscosos dedos de su mano izquierda sostienen la boquilla 
+	    de una pipa de agua. No tiene piernas, simplemente su tronco se ahusa hasta rematarse en una fofa cola de 
+	    serpiente que se extiende por el estrado como una tubería mucilaginosa. La boca, sin labios, cruza su cara 
+	    de oreja a oreja, babeando continuamente. Es un ser completamente repugnante.";
+    }
+    rtrue;
+  ],
+  w_to Pasillo4BaseO4,
+  before [;
+    exit: <<go w_obj>>;
+    go: if (noun==out_obj) <<exit>>;
+  ],
+;
+
+Object decorado_SottaBaseO4 SottaBaseO4
+class decorado
+with  describe
+       'balcon' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
+       'cristal' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
+       'cristales' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_PLURAL
+       'puerta' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO
+       'puertas' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO+G_PLURAL
+       'ventanal' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
+       'ventana' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO
+       'cama' "Una cama de tamaño descomunal. Sin duda adecuada para el particular tamaño de su dueño." G_FEMENINO,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
+  ],
+;
+
+Object oSottaO4 "Sotta el Hutt" SottaBaseO4
+  with
+    name 'sotta' 'hutt',
+    description "Frente a ti, reclinándose en un estrado situado en el lado opuesto a la enorme cama, se halla Sotta el Hutt.
+    Su cabeza es tres o cuatro veces mayor que la de un hombre. Sus ojos, amarillos y reptilescos; la piel 
+    como de serpiente grasienta. No tiene cuello, sino una serie creciente de papadas que se expanden hasta 
+    conformar un enorme cuerpo abotargado, henchido hasta reventar por miles de manjares. Unos brazos 
+    atrofiados, casi inútiles, brotan del torso y los viscosos dedos de su mano izquierda sostienen la boquilla 
+    de una pipa de agua. No tiene piernas, simplemente su tronco se ahusa hasta rematarse en una fofa cola de 
+    serpiente que se extiende por el estrado como una tubería mucilaginosa. La boca, sin labios, cruza su cara 
+    de oreja a oreja, babeando continuamente. Es un ser completamente repugnante.", 
+    soborno 0,
+    life [tema;
+	    Attack: if (oBomoO4 notin SottaBaseO4) "Si matas a Sotta no conseguirás salvar a Mesa, la hija de Bomo.";
+	            print "^Con los ojos inyectados en sangre, te lanzas sobre Sotta el Hutt y le atacas sin piedad. Una
+	            y otra vez atraviesas su cuerpo con su espada láser, incluso cuando el Hutt yace ya sin vida
+	            en el suelo. Sólo los gritos de Bomo te detienen.^";
+                HablaPersonaje("Bomo","¡Maldito seas Jennir! ¡Le has matado! ¡La venganza era mi derecho! ¿Por qué
+                  no me has dejado matarlo?");
+                HablaPersonaje("Dass Jennir","Mi querido amigo... Matar a ese Hutt no te devolvería a tu hija ni
+                  aliviaría tu dolor. Matarle te habría quitado una parte de tu alma.");
+                HablaPersonaje("Bomo","¿Mi alma? Sin Mesa... Sin Resa... ¡Mi alma ya no existe! ¡Y ahora tú me
+                  has quitado la única cosa que me quedaba! ¿Siempre crees saber lo que es mejor para todos, verdad?
+                  ¡Pues maldito seas, Jedi! ¡No quiero volver a verte!");
+                Achieved(20);
+                Damusix.PararTodo();
+                Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
+                Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
+                Damusix.Tocar(sndMainTheme,0);
+                deadflag = 7; !FIN DEL JUEGO
+                "^Mientras ves alejarse la Uhumele con Bomo y los demás en el cielo, no puedes dejar de pensar en las
+                muchas cosas alejadas de los jedis que has hecho, en los actos malvados que has cometido en nombre de
+                lo correcto... colocando tu certeza por encima de las necesidades y vidas de aquellos a quienes
+                llamabas amigos... ¿Y ahora qué? Has tenido que ceder tanto... Te dices que todo ha sido por Resa y
+                Bomo, pero... ¿cuánto más puedes entregar de ti mismo antes de dejar de ser el jedi que eres?";
+        tell,answer,
+        ask: tema=AveriguarTema(TemasOrvax4);
+             if (oBomoO4 notin SottaBaseO4) {
+	           switch(tema) {
+                 t_familiabomoO4,t_resaO4,t_mesaO4,t_esclavosO4,
+                 t_prisioneroO4: HablaPersonaje("Sotta el Hutt","¿La niña nosauriana? ¡Ah si! La madre se resistió tanto que
+                        tuvimos que matarla.");
+                        print "^De repente se oyen disparos y alguna explosión en el exterior de la habitación de Sotta.
+                          La puerta se abre y aparecen Bomo y el resto de la tripulación de la Uhumele, fuertemente armados.^";
+                        move oBomoO4 to SottaBaseO4;
+                        HablaPersonaje("Schurk-Heren","Sniffles nos contó que habías averiguado quién tenía a la hija de Bomo 
+                          y vinimos todos a ayudarte.");
+                        HablaPersonaje("Bomo","¿Es este, Dass? ¿Es este tipo? ¡Dime dónde está mi hija!");
+                        HablaPersonaje("Sotta el Hutt","Llegáis tarde. Ya está muerta.");
+                        HablaPersonaje("Bomo","¡NOOOOO! ¡Maldito hijo de puta!");
+                        HablaPersonaje("Sotta el Hutt","Y debo añadir que estaba deliciosa... Hace dos noches fue el plato
+                          principal de la fiesta que dí. Mis invitados se fueron encantados con el banquete que les ofrecí.");
+                        "^El odio y la rabia por semejante atrocidad te consumen. Notas como la furia se apodera de todos
+                        los músculos de tu cuerpo, mientras aprietas fuertemente el sable laser con ambas manos dispuesto
+                        a acabar con ese despreciable ser en este mismo momento.";
+                 t_sottaO4,
+                 t_simismoO4: HablaPersonaje("Sotta el Hutt","Esta ciudad es mia. No sabes con quién estás tratando, humano.
+                        Yo mismo te mataré lentamente y te arrancaré las extremidades una a una.");
+                 t_ayudaO4: HablaPersonaje("Sotta el Hutt","Nadie va a poder ayudarte aquí. Eres hombre muerto.");
+                 t_dineroO4: HablaPersonaje("Sotta el Hutt","¿Dinero? No te va a hacer falta. ¡No vas a salir vivo de aqui!"); 
+                 t_saludoO4: HablaPersonaje("Sotta el Hutt","¿Cómo has llegado aquí? Estás muerto. En menos de treinta segundos mis guardias
+                        estarán aquí y acabarán contigo.");
+                 t_despedidaO4: HablaPersonaje("Sotta el Hutt","No conseguirás salir vivo de aquí.");
+                 default: switch (random(3)) {
+	                        1: HablaPersonaje("Sotta el Hutt","No sabes donde te has metido, humano. Serás hombre muerto en menos de treinta segundos."); 
+	                        2: HablaPersonaje("Sotta el Hutt","No sabes con quién estás tratando. No pensarás que vas a salir vivo de aquí..."); 
+	                        3: HablaPersonaje("Sotta el Hutt","Mis guardias están viniendo... No vas a salir vivo de esta, humano."); 
+                          }
+               };
+             } else {
+	           switch(tema) {
+                 default: switch (random(3)) {
+	                        1: HablaPersonaje("Sotta el Hutt","Está bien. Soy un tipo con recursos. Seguro que tenéis un precio por iros..."); 
+	                        2: HablaPersonaje("Sotta el Hutt","Estoy seguro que podéis citar una cantidad que nos pueda hacer 
+	                             llegar a un acuerdo satisfactorio."); 
+	                        3: HablaPersonaje("Sotta el Hutt","Vaya, así que hay familia de por medio, ¿verdad? Entonces seguro que vuestro
+	                             precio por largaros será alto. No importa, soy un tipo con recursos suficientes."); 
+                          }
+               };
+             }
+             rtrue;
+    ],
+    orders [;
+      Mild, Strong: "Enfadando a Sotta el Hutt no conseguirás nada.^";
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+      Sanar: "Ese repelente ser no merece que gastes ni un segundo en sanarlo.";
+	  Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.";
+	  Push, Aturdir: "No funcionará con un Hutt.";
+      Enganyar: "No funcionará con un Hutt.";
+      Sentir, 
+      Concentrar: "No funcionará con un Hutt.";
+    ],
+has animate proper objetivo transparent;
+
+Object oBomoO4 "Bomo Greenbark" limbo
+  with
+    name 'bomo' 'greenbark',
+    sgw_img pngBomo,
+    description "Es Bomo Greenbark, tu más leal soldado y amigo. En estos momentos sostiene su pistola 
+                láser apuntando directamente a Sotta. Sientes como crece la rabia en su interior.",
+    react_before [;
+      look: rfalse;
+      attack: rfalse;
+      examine: rfalse;
+      inv:rfalse;
+      salidas: rfalse;
+      default: Damusix.PararTodo();
+               Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
+               Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
+               Damusix.Tocar(sndMainTheme,0);
+               deadflag = 7; !FIN DEL JUEGO
+               "Antes de que te de tiempo a reaccionar, Bomo dispara toda la potencia de su arma sobre
+               Sotta el Hutt. Una y otra vez, incluso cuando el Hutt yace ya sin vida en el suelo.
+               Solo se detiene cuando posas tu mano en uno de sus hombros a modo de consuelo. Pero ni
+               siquiera la venganza alivia su dolor. No habrá consuelo posible para el pobre Bomo...";
+    ],
+    life [;
+        ask, tell, answer: "En estos momentos Bomo no atiende a razones. Lleno de rabia y dolor, sostiene 
+                su arma apuntando directamente a Sotta. Quiere vengar a su familia por encima de todo.";
+    ],
+    orders [;
+      Mild, Strong: "Bomo es más que un gran amigo para ti. Está pasando un mal momento al perder a su familia y no se merece eso.";
+	  Attack: if (noun == oSottaO4) {
+                Damusix.PararTodo();
+                Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
+                Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
+                Damusix.Tocar(sndMainTheme,0);
+                deadflag = 7; !FIN DEL JUEGO
+                Achieved(21);
+                "Sin apenas haber acabado tus palabras, Bomo dispara toda la potencia de su arma sobre
+                Sotta el Hutt. Una y otra vez, incluso cuando el Hutt yace ya sin vida en el suelo.
+                Solo se detiene cuando posas tu mano en uno de sus hombros a modo de consuelo. Pero ni
+                siquiera la venganza alivia su dolor. No habrá consuelo posible para el pobre Bomo...";
+              }
+      NotUnderstood, Tell: <<Ask self>>;
+      default: "Bomo está concentrado apuntando con su pistola láser a Sotta el Hutt. Sientes como crece la rabia en su interior.";
+    ],
+    before [;
+        Sentir, 
+        Concentrar: "Bomo es más que gran amigo para ti. Sientes como crece la rabia en su interior al encontrarse frente a frente con Sotta.";
+        Attack: "Tú mismo te sorprendes al tener pensamientos sobre atacar a tu amigo Bomo. Sólo un Sith permite esos pensamientos. ¿Significa que 
+                no hay esperanza para tí y tus impulsos te arrastran hacia el lado oscuro de la Fuerza?";
+    ],
+    bonif_defensiva 15,
+    bonif_ofensiva 15,
+    vida 50,
+    dado_golpe 1 6 0, !1d6+0
+    orvax 0,
+has animate proper;
 
 !===============================================================================
 ! (9) Otras Rutinas Reemplazadas; Rutinas Propias del Juego
@@ -5801,6 +7491,11 @@ with  describe
 !   }
 ! ];
 
+! Funcion: RandomMessages
+! Función que muestra efectos ambientales aleatorios para dar la sensación
+! de un mundo vivo durante la batalla del paso de Half Axe. También sirven
+! para dar pistas al jugador sobre qué hacer en estas escenas.
+! Son solo para dar ambientación, sin ser relevantes para en el hilo argumental de la aventura.
 [ RandomMessages ;
    if (location == paso) {
       if (oArboles hasnt cortado) {
@@ -5876,6 +7571,41 @@ with  describe
   };
 ];
 
+! Funcion: RandomEffectsOrvax
+! Función que muestra efectos ambientales aleatorios para dar la sensación
+! de un mundo vivo. Estos efectos ambientales son simplemente eso, ambientación,
+! sin ser relevantes para en el hilo argumental de la aventura.
+! Parametros: prob - Probabilidad (0-100) de que ocurra un evento
+!
+[ RandomEffectsOrvax prob;
+  if (random(100)-1 < prob) {
+	  switch (random(5)) {
+		  1: print "^De repente se produce un alboroto entre la gente. Observas como una de las nosaurianas que escaparon de la celda
+		           es abatida por los disparos de una patrulla de guardias de la ciudad que la perseguían. Se llevan el cadáver mientras
+		           el resto de la gente vuelve a la normalidad.^";
+		  2: print "^Un repentino jaleo te hace girar hacia un tumulto que se ha formado. Cuando se dispersa, puedes ver como dos guardias
+		           de la ciudad se llevan el cadáver de una de las nosaurianas que escaparon de la celda.^";
+		  3: print "^Al otro lado de la calle ves correr a una de las nosaurianas que consiguieron escapar de la celda, perseguida por
+		           una patrulla de cuatro guardias de la ciudad. Desaparecen entre la gente. Con enorme pesar en tu interior, no albergas
+		           ninguna esperanza para la nosauriana.^";
+		  4: print "^Oyes unos gritos de socorro. Al girarte, observas como una mujer nosauriana se interpone entre los guardias de la ciudad
+		           y el que debe ser su hijo, suplicando por su vida. Deben ser de los que consiguieron escapar de la celda. Sin ningún atisbo
+		           de duda, los guardias disparan sus rifles láser, matando a ambos. Recogen los cadáveres y los pierdes de vista entre la
+		           muchedumbre.^";
+		  5: print "^Un niño nosauriano pasa huyendo cerca de ti, perseguido por dos guardias T'surr. Los pierdes de vista entre la gente.
+		           Ojalá el niño lo consiga, pero albergas pocas esperanzas en que logre escapar.^";
+	  }
+  };
+];
+
+
+! Funcion: QuejasBomo
+! Función que muestra quejas aleatorias de Bomo, cuando el jugador
+! intenta realizar una acción que no debería. La queja se monta
+! juntando dos frases aleatorias (tipo 1 y tipo 2).
+! Parametros: 
+!   tipo - (1/2) Tipo de frase a devolver
+!
 [QuejasBomo tipo msg;
    msg="";
    if (tipo == 1) {
@@ -5895,6 +7625,14 @@ with  describe
    return msg;
 ];
 
+! Funcion: GirarCaza
+! Función que gira el caza cuando el jugador está pilotándolo y mueve la 
+! palanca de control.
+! Parametros: 
+!   encarada - (s/n/e/o) Dirección hacia donde está encarada la nave antes de
+!              mover la palanca.
+!   dir - (i/d) Dirección hacia donde el jugador mueve la palanca
+!
 [GirarCaza encarada dir msg;
    msg="";
    
@@ -5981,6 +7719,11 @@ with  describe
    return msg;
 ];
 
+! Funcion: DireccionCaza
+! Función que devuelve hacia dónde está encarado el caza, para usarla en descripciones
+! Parametros: 
+!   encarada - (s/n/e/o) Dirección hacia donde está encarada la nave.
+!
 [DireccionCaza encarada msg;
    msg="";
    
@@ -6010,6 +7753,98 @@ with  describe
    }
    return msg;
 ];
+
+! Funcion: HablaPersonaje
+! Función que muestra por pantalla los diálogos con los PNJs, debidamente formateados.
+! Parametros: 
+!   pers - String con el nombre del personaje que habla.
+!   str - String con la frase que dice el personaje.
+!
+[HablaPersonaje pers str;
+  print "^",(string)pers,": ",(s_underline)"~",(s_underline)str,(s_underline)"~^";
+];
+
+! Funcion: JugarDejarik
+! Función que para jugar al Dejarik en la cantina.
+! Parametros: 
+!   turno - (1/2/3) Turno en el que está en la partida.
+!
+[JugarDejarik turno k fichas valor1 valor2 j;
+   fichas=0;
+   valor1=0;
+   valor2=0;
+   j=0;
+   turno=turno-1;
+   if (oJaxfSevalO4.&dejavalorDass-->0~=0) fichas=fichas+1; 
+   if (oJaxfSevalO4.&dejavalorDass-->1~=0) fichas=fichas+2; 
+   if (oJaxfSevalO4.&dejavalorDass-->2~=0) fichas=fichas+4; 
+
+   print "Estas son tus fichas:";
+   if (oJaxfSevalO4.&dejavalorDass-->0~=0) {
+     print "^1: Valor ",(string)oJaxfSevalO4.&dejacolorDass-->0,"/",oJaxfSevalO4.&dejavalorDass-->0;
+   }
+   if (oJaxfSevalO4.&dejavalorDass-->1~=0) {
+     print "^2: Valor ",(string)oJaxfSevalO4.&dejacolorDass-->1,"/",oJaxfSevalO4.&dejavalorDass-->1;
+   }
+   if (oJaxfSevalO4.&dejavalorDass-->2~=0) {
+     print "^3: Valor ",(string)oJaxfSevalO4.&dejacolorDass-->2,"/",oJaxfSevalO4.&dejavalorDass-->2;
+   }
+   print "^x: Seguir pensando.";
+   print "^Elige la ficha a jugar:";
+   switch (fichas) {
+     0: while (k ~='x') k=Esperartecla();
+     1: while (k ~='1' or 'x') k=Esperartecla();
+     2: while (k ~='2' or 'x') k=Esperartecla();
+     3: while (k ~='1' or '2' or 'x') k=Esperartecla();
+     4: while (k ~='3' or 'x') k=Esperartecla();
+     5: while (k ~='1' or '3' or 'x') k=Esperartecla();
+     6: while (k ~='2' or '3' or 'x') k=Esperartecla();
+     7: while (k ~='1' or '2' or '3' or 'x') k=Esperartecla();
+   }
+   if (k=='1' or '2' or '3') oJaxfSevalO4.jugando++;
+   if (k=='1') j = 0;
+   if (k=='2') j = 1;
+   if (k=='3') j = 2;
+   if (k=='x') {
+	   "^Decides que es mejor pensar el próximo movimiento antes de realizar tu jugada.";
+   }
+   !Se comprueban los colores
+   !rojo gana a verde. verde gana a azul. azul gana a rojo.
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"rojo") == 0) valor1=3;
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"verde") == 0) valor1=2;
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"azul") == 0) valor1=1;
+
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"rojo") == 0) valor2=3;
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"verde") == 0) valor2=2;
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"azul") == 0) valor2=1;
+
+   if (valor1==3 && valor2==1) valor2=4; !azul gana a rojo
+   if (valor1==1 && valor2==3) valor1=4; !azul gana a rojo
+   
+   !Si son del mismo color, se compara el valor de las fichas.
+   if (valor1==valor2) {
+	   valor1=oJaxfSevalO4.&dejavalor-->turno;
+	   valor2=oJaxfSevalO4.&dejavalorDass-->j;
+   }
+
+   !Gana el player
+   if (valor1<valor2) {
+	   print "^Puedes ver como las dos fichas, la tuya y la de tu rival, avanzan 
+	          hasta el centro del tablero y comienzan a luchar entre ellas. Finalmente,
+	          la tuya sale vencedora del combate.^";
+	   oJaxfSevalO4.puntosDass++;
+   }
+   !Gana Jaxf Seval
+   if (valor2<valor1) {
+	   print "^Las dos fichas, la tuya y la de tu rival, avanzan hasta el centro 
+	          del tablero y comienzan a luchar. Finalmente, la tuya cae derrotada
+	          entre las risas y los gritos burlescos de Jaxf Seval.^";
+	   oJaxfSevalO4.puntos++;
+   }
+   
+   !Se marca la ficha del jugador como jugada
+   oJaxfSevalO4.&dejavalorDass-->j = 0;
+];
 !===============================================================================
 ! (10) Verbos y Gramaticas Propias del Juego
 !-------------------------------------------------------------------------------
@@ -6029,6 +7864,7 @@ Include "includes/eujgramatica.inf";
   return golpe + weapon.&dado_golpe-->2;
 ];
 
+! Calcula la bonificación ofensiva.
 [ get_bo atacante arma bo;
   bo = 0;
   if (atacante provides bonif_ofensiva)
@@ -6041,6 +7877,7 @@ Include "includes/eujgramatica.inf";
   return bo;
 ];
 
+! Calcula la bonificación defensiva.
 [ get_bd defensor bd item;
   bd = 0;
   if (defensor provides bonif_defensiva)
@@ -6055,6 +7892,8 @@ Include "includes/eujgramatica.inf";
   return bd;
 ];
 
+! Ejecuta un turno de combate.
+! Realiza un ataque del atacante y otro del defensor.
 [ turno_combate atacante defensor arma bo bd golpe;
 
   if (defensor provides multiple) {
@@ -6155,7 +7994,23 @@ Include "includes/eujgramatica.inf";
 
 ];
 
+[verbo_golpeFuerza verbo;
+  verbo="";
+  return random("golpeándose","hiriéndose");
+];
 
+[verbo_golpeArma verbo;
+  verbo="";
+  return random("golpeándo","hiriéndo","alcanzándo");
+];
+
+[zona_golpe zona;
+  zona="";
+  return random("un brazo","una pierna","la cabeza","el torso","un costado","la espalda");
+];
+
+! Ejecuta un turno de combate en combates con múltiples oponentes.
+! Realiza un ataque del atacante y otro por cada uno de los oponentes.
 [ multi_combate atacante defensor arma bo bd golpe multi k;
   bo = get_bo(atacante, arma);
   bd = get_bd(defensor);
@@ -6176,12 +8031,16 @@ Include "includes/eujgramatica.inf";
 	    golpe = calcular_golpe(arma);
 	  if (atacante == player)
 	    if (arma==oFuerza)
+! 	      print "Con una ráfaga de Fuerza que sale de tu mano abierta derribas 
+!                  con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
 	      print "Con una ráfaga de Fuerza que sale de tu mano abierta derribas 
-	             con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
+                 con éxito a ",(string)defensor.printname(),", ",(string)verbo_golpeFuerza()," en ",(string)zona_golpe()," al caer.^";
 	    else
-          print "Atacas con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
+!          print "Atacas con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
+          print "Atacas con éxito a ",(string)defensor.printname(),", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       else
-        print (The)atacante, " ataca con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
+!        print (The)atacante, " ataca con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
+        print (The)atacante, " ataca con éxito a ",(string)defensor.printname(),", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       
       defensor.vida = defensor.vida - golpe;
 		switch(defensor.vida) {
@@ -6193,12 +8052,14 @@ Include "includes/eujgramatica.inf";
 		if (defensor.vida < 1) {
 		  if (multi>1) {
 			  defensor.printcasename();print " de ",(the)defensor," cae muerto debido a las heridas sufridas.^";
+			  if (defensor provides almorir) defensor.almorir();
 			  defensor.multiple--;
 			  multi--;
 			  defensor.vida = defensor.topvida;
 		  } else {
 		      give defensor muerto;
 		      defensor.printcasename();print " cae muerto debido a las heridas sufridas.^";
+		      if (defensor provides almorir) defensor.almorir();
 		      rtrue;
 		  }
 		}
@@ -6229,9 +8090,11 @@ Include "includes/eujgramatica.inf";
       golpe = calcular_golpe(defensor);
   
 	  if (atacante == player) {
-        defensor.printcasename();print " de ",(the)defensor, " te ataca con éxito, quitándote ",golpe," puntos de vida.^";
+!        defensor.printcasename();print " de ",(the)defensor, " te ataca con éxito, quitándote ",golpe," puntos de vida.^";
+        defensor.printcasename();print " de ",(the)defensor, " te ataca con éxito, ",(string)verbo_golpeArma(),"te en ",(string)zona_golpe(),".^";
       } else {
-        defensor.printcasename();print " de ",(the)defensor, " ataca con éxito a ",(the)atacante,", quitándole ",golpe," puntos de vida.^";
+!        defensor.printcasename();print " de ",(the)defensor, " ataca con éxito a ",(the)atacante,", quitándole ",golpe," puntos de vida.^";
+        defensor.printcasename();print " de ",(the)defensor, " ataca con éxito a ",(the)atacante,", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       }
       
       atacante.vida = atacante.vida - golpe;
@@ -6263,12 +8126,18 @@ Include "includes/eujgramatica.inf";
   
   if (atacante.vida < 1) {
 	  if (atacante == player) {
-        print "^",(The)defensor, " te derrota y caes muerto.^";
+	    if (defensor provides multiple && defensor.multiple>1) 
+	      print "^",(The)defensor, " te derrotan y caes muerto.";
+		else 
+		  print "^",(The)defensor, " te derrota y caes muerto.^";
         deadflag=1;
         rtrue;
       } else {
 	    give atacante muerto;
-        print "^",(The)defensor, " derrota a ",(the)atacante,", que cae muerto debido a las heridas causadas.^";
+	    if (defensor provides multiple && defensor.multiple>1) 
+	      print "^",(The)defensor, " derrotan a ",(the)atacante,", que cae muerto debido a las heridas causadas.^";
+		else 
+		  print "^",(The)defensor, " derrota a ",(the)atacante,", que cae muerto debido a las heridas causadas.^";
         rtrue;
       }
   }
@@ -6276,6 +8145,8 @@ Include "includes/eujgramatica.inf";
 
 ];
 
+! Mueve a Bomo en la dirección pasada por parámetro tras recibir una orden del
+! estilo: BOMO, VE AL NORTE.
 [moverBomo direccion loc;
   switch(direccion) {
 	  n_obj: loc=location.n_to;
@@ -6328,7 +8199,7 @@ Include "includes/eujgramatica.inf";
   }
 ];
 
-!
+! Escena de Introducción
 Object  Corto_Inicial
  class  cortometraje
  with   
@@ -6397,6 +8268,7 @@ Object  Corto_Inicial
         ]
 ;
 
+! Escena de cinemática cuando Bomo y Dass caen al agujero
 Object  Corto_Caida
  class  cortometraje
  with  
@@ -6443,6 +8315,7 @@ Object  Corto_Caida
          Luego te sumerges en la oscuridad de la inconsciencia...^"
 ;
 
+! Escena de cinemática cuando Bomo y Dass caen al agujero
 Object  Corto_Caida2
  class  cortometraje
  with   description
@@ -6479,6 +8352,7 @@ Object  Corto_Caida2
          Luego te sumerges en la oscuridad de la inconsciencia...^"
 ;
 
+! Escena de cinemática al salir del agujero.
 Object  Corto_FinFase1
  class  cortometraje
  with   
@@ -6527,6 +8401,7 @@ Object  Corto_FinFase1
          ]           
 ;
 
+! Dibuja una imagen y realiza una pausa. Para la escena de introducción gráfica.
 [ DrawPausa img delay;
     viewImageCenter(img);
 !    print "^[Esperando ", delay, " décimas de segundo]^";
@@ -6547,6 +8422,8 @@ Object  Corto_FinFase1
     glk($00D6, 0); ! request_timer_events (cancelados)
     return gg_arguments-->2;
 ];
+
+! Escena cinemática de introducción gráfica.
 [ TitlePageGraphic t;
     t=16;
     print (s_user1) "Hace mucho tiempo, en una galaxia muy, muy lejana...^" ;
@@ -6606,6 +8483,8 @@ Object  Corto_FinFase1
     BorrarPantalla();
     font on;
  ];     
+ 
+ ! Escena cinemática de introducción en modo texto.
  [ TitlePage;
     !@erase_window -1;
     font off;
@@ -6695,6 +8574,8 @@ Object -> t_apuestasO4 "apuestas"  with name 'apostar' 'apuesta' 'apuestas';
 Object -> t_jaxfsevalO4 "Jaxf Seval"  with name 'jaxf' 'seval' 'humano' 'jugador' 'apostante';
 Object -> t_sottaO4 "Sotta el Hutt"  with name 'sotta' 'hutt';
 Object  -> t_uhumeleO4 "uhumele" with name 'nave' 'transporte' 'uhumele' 'modulo' 'control';
+Object  -> t_saludoO4 "saludo" with name 'saludos' 'hola';
+Object  -> t_despedidaO4 "despedida" with name 'adios';
 
 
 
