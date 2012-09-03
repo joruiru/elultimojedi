@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/03  Joruiru - Arreglo de la descripción del cuartel de mando de Cadgel
+!              Meadows.
 !  2012/08/31  Joruiru - Soluciones alternativas a puzles dentro de la base y
 !              añadidas algunas muertes.
 !  2012/08/30  Joruiru - Se termina toda la parte de la base de Sotta.
@@ -634,7 +636,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    faseorvax4();
+    !faseorvax4();
 
  
 ];
@@ -993,7 +995,7 @@ Lugar limbo "limbo"
 ! Objeto para que reaccione a <<Mirar <nombre localidad>>>
 Object oLocGenerico "lugar"
 with
-    name 'lugar' 'sitio' 'suelo' 'cuartel' 'paso' 'desfiladero' 'camino' 'puerto' 'cadgel' 'meadows' 
+    name 'lugar' 'sitio' 'suelo' 'paso' 'desfiladero' 'camino' 'puerto' 'cadgel' 'meadows' 
          'hangar' 'hangares' 'darth' 'vader' 'lord' 'rio' 'tripulantes',
     name_f 'pista' 'ladera' 'cima' 'cabina' 'montana' 'montanas' 'vegetacion' 'planta' 'plantas' 'agua' 'tripulacion',
     description [w;
@@ -1089,7 +1091,7 @@ with
 	                   default: "Desde aquí no puedes ver eso que dices.";
                      }
             !'agujero' : if (location == agujero) <<look>>; else "Desde aquí no puedes ver eso que dices.";
-            'cuartel' : if (location == CuartelMando) <<look>>; else "Desde aquí no puedes ver eso que dices.";
+            !'cuartel' : if (location == CuartelMando) <<look>>; else "Desde aquí no puedes ver eso que dices.";
             'cabina': if (location==CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) <<look>>;
 	                  else "Desde aquí no puedes ver eso que dices.";
 	        'darth','vader','lord': if (location == CuartelMando) "No te ha dado tiempo a fijarte demasiado."; 
@@ -2483,7 +2485,7 @@ has scenery transparent enterable;
 
 Lugar extEste "Entrada a Cadgel Meadows"
   with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+    sgw_img pngEntradaCadgel,       ! el grafico de la localidad
     name 'exterior',
     description "La entrada a Cadgel Meadows está vigilada y protegida por soldados imperiales. Las zonas arboladas podrían 
                 ocultaros mientras pensáis cómo entrar.",
@@ -3150,8 +3152,13 @@ Lugar CuartelMando "Cuartel de Mando de Cadgel Meadows"
     sgw_mus sndVill,
     sgw_vol VOLUMEN_BAJO,
     name 'cuartel' 'mando',
+    description "Estas en el interior del cuartel de mando imperial del puerto espacial Cadgel Meadows. El Comandante Vill, quien está
+            al mando de la Legion 501, se encuentra tras una mesa en la que se proyectan planos holográficos del planeta. El resto
+            del puesto de mando está repleto de soldados clon atendiendo comunicaciones e imágenes recibidas del resto de tropas
+            desplegadas.",
     describe [;
-      print "Estas en el interior del cuartel de mando imperial del puerto espacial Cadgel Meadows.";
+      viewImageCenter(self.sgw_img);
+      self.Lugar::describe();
       if (self hasnt visited) {
 	      EsperarTecla("^[Pulsa una tecla]^");
 	      print "^Cuando entras, el Comandante Vill está teniendo una comunicación con Darth Vader...^";
@@ -3169,9 +3176,44 @@ Lugar CuartelMando "Cuartel de Mando de Cadgel Meadows"
 	      print (s_block) "^- FIN DE LA COMUNICACIÓN -^";
 	      Achieved(7);
       }
+      if (self hasnt nosalidas) <<Salidas>>;
       rtrue;
     ],
     out_to hangarNorte,
+;
+
+Object decorado_CuartelMando CuartelMando
+class decorado
+with  describe
+       'cuartel' "El Comandante Vill, quien está al mando de la Legion 501, se encuentra tras una mesa en la que se 
+                 proyectan planos holográficos del planeta. El resto del puesto de mando está repleto de soldados 
+                 clon atendiendo comunicaciones e imágenes recibidas del resto de tropas desplegadas." 0
+       'mando' "El Comandante Vill, quien está al mando de la Legion 501, se encuentra tras una mesa en la que se 
+                 proyectan planos holográficos del planeta. El resto del puesto de mando está repleto de soldados 
+                 clon atendiendo comunicaciones e imágenes recibidas del resto de tropas desplegadas." 0,
+       'puesto' "El Comandante Vill, quien está al mando de la Legion 501, se encuentra tras una mesa en la que se 
+                 proyectan planos holográficos del planeta. El resto del puesto de mando está repleto de soldados 
+                 clon atendiendo comunicaciones e imágenes recibidas del resto de tropas desplegadas." 0,
+       'planos' "Sobre una mesa redonda central, se proyectan planos holográficos de Nuevo Plympto, desde donde
+                se gestionan las tropas desplegadas en el planeta." G_PLURAL
+       'hologramas' "Sobre una mesa redonda central, se proyectan planos holográficos de Nuevo Plympto, desde donde
+                se gestionan las tropas desplegadas en el planeta." G_PLURAL
+       'mesa' "Sobre una mesa redonda central, se proyectan planos holográficos de Nuevo Plympto, desde donde
+                se gestionan las tropas desplegadas en el planeta." G_PLURAL
+       'soldados' "El puesto de mando está repleto de soldados clon atendiendo comunicaciones e imágenes 
+                  recibidas del resto de tropas desplegadas." G_PLURAL
+       'clones' "El puesto de mando está repleto de soldados clon atendiendo comunicaciones e imágenes 
+                  recibidas del resto de tropas desplegadas." G_PLURAL
+       'clon' "El puesto de mando está repleto de soldados clon atendiendo comunicaciones e imágenes 
+                  recibidas del resto de tropas desplegadas." 0
+       'tropas' "Sobre una mesa redonda central, se proyectan planos holográficos de Nuevo Plympto, desde donde
+                se gestionan las tropas desplegadas en el planeta." G_FEMENINO+G_PLURAL
+       'comunicaciones' "Comunicaciones de audio con diversos batallones de clones desplegados por el planeta." G_FEMENINO+G_PLURAL
+       'imagenes' "Imágenes recibidas en el cuartel de mando enviadas por las tropas desplegadas por el planeta." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
 ;
 
 Object -> oComandanteVill "Comandante Vill"
