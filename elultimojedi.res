@@ -7,6 +7,7 @@ PICTURE pngCamino res/img/camino.png
 PICTURE pngExtCadgel res/img/extcadgel.png
 PICTURE pngExtCadgelB res/img/extcadgelB.png
 PICTURE pngExtCadgelC res/img/extcadgelC.png
+PICTURE pngEntradaCadgel res/img/entradacadgel.png
 PICTURE pngHangarNorte res/img/hangarnorte.png
 PICTURE pngHangarSur res/img/hangarsur.png
 PICTURE pngHangarEste res/img/hangareste.png

@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/03  Joruiru - Arreglo de la descripción del cuartel de mando de Cadgel
+!              Meadows.
 !  2012/08/31  Joruiru - Soluciones alternativas a puzles dentro de la base y
 !              añadidas algunas muertes.
 !  2012/08/30  Joruiru - Se termina toda la parte de la base de Sotta.
@@ -634,7 +636,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    faseorvax4();
+    !faseorvax4();
 
  
 ];
@@ -2483,7 +2485,7 @@ has scenery transparent enterable;
 
 Lugar extEste "Entrada a Cadgel Meadows"
   with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+    sgw_img pngEntradaCadgel,       ! el grafico de la localidad
     name 'exterior',
     description "La entrada a Cadgel Meadows está vigilada y protegida por soldados imperiales. Las zonas arboladas podrían 
                 ocultaros mientras pensáis cómo entrar.",
@@ -3150,8 +3152,13 @@ Lugar CuartelMando "Cuartel de Mando de Cadgel Meadows"
     sgw_mus sndVill,
     sgw_vol VOLUMEN_BAJO,
     name 'cuartel' 'mando',
+    description "Estas en el interior del cuartel de mando imperial del puerto espacial Cadgel Meadows. El Comandante Vill, quien está
+            al mando de la Legion 501, se encuentra tras una mesa en la que se proyectan planos holográficos del planeta. El resto
+            del puesto de mando está repleto de soldados clon atendiendo comunicaciones e imágenes recibidas del resto de tropas
+            desplegadas.",
     describe [;
-      print "Estas en el interior del cuartel de mando imperial del puerto espacial Cadgel Meadows.";
+      viewImageCenter(self.sgw_img);
+      self.Lugar::describe();
       if (self hasnt visited) {
 	      EsperarTecla("^[Pulsa una tecla]^");
 	      print "^Cuando entras, el Comandante Vill está teniendo una comunicación con Darth Vader...^";
@@ -3169,6 +3176,7 @@ Lugar CuartelMando "Cuartel de Mando de Cadgel Meadows"
 	      print (s_block) "^- FIN DE LA COMUNICACIÓN -^";
 	      Achieved(7);
       }
+      if (self hasnt nosalidas) <<Salidas>>;
       rtrue;
     ],
     out_to hangarNorte,
