@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/11  Joruiru - Se cambian los colores de las piezas del Dejarik por
+!              razas. Ghhhk (rojo) -> Houjix (verde) -> Kintano (azul)
 !  2012/09/03  Joruiru - Arreglo de la descripción del cuartel de mando de Cadgel
 !              Meadows.
 !  2012/08/31  Joruiru - Soluciones alternativas a puzles dentro de la base y
@@ -6049,9 +6051,9 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
     vida 50,
     dado_golpe 1 6 0, !1d6+0
     jugando 0, !0:No se ha iniciado partida 1:Turno 1 2:Turno 2 3:Turno 3 4:Otra partida
-    dejacolor "rojo" "verde" "azul",
+    dejacolor "Ghhhk" "Houjix" "Kintano",
     dejavalor 4 7 12,
-    dejacolorDass "rojo" "verde" "azul",
+    dejacolorDass "Ghhhk" "Houjix" "Kintano",
     dejavalorDass 6 3 10,
     puntos 0,
     puntosDass 0,
@@ -7850,20 +7852,20 @@ has animate proper;
    if (k=='x') {
 	   "^Decides que es mejor pensar el próximo movimiento antes de realizar tu jugada.";
    }
-   !Se comprueban los colores
-   !rojo gana a verde. verde gana a azul. azul gana a rojo.
-   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"rojo") == 0) valor1=3;
-   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"verde") == 0) valor1=2;
-   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"azul") == 0) valor1=1;
+   !Se comprueban las razas
+   !Ghhhk gana a Houjix. Houjix gana a Kintano. Kintano gana a Ghhhk.
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"Ghhhk") == 0) valor1=3;
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"Houjix") == 0) valor1=2;
+   if (StrCmp2(oJaxfSevalO4.&dejacolor-->turno,"Kintano") == 0) valor1=1;
 
-   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"rojo") == 0) valor2=3;
-   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"verde") == 0) valor2=2;
-   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"azul") == 0) valor2=1;
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"Ghhhk") == 0) valor2=3;
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"Houjix") == 0) valor2=2;
+   if (StrCmp2(oJaxfSevalO4.&dejacolorDass-->j,"Kintano") == 0) valor2=1;
 
-   if (valor1==3 && valor2==1) valor2=4; !azul gana a rojo
-   if (valor1==1 && valor2==3) valor1=4; !azul gana a rojo
+   if (valor1==3 && valor2==1) valor2=4; !Kintano gana a Ghhhk
+   if (valor1==1 && valor2==3) valor1=4; !Kintano gana a Ghhhk
    
-   !Si son del mismo color, se compara el valor de las fichas.
+   !Si son de la misma raza, se compara el valor de las fichas.
    if (valor1==valor2) {
 	   valor1=oJaxfSevalO4.&dejavalor-->turno;
 	   valor2=oJaxfSevalO4.&dejavalorDass-->j;
