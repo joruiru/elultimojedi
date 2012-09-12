@@ -56,6 +56,11 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/12  Joruiru - Se añade a Boba Fett como enemigo en la base de Sotta.
+!              Se modifica turno_combate para cambiar lo de "quitándole x puntos
+!              de vida" por mensajes como los de multi_combate.
+!              Se añade en turno_combate la posibilidad de que el defensor tenga
+!              resistencia a ataques con la Fuerza.
 !  2012/09/11  Joruiru - Se cambian los colores de las piezas del Dejarik por
 !              razas. Ghhhk (rojo) -> Houjix (verde) -> Kintano (azul)
 !  2012/09/03  Joruiru - Arreglo de la descripción del cuartel de mando de Cadgel
@@ -638,7 +643,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    !faseorvax4();
+    faseorvax4();
 
  
 ];
@@ -4844,7 +4849,7 @@ has nosalidas;
  give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
- playerTo(AlmacenBaseO4,2);
+ playerTo(Pasillo4BaseO4,2);
  move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -7198,11 +7203,18 @@ Lugar Pasillo4BaseO4 "Pasillo"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
   description "En el lado oeste de este pasillo se encuentra el ascensor para bajar al nivel inferior del complejo.",
+  describe[;
+    self.Lugar::describe();
+    if (oBobaFettO4 in self) "Un cazarrecompensas, que debe trabajar para Sotta el Hutt, bloquea tu camino, a la par 
+      que te apunta con una enorme pistola láser dispuesto a disparar al menor movimiento.";
+    rtrue;
+  ],
   s_to PuertaHabitacionesO4,
   e_to PuertaSottaO4,
   d_to oAscensorPiso2O4,
   before [;
-    go: if (noun==s_obj) {
+    go: if (oBobaFettO4 in self) <<Ask oBobaFettO4>>;
+        if (noun==s_obj) {
 	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
 	      playerTo(HabitacionesBaseO4,2);
 	      rtrue;
@@ -7297,6 +7309,106 @@ Object oAscensorPiso2O4 "ascensor" Pasillo4BaseO4
                "La puerta del ascensor se cierra automáticamente tras de ti cuando sales del mismo.";
        ],
 has static scenery door openable container objetivo;
+
+Object oBobaFettO4 "cazarrecompensas" Pasillo4BaseO4
+  with
+    name 'boba' 'fett' 'cazarrecompensas' 'mandaloriano',
+    description "El cazarrecompensas bloquea tu camino. A tenor de su vestimenta, debe ser un mandaloriano. Debajo de
+                su vieja armadura de color verde oliva, va vestido con un traje ignífugo de color gris. Lleva un casco 
+                con el mismo color y motivos que la armadura, con una abertura horizontal a la altura de los ojos y una 
+                vertical para la nariz y la boca. El cinturón rojizo es del mismo color que los brazales, que, junto a
+                las hombreras amarillas, le protegen ambos brazos. En la espalda carga unos retrocohetes, sin duda para
+                permitirle volar durante los combates al aire libre. Va armado con una enorme pistola láser, con la que
+                te apunta.",
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 50,
+    topvida 50,
+    dado_golpe 2 6 6, !2d6+6
+    almorir [;
+      print "^Cuando parece que estás a punto de acabar con el cazarrecompensas y que la victoria es tuya, el mandaloriano
+      enciende los retrocohetes que lleva a la espalda, escapando de tu ataque definitivo y consiguiendo huir por el
+      pasillo. Cuando está a punto de desaparecer, da media vuelta y te grita:^";
+      HablaPersonaje("Cazarrecompensas","¡Esto no acaba aquí, maldito Jedi! ¡Recuerda el nombre de Boba Fett la próxima
+        vez que nos encontremos, pues no tendré piedad de ti!");
+      "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, mientras ves como desaparece por el pasillo.";
+    ],
+    resisteFuerza [;
+      if (random(2)<2) {
+	      !Resiste el ataque de la Fuerza
+	      print "Parece que el cazarrecompensas estaba esperando tu ataque usando la Fuerza, ya que
+	            con un rápido movimiento se adelanta a él y consigue esquivarlo.";
+	      return 1;
+      } 
+      return 0;
+    ],
+    life [;
+	  Attack: give self estatico;
+	          move player to parent(self);
+	          if (second == nothing) 
+	            turno_combate(player,self,oSableLaser);
+	          else
+	            turno_combate(player,self,second);
+	          viewImageSlide(pngSablesLuz);
+	          if (self has muerto) {
+		        move self to limbo;
+		        give player ~descubierto;
+	          }
+              rtrue;
+	  Answer,ask,tell: print "Sin mediar palabra, el cazarrecompensas mandaloriano se lanza a por ti.^";
+	                   <<Attack self>>;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "Sientes un gran odio hacia los jedis en su interior. Una gran pérdida le atormenta.";
+	    Push, Aturdir: give self estatico;
+	                   move player to parent(self);
+                       turno_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 stopdaemon(self);
+		                 move self to limbo;
+		                 give player ~descubierto;
+	                   }
+	                   rtrue;
+        Enganyar: "No funcionará. Su mente es muy fuerte y su odio a los jedis aún más.";
+	    Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.";
+        Sanar: "¿Y darle la oportunidad de que te mate?";
+    ],
+has animate transparent scenery;
+
+Object decorado_oBobaFettO4 oBobaFettO4
+class decorado
+with  describe
+       'armadura' "Armadura mandaloriana de color verde oliva. Cubre todo el tronco, lo que deja libres los brazos y
+                  piernas para una mejor maniobrabilidad." G_FEMENINO
+       'casco' "Casco verde oliva con algunos motivos rojizos. Tiene una abertura horizontal para los ojos y otra
+               vertical para la nariz y la boca." 0
+       'traje' "Traje ignífugo de color gris, que viste por debajo de la armadura." 0
+       'cinturon' "De color rojizo. Le permite un fácil y rápido acceso a las armas que porta en él." 0
+       'brazal' "Del mismo color que el cinturón, le protegen los antebrazos." 0
+       'brazales' "Del mismo color que el cinturón, le protegen los antebrazos." G_PLURAL
+       'hombrera' "De color amarillo, le protegen los hombros." G_FEMENINO
+       'hombreras' "De color amarillo, le protegen los hombros." G_FEMENINO+G_PLURAL
+       'cohete' "Los lleva cargados a la espalda, a modo de mochila. Le permiten volar durante los combates,
+                      para obtener una ventaja definitiva a su favor." 0
+       'cohetes' "Los lleva cargados a la espalda, a modo de mochila. Le permiten volar durante los combates,
+                      para obtener una ventaja definitiva a su favor." G_PLURAL
+       'retrocohete' "Los lleva cargados a la espalda, a modo de mochila. Le permiten volar durante los combates,
+                      para obtener una ventaja definitiva a su favor." 0
+       'retrocohetes' "Los lleva cargados a la espalda, a modo de mochila. Le permiten volar durante los combates,
+                      para obtener una ventaja definitiva a su favor." G_PLURAL
+       'arma' "Una enorme pistola láser con la que te apunta." G_FEMENINO
+       'pistola' "Una enorme pistola láser con la que te apunta." G_FEMENINO,
+  before[;
+    examine: rfalse;
+    default: print "El cazarrecompensas no te va a permitir hacerlo."; rtrue;
+  ],
+;
+
 
 Lugar HabitacionesBaseO4 "Habitaciones"
 with
@@ -7938,7 +8050,7 @@ Include "includes/eujgramatica.inf";
 
 ! Ejecuta un turno de combate.
 ! Realiza un ataque del atacante y otro del defensor.
-[ turno_combate atacante defensor arma bo bd golpe;
+[ turno_combate atacante defensor arma bo bd golpe resFuerza;
 
   if (defensor provides multiple) {
 	  multi_combate(atacante,defensor,arma);
@@ -7948,6 +8060,7 @@ Include "includes/eujgramatica.inf";
   bo = get_bo(atacante, arma);
   bd = get_bd(defensor);
   golpe = 0;
+  resFuerza = 0;
   
   if (bo>bd) {
 	  !El ataque tiene éxito
@@ -7956,14 +8069,20 @@ Include "includes/eujgramatica.inf";
 	  else 
 	    golpe = calcular_golpe(arma);
 	  if (atacante == player)
-	    if (arma==oFuerza)
-	      print "^Con una ráfaga de Fuerza que sale de tu mano abierta derribas con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
-	    else
-          print "^Atacas con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
+	    if (arma==oFuerza) {
+		  if (defensor provides resisteFuerza) resFuerza=defensor.resisteFuerza();
+		  if (resFuerza==0)
+	        !print "^Con una ráfaga de Fuerza que sale de tu mano abierta derribas con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
+	        print "Con una ráfaga de Fuerza que sale de tu mano abierta derribas 
+                   con éxito ",(al)defensor,", ",(string)verbo_golpeFuerza()," en ",(string)zona_golpe()," al caer.^";
+        } else
+         !print "^Atacas con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
+          print "Atacas con éxito ",(al)defensor,", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       else
-        print "^",(The)atacante, " ataca con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
-      
-      defensor.vida = defensor.vida - golpe;
+        !print "^",(The)atacante, " ataca con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
+        print (The)atacante, " ataca con éxito ",(al)defensor,", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
+     
+      if (resFuerza==0) defensor.vida = defensor.vida - golpe;
   } else {
 	  !El ataque falla
 	  if (atacante == player)
@@ -7974,7 +8093,9 @@ Include "includes/eujgramatica.inf";
 
   if (defensor.vida < 1) {
 	  give defensor muerto;
-	  "^",(The)defensor, " cae muerto debido a las heridas sufridas.";
+	  if (defensor provides almorir) defensor.almorir();
+	  else "^",(The)defensor, " cae muerto debido a las heridas sufridas.";
+	  rtrue;
   }
   
   switch(defensor.vida) {
@@ -7985,7 +8106,7 @@ Include "includes/eujgramatica.inf";
   }
   
   !Si el ataque es usando la Fuerza, el rival no tiene capacidad de respuesta
-  if (arma==oFuerza) rtrue;
+  if (arma==oFuerza && resFuerza==0) rtrue;
   
   bo = get_bo(defensor, nothing);
   bd = get_bd(atacante);
@@ -7996,9 +8117,11 @@ Include "includes/eujgramatica.inf";
       golpe = calcular_golpe(defensor);
   
 	  if (atacante == player)
-        print "^",(The)defensor, " te ataca con éxito, quitándote ",golpe," puntos de vida.";
+        !print "^",(The)defensor, " te ataca con éxito, quitándote ",golpe," puntos de vida.";
+        print "^",(The)defensor, " te ataca con éxito, ",(string)verbo_golpeArma(),"te en ",(string)zona_golpe(),".^";
       else
-        print "^",(The)defensor, " ataca con éxito a ",(the)atacante,", quitándole ",golpe," puntos de vida.";
+        !print "^",(The)defensor, " ataca con éxito a ",(the)atacante,", quitándole ",golpe," puntos de vida.";
+        print "^",(The)defensor, " ataca con éxito a ",(the)atacante,", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       
       atacante.vida = atacante.vida - golpe;
   } else {

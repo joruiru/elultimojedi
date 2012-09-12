@@ -41,6 +41,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/12  Joruiru - Se añade activar/desactivar como sinónimos de 
+!              SwitchOn/SwitchOff
 !  2012/08/14  Joruiru - Se añade la funcion StrCmp2 para comparar strings y
 !              StrLen para devolver la longitud de una string.  
 !  2012/05/06  Joruiru - Se crea el archivo. 
@@ -248,6 +250,23 @@ Verb 'juega' 'jugar'
     * 'al' 'dejarik' 'con'/'contra' creature   -> Jugar;
 !VerboIrregular "jugar" with imperativo 'juega';
 
+Verb 'desactiva'
+  * noun -> SwitchOff;
+  
+Verb 'activa'
+  * noun -> SwitchOn;
+  
+Verb 'teclea' 'escribe' 'introduce'
+  *                 -> TeclearMal
+  * topic 'en'      -> TeclearMal
+  * topic 'en' noun -> Teclear
+  * noun            -> TeclearMal
+  * noun topic      -> TeclearMal
+  * 'en' noun topic -> TeclearMal
+  * 'en' noun       -> TeclearMal;
+
+VerboIrregular "introducir" with imperativo 'introduce';
+
 Verb 'gilipollas' 'guarro' 'imbecil'
   *               -> Strong;
 
@@ -410,6 +429,26 @@ Array StringBuffer2->102; ! Temporary string buffers
     "No es momento de ponerse a jugar a nada.";
 ];
 
+[ TeclearSub;
+  if (noun == 0) {
+    TeclearMalSub();
+    rtrue;
+  } else {
+    "No puedes teclear nada ahí.";
+  }
+];
+
+[ TeclearMalSub;
+  print "[Por favor, usa la forma ~";
+  style bold;
+  print "TECLEA lo que sea EN objeto";
+  style roman;
+  print "~. Por ejemplo: ~";
+  style bold;
+  print "TECLEA HOLA EN EL TECLADO";
+  style roman;
+  "~.]";
+];
 
 [ SonidoSub;
   print "[Por favor, usa la forma ~";
@@ -433,3 +472,4 @@ Array StringBuffer2->102; ! Temporary string buffers
   Damusix.DesactivarAudio();
   "[Desactivados todos los efectos sonoros.]";
 ];
+
