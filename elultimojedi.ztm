@@ -182,7 +182,7 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
         <PISTA>Si le hablas de que sois supervivientes de la batalla de Half-Axe, te lo ganarás.
         <PISTA>O si le decís que buscáis a la familia de Bomo también.
 
-      <PREG>¿Ya sé donde tienen a los nosaurianos. ¿Y ahora??
+      <PREG>Ya sé donde tienen a los nosaurianos. ¿Y ahora?
         <PISTA>Tendrás que salir del puerto espacial...
         <PISTA>...y para ello necesitarás una nave.
         <PISTA>El capitán de la Uhumele está dispuesto a ayudar.
@@ -220,6 +220,67 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
       <PISTA>Sobrevuela el hangar sur y localiza la Valance.
       <PISTA>Abre fuego sobre la Valance
       <PISTA>~DISPARA A LA VALANCE~
+      
+  </MENU>
+
+  <MENU>En Orvax IV
+
+    <PREG>Averiguando donde están los nosaurianos.
+      <PISTA>Muévete por la ciudad.
+      <PISTA>Algunos tripulantes de la Uhumele están haciendo averiguaciones por su cuenta. Si te los encuentras, pregúntales.
+      <PISTA>Concretamente, Mezgraf, ha averiguado algo sobre dónde tienen retenidos a los nosaurianos.
+      <PISTA>Mezgraf está en la calle que hay al OESTE de la plaza.
+      
+    <PREG>Ya sé dónde están los nosaurianos... ¿y ahora cómo llego hasta ellos?
+      <PISTA>Tienes que bajar al nivel inferior de la ciudad...
+      <PISTA>... pero resulta que los suburbios del nivel inferior son laberínticos.
+      <PISTA>Hay sutiles pistas en las calles que indican el camino.
+      <PISTA>En cualquier momento estando en el nivel inferior, con SUR - SUR - OESTE llegas hasta las celdas.
+    
+    <MENU>Buscando a Resa desesperadamente...    
+      <PREG>¿Quién se ha llevado a Resa?
+        <PISTA>Necesitas averiguar quién controla el mercado de esclavos.
+        <PISTA>Quizás Sniffles haya averiguado algo en sus investigaciones.
+        <PISTA>Podrás encontrar a Sniffles en la cantina, en la calle que hay al ESTE de la plaza.
+        <PISTA>Meetto, un mercader que hay en la plaza, es quien sabe quién se ha llevado a Resa.
+      
+      <PREG>Meetto se niega a hablar.
+        <PISTA>Fíjate en sus respuestas...
+        <PISTA>Meetto es un toydoriano, raza famosa por ser fácilmente sobornables.
+        <PISTA>Meetto sólo aceptará dinero
+      
+      <PREG>¿Cómo consigo dinero?
+        <PISTA>Tendrás que ganártelo...
+        <PISTA>La cantina parece un buen lugar para conseguir dinero.
+        <PISTA>Pregúntale a Sniffles. Seguramente sabe algo.
+        <PISTA>~SNIFFLES, COMO PUEDO CONSEGUIR DINERO~
+      
+      <PREG>¿Cómo juego al Dejarik?
+        <PISTA>Necesitas algo con lo que apostar para que Jaxf Seval acepte jugar.
+        <PISTA>En sus respuestas, averiguarás que no solo acepta dinero.
+        <PISTA>Acepta cualquier objeto o vehículo como apuesta.
+        <PISTA>Llévale el módulo de control de la Uhumele y aceptará tu apuesta.
+   
+    </MENU>
+
+    <MENU>En la mansión de Sotta.    
+      <PREG>¿Cómo entro?
+        <PISTA>Los guardias te impiden llegar a la puerta.
+        <PISTA>Las puertas de acero no son problema para un jedi armado.
+        <PISTA>~ABRE LA PUERTA CON EL SABLE~
+
+      <PREG>El ascensor está bloqueado.
+        <PISTA>Algún mecanismo de seguridad impide que suba a la planta superior.
+        <PISTA>Lo más seguro es que haya una sala de control desde donde se controle toda la seguridad del complejo.
+        <PISTA>A la sala de control se llega a través del pasillo que hay al NORTE del COMEDOR del complejo.
+        <PISTA>Seguramente desde los terminales podrás controlar el ascensor.
+        <PISTA>~ENCIENDE INTERRUPTOR DEL ASCENSOR~
+
+      <PREG>Tengo delante a Sotta el Hutt...
+        <PISTA>La acción obvia es preguntarle por Resa...
+        <PISTA>Cuando sepas la respuesta, el resto es cosa tuya. El final depende de tu reacción...
+       
+    </MENU>
       
   </MENU>
       

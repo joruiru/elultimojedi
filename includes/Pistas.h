@@ -16,10 +16,11 @@ with
     ZIPI_Menu2
     ZIPI_Menu3
     ZIPI_Menu5
-    ZIPI_Otro8
     ZIPI_Menu6
+    ZIPI_Otro8
+    ZIPI_Menu9
     ZIPI_Otro10
-    ZIPI_Menu7
+    ZIPI_Menu10
 ;
 ZIPI_Menu ZIPI_Menu1
 with
@@ -69,40 +70,66 @@ with
 ;
 ZIPI_Menu ZIPI_Menu6
 with
+  ZIPI_titulo "En Orvax IV",
+  ZIPI_item
+    ZIPI_Pista13
+    ZIPI_Pista14
+    ZIPI_Menu7
+    ZIPI_Menu8
+;
+ZIPI_Menu ZIPI_Menu7
+with
+  ZIPI_titulo "Buscando a Resa desesperadamente...    ",
+  ZIPI_item
+    ZIPI_Pista15
+    ZIPI_Pista16
+    ZIPI_Pista17
+    ZIPI_Pista18
+;
+ZIPI_Menu ZIPI_Menu8
+with
+  ZIPI_titulo "En la mansión de Sotta.    ",
+  ZIPI_item
+    ZIPI_Pista19
+    ZIPI_Pista20
+    ZIPI_Pista21
+;
+ZIPI_Menu ZIPI_Menu9
+with
   ZIPI_titulo "La FUERZA",
   ZIPI_item
     ZIPI_Otro9
 ;
-ZIPI_Menu ZIPI_Menu7
+ZIPI_Menu ZIPI_Menu10
 with
   ZIPI_titulo "Información adicional (mapas y solución)",
   ZIPI_item
-    ZIPI_Menu8
+    ZIPI_Menu11
     ZIPI_Otro14
-    ZIPI_Menu10
+    ZIPI_Menu13
 ;
-ZIPI_Menu ZIPI_Menu8
+ZIPI_Menu ZIPI_Menu11
 with
   ZIPI_titulo "Mapas (sólo para casos de extrema necesidad)",
   ZIPI_item
     ZIPI_Otro11
-    ZIPI_Menu9
+    ZIPI_Menu12
 ;
-ZIPI_Menu ZIPI_Menu9
+ZIPI_Menu ZIPI_Menu12
 with
   ZIPI_titulo "Puerto Espacial de Cadgel Meadows",
   ZIPI_item
     ZIPI_Otro12
     ZIPI_Otro13
 ;
-ZIPI_Menu ZIPI_Menu10
+ZIPI_Menu ZIPI_Menu13
 with
   ZIPI_titulo "Solución (prohibido leer esto)",
   ZIPI_item
     ZIPI_Otro15
-    ZIPI_Menu11
+    ZIPI_Menu14
 ;
-ZIPI_Menu ZIPI_Menu11
+ZIPI_Menu ZIPI_Menu14
 with
   ZIPI_titulo "Puerto Espacial de Cadgel Meadows",
   ZIPI_item
@@ -193,7 +220,7 @@ with
 ;
 ZIPI_Pista ZIPI_Pista8
 with
-  ZIPI_titulo "¿Ya sé donde tienen a los nosaurianos. ¿Y ahora??",
+  ZIPI_titulo "Ya sé donde tienen a los nosaurianos. ¿Y ahora?",
   ZIPI_pistas
     "Tendrás que salir del puerto espacial..."
     "...y para ello necesitarás una nave."
@@ -238,6 +265,84 @@ with
     "Sobrevuela el hangar sur y localiza la Valance."
     "Abre fuego sobre la Valance"
     "~DISPARA A LA VALANCE~"
+;
+ZIPI_Pista ZIPI_Pista13
+with
+  ZIPI_titulo "Averiguando donde están los nosaurianos.",
+  ZIPI_pistas
+    "Muévete por la ciudad."
+    "Algunos tripulantes de la Uhumele están haciendo averiguaciones por su cuenta. Si te los encuentras, pregúntales."
+    "Concretamente, Mezgraf, ha averiguado algo sobre dónde tienen retenidos a los nosaurianos."
+    "Mezgraf está en la calle que hay al OESTE de la plaza."
+;
+ZIPI_Pista ZIPI_Pista14
+with
+  ZIPI_titulo "Ya sé dónde están los nosaurianos... ¿y ahora cómo llego hasta ellos?",
+  ZIPI_pistas
+    "Tienes que bajar al nivel inferior de la ciudad..."
+    "... pero resulta que los suburbios del nivel inferior son laberínticos."
+    "Hay sutiles pistas en las calles que indican el camino."
+    "En cualquier momento estando en el nivel inferior, con SUR - SUR - OESTE llegas hasta las celdas."
+;
+ZIPI_Pista ZIPI_Pista15
+with
+  ZIPI_titulo "¿Quién se ha llevado a Resa?",
+  ZIPI_pistas
+    "Necesitas averiguar quién controla el mercado de esclavos."
+    "Quizás Sniffles haya averiguado algo en sus investigaciones."
+    "Podrás encontrar a Sniffles en la cantina, en la calle que hay al ESTE de la plaza."
+    "Meetto, un mercader que hay en la plaza, es quien sabe quién se ha llevado a Resa."
+;
+ZIPI_Pista ZIPI_Pista16
+with
+  ZIPI_titulo "Meetto se niega a hablar.",
+  ZIPI_pistas
+    "Fíjate en sus respuestas..."
+    "Meetto es un toydoriano, raza famosa por ser fácilmente sobornables."
+    "Meetto sólo aceptará dinero"
+;
+ZIPI_Pista ZIPI_Pista17
+with
+  ZIPI_titulo "¿Cómo consigo dinero?",
+  ZIPI_pistas
+    "Tendrás que ganártelo..."
+    "La cantina parece un buen lugar para conseguir dinero."
+    "Pregúntale a Sniffles. Seguramente sabe algo."
+    "~SNIFFLES, COMO PUEDO CONSEGUIR DINERO~"
+;
+ZIPI_Pista ZIPI_Pista18
+with
+  ZIPI_titulo "¿Cómo juego al Dejarik?",
+  ZIPI_pistas
+    "Necesitas algo con lo que apostar para que Jaxf Seval acepte jugar."
+    "En sus respuestas, averiguarás que no solo acepta dinero."
+    "Acepta cualquier objeto o vehículo como apuesta."
+    "Llévale el módulo de control de la Uhumele y aceptará tu apuesta."
+;
+ZIPI_Pista ZIPI_Pista19
+with
+  ZIPI_titulo "¿Cómo entro?",
+  ZIPI_pistas
+    "Los guardias te impiden llegar a la puerta."
+    "Las puertas de acero no son problema para un jedi armado."
+    "~ABRE LA PUERTA CON EL SABLE~"
+;
+ZIPI_Pista ZIPI_Pista20
+with
+  ZIPI_titulo "El ascensor está bloqueado.",
+  ZIPI_pistas
+    "Algún mecanismo de seguridad impide que suba a la planta superior."
+    "Lo más seguro es que haya una sala de control desde donde se controle toda la seguridad del complejo."
+    "A la sala de control se llega a través del pasillo que hay al NORTE del COMEDOR del complejo."
+    "Seguramente desde los terminales podrás controlar el ascensor."
+    "~ENCIENDE INTERRUPTOR DEL ASCENSOR~"
+;
+ZIPI_Pista ZIPI_Pista21
+with
+  ZIPI_titulo "Tengo delante a Sotta el Hutt...",
+  ZIPI_pistas
+    "La acción obvia es preguntarle por Resa..."
+    "Cuando sepas la respuesta, el resto es cosa tuya. El final depende de tu reacción..."
 ;
 ZIPI_Otro ZIPI_Otro0
 with
