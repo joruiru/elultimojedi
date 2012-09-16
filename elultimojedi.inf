@@ -56,6 +56,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/15  Joruiru - Ahora se puede matar a los guardias del almacén con
+!              las cajas de suministros.
 !  2012/09/12  Joruiru - Se añade a Boba Fett como enemigo en la base de Sotta.
 !              Se modifica turno_combate para cambiar lo de "quitándole x puntos
 !              de vida" por mensajes como los de multi_combate.
@@ -6559,8 +6561,20 @@ with  describe
                el funcionamiento cotidiano del complejo." G_FEMENINO
        'cajas' "Hay cientos de cajas apiladas que ocupan casi toda la estancia, que deben contener los suministros que requiere
                el funcionamiento cotidiano del complejo." G_FEMENINO+G_PLURAL,
-  before[new_suministro;
+  before[new_suministro i;
     examine: rfalse;
+    pull, push, ThrowAt,
+    levitar: if (oGuardiasAlmacenO4 notin AlmacenBaseO4) "No tiene sentido hacer que las pilas de cajas se desplomen.";
+             print "Canalizando el poder que te proporciona el dominio de la Fuerza, consigues hacer que varias pilas 
+                   de cajas se derrumen sobre los guardias gamorreanos, que quedan sepultados bajo las mismas.";
+	         !Se crean los cadáveres
+	         for (i=0:i<oGuardiasAlmacenO4.multiple:i++) {
+		       oGuardiasAlmacenO4.almorir(oGuardiasAlmacenO4.multiple);
+	         }
+	         move oGuardiasAlmacenO4 to limbo;
+		     if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
+		        && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+		     rtrue;
     Search,
     open: if (oGuardiasAlmacenO4 in AlmacenBaseO4) "Mientras estén los guardias de Sotta, no vas a poder registrar ninguna de las cajas.";
           new_suministro = Suministro.create(random(10));
