@@ -3778,6 +3778,7 @@ has scenery female animate proper;
 Lugar interiorUhumele "Interior de la Uhumele"
 with 
   name 'uhumele',
+  sgw_img pngUhumele,
   describe [;
       print "Te encuentras en el interior de la Uhumele. Aunque por fuera la nave está poco cuidada, el interior tiene muy buen aspecto, dando sensación
              de amplitud, calidez y limpieza. Puedes ver a su tripulación al completo.^";
@@ -4987,6 +4988,7 @@ has scenery female objetivo;
 
 Lugar inUhumeleO4 "Puente de mando de la Uhumele"
 with 
+  sgw_img pngUhumele,
   description "Te encuentras en el interior de la Uhumele. Aunque por fuera la nave está poco cuidada, el interior tiene 
               muy buen aspecto, dando sensación de amplitud, calidez y limpieza. Aquí, en el puente, se encuentran los
               mandos y controles principales de la nave.",

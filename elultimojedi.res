@@ -13,6 +13,7 @@ PICTURE pngHangarSur res/img/hangarsur.png
 PICTURE pngHangarEste res/img/hangareste.png
 PICTURE pngHangarOeste res/img/hangaroeste.png
 PICTURE pngCuartelMando res/img/cuartelmando.png
+PICTURE pngUhumele res/img/inUhumele.png
 PICTURE jpgCaza res/img/caza.jpg
 PICTURE pngYoda res/img/yoda.png
 PICTURE jpgSchurk res/img/schurk.jpg
