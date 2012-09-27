@@ -56,6 +56,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/09/27  Joruiru - Androide de protocolo JO3FE como escenario
 !  2012/09/15  Joruiru - Ahora se puede matar a los guardias del almacén con
 !              las cajas de suministros.
 !  2012/09/12  Joruiru - Se añade a Boba Fett como enemigo en la base de Sotta.
@@ -4852,7 +4853,7 @@ has nosalidas;
  give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
- playerTo(Pasillo4BaseO4,2);
+ playerTo(NivelInfO4_1,2);
  move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -5424,6 +5425,62 @@ with  describe
     default: "No conviene hacer eso.";
   ],
 ;
+
+Object oRobot "JO3FE" NivelInfO4_1
+  with
+    name 'robot' 'androide' 'droide' 'jo3fe',
+    adjetives 'protocolo',
+    description [;
+       print "Son los restos de un robot humanoide, posiblemente un droide de protocolo, 
+              usado principalmente para llevar a cabo tareas de traducción y para dar
+              consejos a diplomáticos y comerciantes sobre las costumbres sociales en
+              el trato con casi cualquier raza de la galaxia. A este droide en concreto
+              no le han tratado con mucho cuidado recientemente, pues parece completamente
+              abandonado y sin energía.";
+       if (self has muerto) "^Está inservible, sin energía.";
+       "^Está tirado en el suelo, apagado.";
+    ],
+    describe [;
+      if (self hasnt muerto) {
+        "^Tirado en el suelo, junto a una pared, descansa un androide dañado.";
+      } else {
+        "^El androide de protocolo JO3FE está inservible en el suelo.";
+      }
+    ],
+    life [;
+	  Attack: "No es necesario. No parece que te vaya a hacer ningún daño.";
+      tell,answer,
+      ask: "El droide está apagado. En ese estado no responderá a ninguna de tus preguntas.";
+    ],
+    orders [;
+      Mild, Strong: "No es necesario. No parece que te vaya a hacer ningún daño.";
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+      Examine: self.description(); rtrue;
+      SwitchOn: if (self has muerto) "La energía está totalmente agotada. El droide está inservible.";
+                HablaPersonaje("JO3FE","Fffff... ¡Oh! ¡Oh! ¿Dónde estoy?... Zzzzzz...");
+                HablaPersonaje("JO3FE","Fffff... ¿Quién es usted?... Zzzzzz...");
+                HablaPersonaje("JO3FE","Chhhrrr... Soy JO3FE... Soy un androide de protocolo de la clase 3FE.... Chrrrrkkk...");
+                HablaPersonaje("JO3FE","Chhhrrr... Domino más de seis millones de formas de comunicación de
+                               toda la galaxia.... Chrrrrkkk...");
+                HablaPersonaje("JO3FE","Kkkrrrkkrkr... No, por favor, no me desactive.... Kkkkrrkrkrrkk...");
+                HablaPersonaje("JO3FE","....Chrrkkkchrrrkkkchrrkkkkk...");
+                give self muerto;
+                "^Tras esto, el droide se apaga. Parece que la energía se ha agotado definitivamente.";
+      SwitchOff: if (self has muerto) "La energía está totalmente agotada. El droide está inservible.";
+                 "El droide ya estaba apagado.";
+      Take, Remove:
+        "El droide pesa demasiado como para poder cogerlo.";
+      Pull, Push, PushDir:
+        "El droide pesa demasiado como para poder moverlo.";
+      Sanar: "No dispones de las herramientas necesarias para reparar el droide.";
+	  Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.^";
+      Enganyar,
+      Sentir, 
+      Concentrar: "La Fuerza no funcionará sobre un droide";
+    ],
+has static animate switchable;
 
 Lugar NivelInfO4_2 "Nivel inferior de Orvax IV"
 with 
