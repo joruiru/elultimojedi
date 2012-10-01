@@ -56,6 +56,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/10/01  Joruiru - Cortometraje de introducción a la fase de Orvax IV
 !  2012/09/27  Joruiru - Androide de protocolo JO3FE como escenario
 !  2012/09/15  Joruiru - Ahora se puede matar a los guardias del almacén con
 !              las cajas de suministros.
@@ -646,7 +647,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    faseorvax4();
+    !faseorvax4();
 
  
 ];
@@ -3375,9 +3376,10 @@ Object -> oValance "Valance"
                        ^Aunque el ejército imperial comienza a disparar, el número de naves huyendo les sobrepasa y casi todas consiguen huir, dejándote
                        con la satisfacción del deber cumplido. Huyes tú también con el caza robado, hacia la Uhumele para reunirte con Bomo y con el 
                        resto de la tripulación.
-                       ^^Próximo destino: Orvax IV.";
+                       ^^Próximo destino: Orvax IV.^^";
                   Achieved(10);
-                  deadflag = 2; !FIN DEL JUEGO
+                  !deadflag = 2; !FIN DEL JUEGO
+                  faseOrvax4();
                   rtrue;
                 } else {
 	                print "No dispones de ningún arma de fuego a tu alcance.^"; 
@@ -4850,11 +4852,17 @@ has nosalidas;
 [FaseOrvax4 ;
  move oTrajeTrooper to limbo;
  !move oModuloControlO4 to player;
- give oNosaurianaCeldaO4 conocido;
+ !give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
- playerTo(NivelInfO4_1,2);
- move oGuardiasAlmacenO4 to limbo;
+ EsperarTecla("...[Pulsa una tecla]...");
+ BorrarPantalla();
+ Corto_Fase2.proyeccion();
+ EsperarTecla("...[Pulsa una tecla]...");
+ if (Corto_Fase2.aborted==1) Damusix.PararCanalesExtra(); !silenceChannel(chan1);
+ BorrarPantalla();
+ playerTo(PuertoO4,2);
+ !move oGuardiasAlmacenO4 to limbo;
 ];
 
 ! Objeto para que reaccione a <<Mirar <nombre localidad>>> en Orvax IV
@@ -8639,6 +8647,94 @@ Object  Corto_FinFase1
                   signifique algo. Vayamos a Cadgel Meadows... Tal vez podamos alcanzar a tu mujer e hija y sacar algo de esta derrota.~^^";
            rtrue;
          ]           
+;
+
+! Escena de cinemática de introducción a Orvax IV.
+Object  Corto_Fase2
+ class  cortometraje
+ with   
+   cadena "",
+   description
+         [; 
+	       self.cadena = "Acabamos de aterrizar en Orvax IV. Es hora de trazar un plan.";
+	       self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Schurk-Heren","Acabamos de aterrizar en Orvax IV. Es hora de trazar un plan.");
+           rtrue;
+         ]
+         [; 
+           self.cadena = "¿Un plan? ¡Vamos a rescatar a mi mujer y a mi hija!";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Bomo","¿Un plan? ¡Vamos a rescatar a mi mujer y a mi hija!");
+           rtrue;
+         ]
+         [;
+           self.cadena = "¿Has estado alguna vez en Orvax IV? ¿No? Pues deberías escuchar a alguien que sí ha estado...";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Mezgraf","¿Has estado alguna vez en Orvax IV? ¿No? Pues deberías escuchar a alguien que sí ha estado...");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Los esclavistas separan a las familias. Incluso si tu mujer e hija siguen aún juntas, encontrarlas
+               entre los miles de prisioneros no será una tarea fácil.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Mezgraf","Los esclavistas separan a las familias. Incluso si tu mujer e hija siguen aún juntas, encontrarlas
+               entre los miles de prisioneros no será una tarea fácil.");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Y eso pensando que las dos siguen en este planeta. Vamos dos días por detrás de los
+               imperiales. Es posible que una o ambas hayan sido vendidas ya.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Schurk-Heren","Y eso pensando que las dos siguen en este planeta. Vamos dos días por detrás de los
+               imperiales. Es posible que una o ambas hayan sido vendidas ya.");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Encontraremos a las dos, Bomo... Pero hay algunos aspectos que creo que no has considerado...";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Dass","Encontraremos a las dos, Bomo... Pero hay algunos aspectos que creo que no has considerado...");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Te has centrado en Mesa y Resa, pero... ¿estás preparado para estar delante del resto de 
+               nosaurianos, amigos y vecinos, sabiendo que no vas a poder hacer nada por ellos?";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Dass","Te has centrado en Mesa y Resa, pero... ¿estás preparado para estar delante del resto de 
+               nosaurianos, amigos y vecinos, sabiendo que no vas a poder hacer nada por ellos?");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Yo te ayudaré a encontrar a tu familia, Bomo. Un antiguo esclavo no puede ignorar 
+               la difícil situación de otros esclavos.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Mezgraf","Yo te ayudaré a encontrar a tu familia, Bomo. Un antiguo esclavo no puede ignorar 
+               la difícil situación de otros esclavos.");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Con el permiso del capitán, yo también te ayudaré. La muerte no me causa ningún
+               temor. Y la galaxia será un lugar mejor con algunos imperiales menos y algunos esclavos menos.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Sniffles","Con el permiso del capitán, yo también te ayudaré. La muerte no me causa ningún
+               temor. Y la galaxia será un lugar mejor con algunos imperiales menos y algunos esclavos menos.");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Bien, entonces. Mezgraf y Sniffles acompañarán a Dass a buscar a la familia
+               de Bomo. Esto puede ser demasiado difícil para tí, así que te quedarás aquí. Calculo que tenemos hasta 
+               medianoche para que los imperiales reconozcan nuestra nave y tengamos que irnos precipitadamente.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Schurk-Heren","Bien, entonces. Mezgraf y Sniffles acompañarán a Dass a buscar a la familia
+               de Bomo. Esto puede ser demasiado difícil para tí, así que te quedarás aquí. Calculo que tenemos hasta 
+               medianoche para que los imperiales reconozcan nuestra nave y tengamos que irnos precipitadamente.");
+           rtrue;
+         ]          
+         [;
+           self.cadena = "Se acabó la reunión. ¡Poneos en marcha! ¡No hay tiempo que perder!";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
+           HablaPersonaje("Schurk-Heren","Se acabó la reunión. ¡Poneos en marcha! ¡No hay tiempo que perder!");
+           rtrue;
+         ]          
 ;
 
 ! Dibuja una imagen y realiza una pausa. Para la escena de introducción gráfica.
