@@ -14,6 +14,7 @@ PICTURE pngHangarEste res/img/hangareste.png
 PICTURE pngHangarOeste res/img/hangaroeste.png
 PICTURE pngCuartelMando res/img/cuartelmando.png
 PICTURE pngUhumele res/img/inUhumele.png
+PICTURE pngCeldas res/img/celdas.png
 PICTURE jpgCaza res/img/caza.jpg
 PICTURE pngYoda res/img/yoda.png
 PICTURE jpgSchurk res/img/schurk.jpg
@@ -32,6 +33,7 @@ SOUND sndAlarma res/snd/alarma.ogg
 SOUND sndVill res/snd/vill.ogg
 SOUND sndTriste res/snd/bomosorrow.ogg
 SOUND sndJungla res/snd/ambientejungla.ogg
+SOUND sndCantina res/snd/cantina.ogg
 PICTURE intro1 res/img/euj1.png
 PICTURE intro2 res/img/euj2.png
 PICTURE intro3 res/img/euj3.png

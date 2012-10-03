@@ -170,7 +170,7 @@ Constant NUMBER_TASKS = 21;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 220;
 
-Constant SGW_SIN_GRAFICOS;
+!Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -5728,6 +5728,7 @@ has animate female concealed;
 Lugar CeldasO4 "Celdas (Nivel inferior de Orvax IV)"
 with 
   !name 'cantina',
+  sgw_img pngCeldas,  ! el grafico de la localidad
   description "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.",
   out_to NivelInfO4,
 ;
@@ -5893,6 +5894,8 @@ with  describe
 Lugar CantinaO4 "Interior de la Cantina"
 with 
   name 'cantina',
+  sgw_mus sndCantina,
+  sgw_vol VOLUMEN_BAJO,
   description "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar. El interior está más
     oscuro de lo que te gustaría, con rincones prácticamente entre tinieblas. Seguramente, los parroquianos habituales del lugar no quieren
     que se les vea claramente... Bien pensado, la penumbra interior, combinada con la entrada iluminada, permite a los de adentro ver a los
