@@ -1,8 +1,9 @@
 !% -~SD
 !% +language_name=Spanish
 !% $MAX_STATIC_DATA=20000
-!% $MAX_PROP_TABLE_SIZE=55900
+!% $MAX_PROP_TABLE_SIZE=99900
 !% $MAX_VERBS=153
+!% $MAX_OBJECTS=750
 !% $DICT_WORD_SIZE=12
 !%
 ! Las opciones de arriba son comandos especiales que el compilador leera,
@@ -56,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/10/04  Joruiru - Arreglo de algunos fallitos salidos en testeo de JC
 !  2012/10/01  Joruiru - Cortometraje de introducción a la fase de Orvax IV
 !  2012/09/27  Joruiru - Androide de protocolo JO3FE como escenario
 !  2012/09/15  Joruiru - Ahora se puede matar a los guardias del almacén con
@@ -170,7 +172,7 @@ Constant NUMBER_TASKS = 21;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 220;
 
-!Constant SGW_SIN_GRAFICOS;
+Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -647,7 +649,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    !faseorvax4();
+    faseorvax4();
 
  
 ];
@@ -817,6 +819,10 @@ Class GuardiaOrvax4
   with
     name 'guardia' 'guardias',
     short_name "guardias de la ciudad",
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
     description [;
       switch(self.multiple){
 	      1: "Un guardia de la ciudad.";
@@ -903,6 +909,47 @@ Class GuardiaOrvax4
         Enganyar: print "Guardia: ",(s_underline) "~¿Acaso te crees un jedi intentando esos truquitos?~^"; rtrue;
     ],
 has pluralname animate;
+
+Class ArmaGuardia(100)
+ with name 'arma' 'armas',
+      adjectives 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
+      description "Sus armas han quedado inservibles tras el combate.",
+      before [;
+        Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
+        Examine: rfalse;
+        default: "No vale la pena perder tiempo en eso. Las armas están inservibles.";
+      ],
+;
+
+Class CadaverGuardiaOrvax4(50)
+ with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
+      short_name "cadáver de un guardia de Orvax IV",
+      plural "cadáveres de guardias de Orvax IV",
+      description [x n;
+         n=0;
+         objectloop (x in parent(self)) {
+	         if (x ofclass CadaverGuardiaOrvax4) n++;
+         }
+         if (n>1) 
+             "Los cadáveres de los guardias yacen en el suelo. Sus armas han quedado 
+              inservibles debido a los daños sufridos durante el combate.";
+         "El cadáver del guardia yace en el suelo. Su arma ha quedado 
+         inservible debido a los daños sufridos durante el combate.";
+      ],
+      multiple 0,
+      create [m x;
+        self.multiple=m;
+        x = ArmaGuardia.create(); if (x ~= nothing) move x to self;
+      ],
+      destroy [ x;
+          objectloop (x in self && x ofclass ArmaGuardia) ArmaGuardia.destroy(x);
+      ],
+      before [;
+        Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
+        Examine: rfalse;
+        default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
+      ],
+has transparent;
 
 Class CadaverGamorreano(50)
  with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
@@ -1031,6 +1078,14 @@ with
 	                   ladera,ladera2,cima: "El paso está en lo más bajo de Half Axe.";
 	                   default: "Desde aquí no puedes ver eso que dices.";
                      }
+            'arroyos',
+	        'arroyo': switch (location) {
+	                         paso,
+	                         ladera,ladera2,cima: "El desfiladero de Half Axe es un estrecho paso entre montañas que discurre de norte a sur.
+	                             Pequeños arroyos bajan de las montañas y se unen cuando llegan al paso, formando un río que se 
+	                             pierde por el sur. Árboles colosales y abundante vegetación crecen a ambas orillas del río.";
+	                         default: "Desde aquí no puedes ver ningún desfiladero.";
+                           }
             'planta', 'plantas',
             'vegetacion': switch (location) {
 	                        paso,
@@ -1848,7 +1903,7 @@ has scenery;
 
 Object -> oEjercito "ejercito"
   with
-    name 'ejercito' 'soldados' 'clones' 'tanques' 'tanque' 'canon' 'canones' 'clon' 'legion',
+    name 'ejercito' 'soldados' 'clones' 'tanques' 'tanque' 'canon' 'canones' 'clon' 'legion' 'imperiales' 'imperial',
     description "La legión 501. El ejército de clones, reforzado con tanques de combate, no cederá. Son los tanques los que, con su
                  potencia de fuego, van abriendo paso entre tus soldados. Dificultar su marcha en el desfiladero el máximo tiempo 
                  posible es la única esperanza que puedes dar a las familias nosaurianas para llegar al puerto espacial y huir.",
@@ -1896,7 +1951,7 @@ has scenery objetivo;
 
 Object oNosaurianos "nosaurianos"
   with 
-    name 'nosauriano' 'soldado' 'cadaver' 'nosaurianos' 'cadaveres',
+    name 'nosauriano' 'soldado' 'cadaver' 'nosaurianos' 'cadaveres' 'tropas',
     description "El ejército enemigo avanza y el tuyo va menguando... Debes encontrar urgentemente la forma de detener los tanques imperiales
                  o vuestra derrota será inminente. Los nosaurianos confían en ti.",
 	found_in paso ladera,
@@ -1987,7 +2042,7 @@ has scenery;
 
 Object -> oEjercito2 "ejercito"
   with
-    name 'ejercito' 'soldados' 'clones' 'tanques' 'tanque' 'canon' 'canones' 'clon' 'legion',
+    name 'ejercito' 'soldados' 'clones' 'tanques' 'tanque' 'canon' 'canones' 'clon' 'legion' 'imperiales' 'imperial',
     description "La legión 501. El ejército de clones, reforzado con tanques de combate, no cederá. Son los tanques los que, con su
                  potencia de fuego, van abriendo paso entre tus soldados. Aguantar en el desfiladero el máximo tiempo 
                  posible es la única esperanza que tienen las familias nosaurianas para llegar al puerto espacial y huir.",
@@ -2725,7 +2780,7 @@ has static transparent animate;
 Object -> oTrajeTrooper "traje de soldado clon"
   with
     name 'traje' 'uniforme',
-    !adjectives 'soldado' 'clon' 'stormtrooper' 'legion',
+    adjectives 'soldado' 'clon' 'stormtrooper' 'legion' 'imperial',
     description "Un traje no muy diferente del resto de clones del ejército imperial. Cubre el cuerpo entero, incluso la cabeza, y sirve
            como protección contra armas ligeras. Está decorado con los colores de la Legión 501.",
     before [;
@@ -3019,6 +3074,27 @@ Lugar hangarNorte "Hangar Norte"
 	        <<enter oCuartelMando>>;
           };
     ],
+;
+
+Object decorado_hangarNorte hangarNorte
+class decorado
+with  describe
+       'soldado' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'soldados' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'imperiales' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clones' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clon' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'tropas' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
 ;
 
 ! Object -> oRukia "Rukia"
@@ -3336,6 +3412,27 @@ Lugar hangarSur "Hangar Sur"
       rtrue;
     ],
     n_to pista,
+;
+
+Object decorado_hangarSur hangarSur
+class decorado
+with  describe
+       'soldado' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'soldados' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'imperiales' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clones' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clon' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'tropas' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
 ;
 
 Object -> oNuitedes "Nuitedes" 
@@ -4360,6 +4457,27 @@ Lugar hangarOeste "Hangar Oeste"
     e_to pista,
 ;
 
+Object decorado_hangarOeste hangarOeste
+class decorado
+with  describe
+       'soldado' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'soldados' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'imperiales' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clones' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clon' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'tropas' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_FEMENINO+G_PLURAL,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
+;
+
 Object -> oThorene "Thorene"  
   with
     name 'thorene',
@@ -4433,6 +4551,18 @@ Lugar pista "Pista"
 Object decorado_pista pista
 class decorado
 with  describe
+       'soldado' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'soldados' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'imperiales' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clones' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_PLURAL
+       'clon' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." 0
+       'tropas' "El puerto espacial es un continuo ir y venir de soldados imperiales.
+                  No hay ninguna duda de que está bajo su control." G_FEMENINO+G_PLURAL
        'naves' "Las naves están bloqueadas en los hangares." G_FEMENINO+G_PLURAL
        'nave' "Las naves están bloqueadas en los hangares." G_FEMENINO+G_PLURAL,
   before[;
@@ -4868,7 +4998,7 @@ has nosalidas;
 ! Objeto para que reaccione a <<Mirar <nombre localidad>>> en Orvax IV
 Object oLocGenericoO4 "lugar"
 with
-    name 'lugar' 'sitio' 'suelo' 'hangar' 'puerto' 'comercio' 'comerciante' 'vendedor' 
+    name 'lugar' 'sitio' 'suelo' 'hangar' 'puerto' 'espacial' 'comercio' 'comerciante' 'vendedor' 
          'comprador' 'pasillo' 'edificio',
     name_mp 'hangares' 'comercios' 'comerciantes' 'vendedores' 'compradores',
     name_f 'plaza' 'mercancia' 'calle' 'celda' 'base',  
@@ -4888,6 +5018,7 @@ with
 	                              está atracada en uno de ellos.";
 	                   default: "Desde aquí no puedes ver los hangares.";
                      }
+            'espacial',
             'puerto': switch (location) {
 	                   PuertoO4: "El puerto espacial está repleto de naves que vienen de cualquier parte de la galaxia
                                     para, principalmente, comerciar con esclavos, aunque también las hay que llegan al 
@@ -4912,7 +5043,7 @@ with
 	                       PlazaO4: "Puedes ver comercios donde se vende todo tipo de mercancias.";
 	                       default: "Desde aquí no puedes ver los comercios de la plaza principal.";
                          }
-            'compradores',         
+            'compradores', 'criatura', 'criaturas',         
             'comprador': switch (location) {
 	                       PlazaO4: "Criaturas de cualquier rincón de la galaxia comprando cualquier tipo de mercancía que necesiten.";
 	                       default: "Desde aquí no puedes ver los comercios de la plaza principal.";
@@ -5034,7 +5165,7 @@ has scenery switchable;
 
 Object oModuloControlO4 "Módulo de control" oCuadroO4
   with
-    name 'modulo' 'control',
+    name 'modulo' 'control' 'disco' 'optico',
     adjectives 'uhumele' 'control',
     description "El módulo de control de la Uhumele lleva en su interior un disco óptico necesario para poner en marcha la nave.", 
     before [;
@@ -5225,7 +5356,8 @@ with
   e_to PlazaO4,
   d_to AccesoNivInfO4,
   before [;
-    go: if (noun==d_obj && oGuardiasO4 in self) "Los guardias bloquean el acceso al nivel inferior.";
+    go: if (noun==w_obj) <<go d_obj>>;
+        if (noun==d_obj && oGuardiasO4 in self) "Los guardias bloquean el acceso al nivel inferior.";
   ],
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
@@ -5236,6 +5368,10 @@ with
 Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
   with
     name 'guardia' 'guardias',
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
     description [;
       switch(self.multiple){
 	      1: "Un guardia está golpeando sin cesar a Mezgraf, que yace en el suelo sin poder apenas defenderse. Los
@@ -5256,6 +5392,13 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
     topvida 25,
     dado_golpe 2 6 0, !1d6+0
     multiple 2,
+    almorir [new_cadaver;
+      new_cadaver = CadaverGuardiaOrvax4.create(2);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
     !name_boss "el capitán",
     name_tropa "un guardia",
     printname [nom;
@@ -5425,6 +5568,8 @@ class decorado
 with  describe
        'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
        'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
        'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
@@ -5512,8 +5657,12 @@ with
 Object decorado_nivelinferior2 NivelInfO4_2
 class decorado
 with  describe
+       'polvo' "Los servicios de limpieza no bajan a esta zona de la ciudad." 0
+       'porqueria' "Los servicios de limpieza no bajan a esta zona de la ciudad." G_FEMENINO
        'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
        'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
        'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
@@ -5546,6 +5695,8 @@ class decorado
 with  describe
        'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
        'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
        'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
@@ -5571,6 +5722,8 @@ with
 	  if (oGuardiasNivInfO4_2 hasnt muerto) {
 	    print "^Al salir al exterior te das de bruces con una escena dantesca. Puedes ver como unos guardias de la ciudad están 
 	           disparando a los nosaurianos al ver que éstos estaban escapando y los cadáveres se amontonan en el suelo.^";
+      } else {
+	    print "^Los cuerpos sin vida de las mujeres y niños nosaurianos asesinados por los guardias se amontonan en el suelo.^";
       }
 	  rtrue;
     }
@@ -5585,7 +5738,18 @@ with
 
 GuardiaOrvax4 oGuardiasNivInfO4 NivelInfO4
 with
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
   multiple 3,
+  almorir [new_cadaver;
+      new_cadaver = CadaverGuardiaOrvax4.create(3);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+  ],
   description [;
     switch(self.multiple){
       1: "Un guardia de la ciudad bloquea el acceso a la zona de las celdas. Los
@@ -5606,7 +5770,18 @@ with
 
 GuardiaOrvax4 oGuardiasNivInfO4_2 limbo
 with
+    parse_name[;
+     if (NextWord()=='guardia' or 'guardias') return 100;
+     return -1;
+    ],
   multiple 4,
+  almorir [new_cadaver;
+      new_cadaver = CadaverGuardiaOrvax4.create(4);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+  ],
   description [;
     switch(self.multiple){
       1: "Un guardia de la ciudad bloquea el acceso al nivel superior de la ciudad. Los
@@ -5637,6 +5812,8 @@ with  describe
        'accesos' "Unos guardias bloquean el único paso a la zona donde podrían estar retenidos los esclavos." G_PLURAL
        'estructura' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
+       'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
+       'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
        'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
        'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
@@ -5730,6 +5907,16 @@ with
   !name 'cantina',
   sgw_img pngCeldas,  ! el grafico de la localidad
   description "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.",
+  describe [;
+    if (oCeldaNosaurianos has open) {
+	  self.description = "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.
+	      Excepto, claro está, la celda donde estaban los nosaurianos, que has abierto.";
+    } else {
+	  self.description = "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.";
+    };
+    self.Lugar::describe();
+    rtrue;
+  ],
   out_to NivelInfO4,
 ;
 
