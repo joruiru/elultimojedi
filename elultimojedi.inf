@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/10/09  Joruiru - Mezgraf se vuelve a la nave cuando se le salva en Orvax
 !  2012/10/04  Joruiru - Arreglo de algunos fallitos salidos en testeo de JC
 !  2012/10/01  Joruiru - Cortometraje de introducción a la fase de Orvax IV
 !  2012/09/27  Joruiru - Androide de protocolo JO3FE como escenario
@@ -919,12 +920,16 @@ Class ArmaGuardia(100)
         Examine: rfalse;
         default: "No vale la pena perder tiempo en eso. Las armas están inservibles.";
       ],
-;
+has scenery;
 
 Class CadaverGuardiaOrvax4(50)
  with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
       short_name "cadáver de un guardia de Orvax IV",
       plural "cadáveres de guardias de Orvax IV",
+      parse_name [;
+	    if (nextWord() =='cuerpo' or 'cadaver' or 'guardia' or 'cuerpos' or 'cadaveres' or 'guardias') return 10;
+        return -1;
+      ],      
       description [x n;
          n=0;
          objectloop (x in parent(self)) {
@@ -937,19 +942,21 @@ Class CadaverGuardiaOrvax4(50)
          inservible debido a los daños sufridos durante el combate.";
       ],
       multiple 0,
+      arma 0,
       create [m x;
         self.multiple=m;
-        x = ArmaGuardia.create(); if (x ~= nothing) move x to self;
+        x = ArmaGuardia.create(); if (x ~= nothing) {move x to location;self.arma=x;}
       ],
-      destroy [ x;
-          objectloop (x in self && x ofclass ArmaGuardia) ArmaGuardia.destroy(x);
+      destroy [;
+          !objectloop (x in self && x ofclass ArmaGuardia) ArmaGuardia.destroy(x);
+          ArmaGuardia.destroy(self.arma);
       ],
       before [;
         Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
         Examine: rfalse;
         default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
       ],
-has transparent;
+;
 
 Class CadaverGamorreano(50)
  with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
@@ -5358,6 +5365,10 @@ with
   before [;
     go: if (noun==w_obj) <<go d_obj>>;
         if (noun==d_obj && oGuardiasO4 in self) "Los guardias bloquean el acceso al nivel inferior.";
+        if (noun==d_obj && oMezgrafO4.vida > 0) {
+	        HablaPersonaje("Mezgraf","Jennir, yo me vuelvo a la nave.");
+	        move oMezgrafO4 to limbo;
+        }
   ],
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
