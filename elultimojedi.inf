@@ -57,6 +57,9 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/10/10  Joruiru - WordInProperty modificada para admitir '?' al final de
+!                        palabras. Para permitir cosas como:
+!                        >comandante, que hago con el prisionero?
 !  2012/10/09  Joruiru - Mezgraf se vuelve a la nave cuando se le salva en Orvax
 !  2012/10/04  Joruiru - Arreglo de algunos fallitos salidos en testeo de JC
 !  2012/10/01  Joruiru - Cortometraje de introducción a la fase de Orvax IV
@@ -186,6 +189,7 @@ Constant SGW_SIN_GRAFICOS;
 ! El array que contiene los puntos por cada tarea realizada
 Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20;
 
+Replace WordInProperty;
 Include "Parser";
 Include "Etemas";
 
@@ -650,7 +654,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    faseorvax4();
+    !faseorvax4();
 
  
 ];
@@ -793,6 +797,19 @@ glk_request_timer_events(0); ! desactivamos los mensajes aleatorios
         print " Mueres abrasado en la explosión del complejo ";
       }
 ];
+
+[ WordInProperty wd obj prop k l m ;
+    k = obj.&prop; l = (obj.#prop)/WORDSIZE-1;
+    for (m=0 : m<=l : m++){
+        if (isQuestion(wd)) {
+	       if (removeQuestion(wd) == k-->m) rtrue;
+	    }
+	    else 
+        if (wd == k-->m) rtrue;
+    }
+    rfalse;
+];
+
 
 !===============================================================================
 ! (6) Incluir SpanishG.h; Otros Includes

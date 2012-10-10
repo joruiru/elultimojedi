@@ -41,6 +41,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/10/10  Joruiru - Se añade isQuestion y removeQuestion para admitir '?' 
+!                        al final de palabras.
 !  2012/09/12  Joruiru - Se añade activar/desactivar como sinónimos de 
 !              SwitchOn/SwitchOff
 !  2012/08/14  Joruiru - Se añade la funcion StrCmp2 para comparar strings y
@@ -325,6 +327,18 @@ Array StringBuffer2->102; ! Temporary string buffers
   len=0;
   len=str.print_to_array(StringBuffer1,102);
   return len;
+];
+
+[ removeQuestion a len;
+   len=WordLength(wn-1);
+   a = WordAddress(wn-1);
+   return DictionaryLookup(a, len-1);;
+];
+[isQuestion a lna;
+  lna = WordLength(wn-1);
+  a = WordAddress(wn-1);
+  if (lna>=2 && (a->(lna-1) == '?' or '!')) rtrue;
+  rfalse;
 ];
 
 [ UsoFuerzaParaSub w;
