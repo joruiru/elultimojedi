@@ -189,7 +189,9 @@ Constant SGW_SIN_GRAFICOS;
 ! El array que contiene los puntos por cada tarea realizada
 Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20;
 
-Replace WordInProperty;
+!Replace WordInProperty;
+Replace QuitarAcentos;
+
 Include "Parser";
 Include "Etemas";
 
@@ -798,18 +800,45 @@ glk_request_timer_events(0); ! desactivamos los mensajes aleatorios
       }
 ];
 
-[ WordInProperty wd obj prop k l m ;
-    k = obj.&prop; l = (obj.#prop)/WORDSIZE-1;
-    for (m=0 : m<=l : m++){
-        if (isQuestion(wd)) {
-	       if (removeQuestion(wd) == k-->m) rtrue;
-	    }
-	    else 
-        if (wd == k-->m) rtrue;
-    }
-    rfalse;
-];
+! [ WordInProperty wd obj prop k l m ;
+!     k = obj.&prop; l = (obj.#prop)/WORDSIZE-1;
+!     for (m=0 : m<=l : m++){
+!         if (isQuestion(wd)) {
+! 	       if (removeQuestion(wd) == k-->m) rtrue;
+! 	    }
+! 	    else 
+!         if (wd == k-->m) rtrue;
+!     }
+!     rfalse;
+! ];
 
+[QuitarAcentos buf pars x i word at len;
+  tokenise__(buf, pars); 
+  for (x=1:x<=tokenCount(pars):x++) { ! para cada token
+    word = tokenDict (pars,x); !dictionary value of token 1,2,3...
+    at = tokenPos (pars,x); ! position in buffer of token 1,2,3... 
+    len = WordLength (x);! length in chars of token 1,2,3...
+
+    if (word==0) { ! no comprendida
+      for (i=at:i<at+len:i++)
+        switch(buf->i) {
+          'á': buf->i='a';
+          'é': buf->i='e';
+          'ë': buf->i='e';
+          'í': buf->i='i';
+          'ó': buf->i='o';
+          'ú': buf->i='u';
+          'ü': buf->i='u';
+          'ñ': buf->i='n'; 
+          '?': buf->i=' ';
+          '¿': buf->i=' ';
+          '!': buf->i=' ';
+          '¡': buf->i=' ' ;    
+        }
+      tokenise__(buf, pars); 
+    }
+  }
+];
 
 !===============================================================================
 ! (6) Incluir SpanishG.h; Otros Includes
