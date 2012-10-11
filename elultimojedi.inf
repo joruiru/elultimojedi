@@ -5044,6 +5044,7 @@ has nosalidas;
  EsperarTecla("...[Pulsa una tecla]...");
  if (Corto_Fase2.aborted==1) Damusix.PararCanalesExtra(); !silenceChannel(chan1);
  BorrarPantalla();
+ Damusix.PararTodo();
  playerTo(PuertoO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
