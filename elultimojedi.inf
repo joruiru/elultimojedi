@@ -2703,8 +2703,13 @@ Object -> oSoldado "soldado"
       }
       if (self in extEste) {
 	      if ((self in location) && (player hasnt escondido)) {
-		      print "Stormtrooper: ", (s_underline) "¡ALTO EN NOMBRE DEL IMPERIO!";
-		      give player descubierto;
+		      !print "Stormtrooper: ", (s_underline) "¡ALTO EN NOMBRE DEL IMPERIO!";
+		      !give player descubierto;
+		      print "Un soldado haciendo la ronda saluda a la patrulla que vigila la entrada y
+		             se aleja por el noroeste para continuar su vigilancia. ";
+		      if (player hasnt disfrazado) 
+		          print "Afortunadamente, no te ha visto. Puede que la próxima vez no tengas tanta suerte.";
+		      move self to extNorte;
 		      rfalse;
 	      }
 	      if ((self in location) && (player has escondido)) print "El soldado se aleja por el noroeste.";
@@ -2793,9 +2798,9 @@ has animate transparent;
 
 Object ->-> oBlaster "rifle láser"
   with
-    name 'rifle' 'blaster' 'laser',
+    name 'rifle' 'blaster' 'laser' 'arma',
     !adjectives 'soldado' 'clon' 'stormtrooper' 'legion',
-    description "El típico blaster que llevan las tropas imperiales. Parece que ha quedado inservible tras el combate.",
+    description "El típico blaster que llevan las tropas imperiales.",
     before [;
       take: "No crees que el soldado se deje arrebatar el rifle.";
       Levitar: "No podrás hacerlo mientras lo tenga entre las manos.";
@@ -5055,8 +5060,8 @@ with
     name 'lugar' 'sitio' 'suelo' 'hangar' 'puerto' 'espacial' 'comercio' 'comerciante' 'vendedor' 
          'comprador' 'pasillo' 'edificio',
     name_mp 'hangares' 'comercios' 'comerciantes' 'vendedores' 'compradores',
-    name_f 'plaza' 'mercancia' 'calle' 'celda' 'base',  
-    name_fp 'mercancias' 'calles' 'celdas', 
+    name_f 'plaza' 'mercancia' 'calle' 'celda' 'base' 'criatura',  
+    name_fp 'mercancias' 'calles' 'celdas' 'criaturas', 
     description [w;
         wn = 2;
         w=NextWord();
@@ -5092,7 +5097,7 @@ with
 	                            todo tipo de comercios las mercancías que necesiten.";
 	                   default: "Desde aquí no puedes ver la plaza.";
                      }
-            'comercio','comerciante','comerciantes','vendedor','vendedores',         
+            'comercio','comerciante','comerciantes','vendedor','vendedores' 'mercancia' 'mercancias',         
             'comercios': switch (location) {
 	                       PlazaO4: "Puedes ver comercios donde se vende todo tipo de mercancias.";
 	                       default: "Desde aquí no puedes ver los comercios de la plaza principal.";
@@ -5191,7 +5196,7 @@ with
 
 Object oCuadroO4 "cuadro de mandos" inUhumeleO4
 with
-    name 'cuadro' 'mandos' 'controles' 'panel' 'mando',
+    name 'cuadro' 'mandos' 'controles' 'panel' 'mando' 'control',
     description "El cuadro de mandos de la Uhumele es increiblemente amplio y complejo, con cientos de indicadores. En un
                 lugar privilegiado del cuadro se encuentra el módulo de control, esencial para que funcionen todos los
                 sistemas de la nave.",
@@ -9135,7 +9140,7 @@ Object  -> t_fugitivos "fugitivos"  with name 'fugitivo' 'fugitivos' 'escapado' 
 Object  -> t_carga "carga"  with name 'carga' 'mercancia' 'mercancias' 'cargas' 'contrabando' 'contrabandistas' 'contrabandista' 'inspeccion';
 Object  -> t_tacos "tacos"  with name 'eres' 'gilipollas' 'guarro' 'imbecil' 'aburrido' 'tonto' 'bobo' 'idiota' 'mierda' 'jode' 'joder' 
                                       'puta' 'cono' 'cabron' 'puto' 'bastardo';
-Object  -> t_ayuda "ayuda"  with name 'ayuda' 'ayudame';
+Object  -> t_ayuda "ayuda"  with name 'ayuda' 'ayudame' 'algo';
 Object  -> t_cadgel "cadgel meadows" with name 'cadgel' 'meadows' 'puerto' 'espacial';
 Object  -> t_vader "Darth Vader" with name 'darth' 'lord' 'vader';
 
@@ -9148,7 +9153,7 @@ Object -> t_palizaO4 "paliza" with name 'paliza' 'pelea' 'lucha';
 Object -> t_guardiasO4 "guardias" with name 'guardia' 'guardias';
 Object -> t_misionO4 "la misión" with name 'mision' 'objetivo' 'objetivos' 'plan' 'averiguar' 'averiguaciones' 'averiguado';
 Object -> t_simismoO4 with name 'ti' 'si' 'mismo' 'como' 'estas' 'bien' 'encuentras';
-Object -> t_ayudaO4 "ayuda"  with name 'ayuda' 'ayudame';
+Object -> t_ayudaO4 "ayuda"  with name 'ayuda' 'ayudame' 'algo';
 Object -> t_meettoO4 "Meetto"  with name 'meetto' 'toydariano' 'mercader' 'vendedor' 'comerciante';
 Object -> t_esclavosO4 "esclavos"  with name 'esclavos' 'mercado' 'trafico';
 Object -> t_dineroO4 "dinero"  with name 'dinero' 'creditos';
