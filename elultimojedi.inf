@@ -57,7 +57,9 @@
 !=============================================================================== 
 ! 
 !  Log:
-!  2012/10/10  Joruiru - WordInProperty modificada para admitir '?' al final de
+!  2012/10/28  Joruiru - Un poco de aleatoriedad al intentar entrar a la base de
+!              Sotta saltando por el balcon.
+!  2012/10/10  Joruiru - QuitarAcentos modificada para admitir '?' al final de
 !                        palabras. Para permitir cosas como:
 !                        >comandante, que hago con el prisionero?
 !  2012/10/09  Joruiru - Mezgraf se vuelve a la nave cuando se le salva en Orvax
@@ -656,7 +658,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    !faseorvax4();
+    faseorvax4();
 
  
 ];
@@ -5050,7 +5052,8 @@ has nosalidas;
  if (Corto_Fase2.aborted==1) Damusix.PararCanalesExtra(); !silenceChannel(chan1);
  BorrarPantalla();
  Damusix.PararTodo();
- playerTo(PuertoO4,2);
+ !playerTo(PuertoO4,2);
+ playerTo(EntradaBaseO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -5097,7 +5100,7 @@ with
 	                            todo tipo de comercios las mercancías que necesiten.";
 	                   default: "Desde aquí no puedes ver la plaza.";
                      }
-            'comercio','comerciante','comerciantes','vendedor','vendedores' 'mercancia' 'mercancias',         
+            'comercio','comerciante','comerciantes','vendedor','vendedores', 'mercancia', 'mercancias',         
             'comercios': switch (location) {
 	                       PlazaO4: "Puedes ver comercios donde se vende todo tipo de mercancias.";
 	                       default: "Desde aquí no puedes ver los comercios de la plaza principal.";
@@ -6536,7 +6539,7 @@ with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
   description "La base del cacique Sotta el Hutt parece más un búnker que una vivienda, perfectamente segura. Los muros
               de cemento y piedra conforman varias torres cilíndricas que se elevan sobre el resto del complejo. La 
-              entrada al complejo consiste en una puerta acorazada en la planta inferior de un edificio de dos alturas",
+              entrada consiste en una puerta acorazada en la planta inferior de un edificio de dos alturas",
   describe [;
     self.Lugar::describe();
     if (oGuardiasPuertaO4 in self) {
@@ -6582,7 +6585,7 @@ Object oVentanaBaseO4 "ventana" EntradaBaseO4
              el balcón del segundo piso, lo que te da acceso al interior del complejo.^";
              playerTo(SottaBaseO4,2);
              rtrue;
-      enter, jumpover: if (oGuardiasPuertaO4 in EntradaBaseO4) {
+      enter, jumpover: if (oGuardiasPuertaO4 notin EntradaBaseO4) {
                          print "Saltar hasta el balcón que da a la ventana es sin duda la mejor manera
                              de entrar en la base de Sotta el Hutt, además de la más silenciosa. Utilizas
                              tus poderes jedi para alcanzar de un gran salto la ventana del
@@ -6592,7 +6595,14 @@ Object oVentanaBaseO4 "ventana" EntradaBaseO4
                              de entrar en la base de Sotta el Hutt, además de la más silenciosa. Desde
                              un lugar apartado de la mirada de los guardias que custodian la puerta, 
                              utilizas tus poderes jedi para alcanzar de un gran salto la ventana del
-                             segundo piso, lo que te da acceso al interior del complejo.^";
+                             segundo piso, lo que te dará acceso al interior del complejo.^";
+                         if (random(5)<5) {
+	                       print "Sin embargo, la distancia a saltar resulta ser más grande de lo que parecía
+	                         a simple vista, y, a duras penas, consigues agarrarte con tus manos al
+	                         borde del balcón. Pero acabas cayendo a la calle, justo delante de los
+	                         guardias que custodian la entrada.";
+	                         <<ask oGuardiasPuertaO4>>;
+                         }
                        }
                        playerTo(SottaBaseO4,2);
                        rtrue;
@@ -7091,7 +7101,7 @@ with
 	      rtrue;
         }
         if (noun==oAscensorO4 or u_obj) {
-	        if (oInterruptorO4 hasnt on) "El ascensor está bloqueado por algún mecanismo de seguridad.";
+	        if (oInterruptorO4 hasnt on) "El ascensor parece que está bloqueado por algún mecanismo de seguridad.";
 	        print "Entras en el ascensor y automáticamente se pone en movimiento. Al cabo de pocos segundos se
                  para en el piso superior del complejo.^";
         }
@@ -7536,7 +7546,9 @@ has pluralname animate;
 Lugar Pasillo4BaseO4 "Pasillo"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
-  description "En el lado oeste de este pasillo se encuentra el ascensor para bajar al nivel inferior del complejo.",
+  description "El pasillo del nivel superior es similar a los que hay en el nivel
+    inferior del complejo, aunque te da la impresión de que es un poco más amplio.
+    En el lado oeste se encuentra el ascensor para bajar al nivel inferior del complejo.",
   describe[;
     self.Lugar::describe();
     if (oBobaFettO4 in self) "Un cazarrecompensas, que debe trabajar para Sotta el Hutt, bloquea tu camino, a la par 
