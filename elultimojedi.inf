@@ -1026,11 +1026,13 @@ Class CadaverGamorreano(50)
         self.multiple=m;
       ],
       before [;
-        Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
+        Search: if (oLlavePuertaO4 in self) "Sus armas han quedado inservibles tras el combate. Rebuscando
+                un poco más, encuentras una tarjeta de plástico que podría ser una llave electrónica.";
+                "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
         Examine: rfalse;
         default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
       ],
-;
+has transparent;
 
 Class Suministro(50)
  with name 'suministro',
@@ -3822,9 +3824,9 @@ Object oCrys "Crys Taanzer" limbo
   with
     name 'crys' 'mujer' 'piloto' 'humana' 'chica',
     description [;
-      if (self hasnt conocido) "Una hermosa mujer de raza humana de pelo largo y rubio y de ojos verdes. Por sus rasgos dirías que es originaria
+      if (self hasnt conocido) "Una hermosa mujer de raza humana de piel canela y pelo castaño largo y rizado. Por sus rasgos dirías que es originaria
         de algún remoto planeta del Borde Exterior, probablemente de Nadiem.";
-      else "Crys Taanzer, la piloto de la Uhumele. Una belleza humana de ojos verdes y pelo largo y rubio.";
+      else "Crys Taanzer, la piloto de la Uhumele. Una belleza humana de piel canela y pelo castaño largo y rizado.";
     ], 
     life [tema;
 	    Attack: if (self hasnt conocido) {
@@ -5042,6 +5044,7 @@ has nosalidas;
 [FaseOrvax4 ;
  move oTrajeTrooper to limbo;
  !move oModuloControlO4 to player;
+ move oLlavePuertaO4 to player;
  !give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
@@ -6551,7 +6554,7 @@ with
     rtrue;
   ],
   w_to CalleO4_1,
-  in_to PuertaAcorazadaO4,
+  in_to oPuertaAcorazadaO4,
 ;
 
 Object decorado_EntradaBaseO4 EntradaBaseO4
@@ -6611,7 +6614,7 @@ Object oVentanaBaseO4 "ventana" EntradaBaseO4
     ],
 has scenery female;
 
-Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
+Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
   with description "La puerta que da acceso al interior de la base de Sotta el Hutt es de acero reforzado y, aparentemente,
                    de un grosor importante. A un lado de la puerta se encuentra el mecanismo que la controla.",
        name 'puerta' 'acorazada' 'porton',
@@ -6639,6 +6642,13 @@ Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
 	               círculo por el que poder entrar a la base.";
                  }
+                 if (second == oLlavePuertaO4) {
+	               give self open;
+	               give self ~locked;
+	               Achieved(17);
+	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	               permitiéndote el acceso al interior del complejo.";
+                 }
                  "Tus intentos por abrir la puerta resultan estériles.";
          close,
          lock: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
@@ -6647,7 +6657,7 @@ Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
        ],
 has static door openable lockable locked female container objetivo;
 
-Object MecanismoPuertaO4 "mecanismo de control" EntradaBaseO4
+Object oMecanismoPuertaO4 "mecanismo de control" EntradaBaseO4
 with
   name 'mecanismo' 'control',
   name_f 'ranura',
@@ -6655,9 +6665,42 @@ with
               la llave electrónica correspondiente.",
   before [;
       receive: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+               if (second == oLlavePuertaO4) {
+	               give oPuertaAcorazadaO4 open;
+	               give oPuertaAcorazadaO4 ~locked;
+	               Achieved(17);
+	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	               permitiéndote el acceso al interior del complejo.";
+               }
                "No parece que vaya a servir para nada.";
   ],
-has scenery container;
+has scenery container objetivo;
+
+Object oLlavePuertaO4 "llave electrónica" limbo
+with
+  name 'llave' 'tarjeta' 'electronica',
+  description "La llave electrónica es una tarjeta de plástico de color blanco, que en su interior almacena los códigos necesarios
+              para abrir la puerta del complejo.",
+  before [;
+      insert: if (second==oMecanismoPuertaO4 or oPuertaAcorazadaO4){
+                 if ((oGuardiasPuertaO4 in EntradaBaseO4) && location==EntradaBaseO4) 
+                    "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+                 else {
+	                give oPuertaAcorazadaO4 open;
+	                give oPuertaAcorazadaO4 ~locked;
+	                Achieved(17);
+	                "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	                permitiéndote el acceso al interior del complejo.";
+                 }
+              }
+              "No parece que vaya a servir para nada.";
+      take: if (parent(self) ofclass CadaverGamorreano) {
+	          move self to player;
+	          "Coges la llave electrónica del cadáver de uno de los guardias.";
+            };
+  ],
+has female;
+
 
 Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
   with
@@ -6708,7 +6751,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
       if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
           guardia que acabas de matar queda envuelto en una nube de fuego y 
           desaparece ante tus narices.^";
-      move new_cadaver to parent(self);	            
+      move new_cadaver to parent(self);	     
+      if (random(2)<2) move oLlavePuertaO4 to new_cadaver;       
     ],
     life [i;
 	    Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
