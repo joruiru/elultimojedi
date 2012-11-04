@@ -34,6 +34,8 @@ SOUND sndVill res/snd/vill.ogg
 SOUND sndTriste res/snd/bomosorrow.ogg
 SOUND sndJungla res/snd/ambientejungla.ogg
 SOUND sndCantina res/snd/cantina.ogg
+SOUND sndPuerto res/snd/puertoorvax.ogg
+SOUND sndPlaza res/snd/plazaorvax.ogg
 PICTURE intro1 res/img/euj1.png
 PICTURE intro2 res/img/euj2.png
 PICTURE intro3 res/img/euj3.png

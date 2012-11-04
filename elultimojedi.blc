@@ -34,6 +34,8 @@ Snd 10 OGGV res/snd/vill.ogg
 Snd 11 OGGV res/snd/bomosorrow.ogg
 Snd 12 OGGV res/snd/ambientejungla.ogg
 Snd 13 OGGV res/snd/cantina.ogg
+Snd 14 OGGV res/snd/puertoorvax.ogg
+Snd 15 OGGV res/snd/plazaorvax.ogg
 Pict 27 PNG res/img/euj1.png
 Pict 28 PNG res/img/euj2.png
 Pict 29 PNG res/img/euj3.png

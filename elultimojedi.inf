@@ -1026,11 +1026,13 @@ Class CadaverGamorreano(50)
         self.multiple=m;
       ],
       before [;
-        Search: "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
+        Search: if (oLlavePuertaO4 in self) "Sus armas han quedado inservibles tras el combate. Rebuscando
+                un poco más, encuentras una tarjeta de plástico que podría ser una llave electrónica.";
+                "No encuentras nada de utilidad. Sus armas han quedado inservibles tras el combate.";
         Examine: rfalse;
         default: "No vale la pena perder tiempo en eso. Céntrate en tu misión.";
       ],
-;
+has transparent;
 
 Class Suministro(50)
  with name 'suministro',
@@ -3822,9 +3824,9 @@ Object oCrys "Crys Taanzer" limbo
   with
     name 'crys' 'mujer' 'piloto' 'humana' 'chica',
     description [;
-      if (self hasnt conocido) "Una hermosa mujer de raza humana de pelo largo y rubio y de ojos verdes. Por sus rasgos dirías que es originaria
+      if (self hasnt conocido) "Una hermosa mujer de raza humana de piel canela y pelo castaño largo y rizado. Por sus rasgos dirías que es originaria
         de algún remoto planeta del Borde Exterior, probablemente de Nadiem.";
-      else "Crys Taanzer, la piloto de la Uhumele. Una belleza humana de ojos verdes y pelo largo y rubio.";
+      else "Crys Taanzer, la piloto de la Uhumele. Una belleza humana de piel canela y pelo castaño largo y rizado.";
     ], 
     life [tema;
 	    Attack: if (self hasnt conocido) {
@@ -5042,6 +5044,7 @@ has nosalidas;
 [FaseOrvax4 ;
  move oTrajeTrooper to limbo;
  !move oModuloControlO4 to player;
+ move oLlavePuertaO4 to player;
  !give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
@@ -5154,6 +5157,8 @@ has scenery concealed;
 Lugar PuertoO4 "Puerto Espacial de Orvax IV"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_mus sndPuerto,
+  sgw_vol VOLUMEN_BAJO,
   description "El puerto espacial de Orvax IV está repleto de naves que vienen de cualquier parte de la galaxia
                para, principalmente, comerciar con esclavos, aunque también las hay que llegan al planeta en busca
                de provisiones o repuestos. La Uhumele, tu nave, está atracada en uno de los hangares del puerto.",
@@ -5261,6 +5266,8 @@ has concealed;
 Lugar PlazaO4 "Plaza Principal de Orvax IV"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_mus sndPlaza,
+  sgw_vol VOLUMEN_BAJO,
   description "La plaza principal es el centro neurálgico de Orvax IV. Observas el típico bullicio de las grandes ciudades. 
               Comerciantes y compradores campan a sus anchas por la plaza, ofreciendo o requiriendo cualquier tipo de bienes.",
   n_to PuertoO4,
@@ -6551,7 +6558,7 @@ with
     rtrue;
   ],
   w_to CalleO4_1,
-  in_to PuertaAcorazadaO4,
+  in_to oPuertaAcorazadaO4,
 ;
 
 Object decorado_EntradaBaseO4 EntradaBaseO4
@@ -6611,7 +6618,7 @@ Object oVentanaBaseO4 "ventana" EntradaBaseO4
     ],
 has scenery female;
 
-Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
+Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
   with description "La puerta que da acceso al interior de la base de Sotta el Hutt es de acero reforzado y, aparentemente,
                    de un grosor importante. A un lado de la puerta se encuentra el mecanismo que la controla.",
        name 'puerta' 'acorazada' 'porton',
@@ -6634,10 +6641,19 @@ Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               give self ~locked;
 	               give self ~openable;
 	               give self open;
+	               move oCampeonGamorreanoO4 to PasilloBaseO4;
 	               Achieved(17);
 	               "Empuñas tu sable láser y lo clavas en la puerta del complejo. Lentamente, el acero de la puerta
 	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
 	               círculo por el que poder entrar a la base.";
+                 }
+                 if (second == oLlavePuertaO4) {
+	               if (oMecanismoPuertaO4 has muerto) "El mecanismo para abrir la puerta está inservible.";
+	               give self open;
+	               give self ~locked;
+	               Achieved(17);
+	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	               permitiéndote el acceso al interior del complejo.";
                  }
                  "Tus intentos por abrir la puerta resultan estériles.";
          close,
@@ -6647,32 +6663,73 @@ Object PuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
        ],
 has static door openable lockable locked female container objetivo;
 
-Object MecanismoPuertaO4 "mecanismo de control" EntradaBaseO4
+Object oMecanismoPuertaO4 "mecanismo de control" EntradaBaseO4
 with
   name 'mecanismo' 'control',
   name_f 'ranura',
-  description "A un lado de la puerta se encuentra el mecanismo que la controla, que consiste en una ranura para introducir
-              la llave electrónica correspondiente.",
+  description [;
+              if (self has muerto) "El mecanismo que servía para controlar la puerta está ahora destrozado e inservible.";
+              "A un lado de la puerta se encuentra el mecanismo que la controla, que consiste en una ranura para introducir
+              la llave electrónica correspondiente.";
+  ],
   before [;
+      attack: give self muerto;
+              "Con un rápido movimiento, desenfundas tu sable láser y golpeas el mecanismo de control, destrozándolo por
+              completo y dejándolo inservible";
       receive: if (oGuardiasPuertaO4 in EntradaBaseO4) "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+               if (self has muerto) "El mecanismo para abrir la puerta está inservible.";
+               if (second == oLlavePuertaO4) {
+	               give oPuertaAcorazadaO4 open;
+	               give oPuertaAcorazadaO4 ~locked;
+	               Achieved(17);
+	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	               permitiéndote el acceso al interior del complejo.";
+               }
                "No parece que vaya a servir para nada.";
   ],
-has scenery container;
+has scenery container objetivo;
+
+Object oLlavePuertaO4 "llave electrónica" limbo
+with
+  name 'llave' 'tarjeta' 'electronica',
+  description "La llave electrónica es una tarjeta de plástico de color blanco, que en su interior almacena los códigos necesarios
+              para abrir la puerta del complejo.",
+  before [;
+      insert: if (second==oMecanismoPuertaO4 or oPuertaAcorazadaO4){
+                 if ((oGuardiasPuertaO4 in EntradaBaseO4) && location==EntradaBaseO4) 
+                    "Los guardias protegen el acceso a la base y no te permitirán acercarte.";
+                 else {
+                    if (oMecanismoPuertaO4 has muerto) "El mecanismo para abrir la puerta está inservible.";
+	                give oPuertaAcorazadaO4 open;
+	                give oPuertaAcorazadaO4 ~locked;
+	                Achieved(17);
+	                "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
+	                permitiéndote el acceso al interior del complejo.";
+                 }
+              }
+              "No parece que vaya a servir para nada.";
+      take: if (parent(self) ofclass CadaverGamorreano) {
+	          move self to player;
+	          "Coges la llave electrónica del cadáver de uno de los guardias.";
+            };
+  ],
+has female;
+
 
 Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
   with
-    name 'guardia' 'guardias',
+    name 'guardia' 'guardias' 'gamorreano' 'gamorreanos',
     parse_name[;
-     if (NextWord()=='guardia' or 'guardias') return 100;
+     if (NextWord()=='guardia' or 'guardias' or 'gamorreano' or 'gamorreanos') return 100;
      return -1;
     ],
     description [;
       switch(self.multiple){
 	      1: "Un guardia defiende el acceso a la base de Sotta el Hutt. Es un Gamorreano, una bestia corpulenta con aspecto porcino 
-	          de aproximadamente 1-75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
 	          surjen unos prominentes colmillos inferiores.";
 	      2: "Dos guardias defienden el acceso a la base de Sotta el Hutt. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
-	          de aproximadamente 1-75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
 	          surjen unos prominentes colmillos inferiores.";
       }
       rtrue;
@@ -6708,7 +6765,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
       if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
           guardia que acabas de matar queda envuelto en una nube de fuego y 
           desaparece ante tus narices.^";
-      move new_cadaver to parent(self);	            
+      move new_cadaver to parent(self);	     
+      if (oLlavePuertaO4 in limbo) move oLlavePuertaO4 to new_cadaver;       
     ],
     life [i;
 	    Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
@@ -6823,6 +6881,103 @@ Object PuertaComedorO4 "puerta" PasilloBaseO4
        ],
 has static door openable female objetivo;
 
+Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
+  with
+    name 'guardia' 'campeon' 'gamorreano',
+    parse_name[;
+     if (NextWord()=='guardia' or 'campeon' or 'gamorreano') return 100;
+     return -1;
+    ],
+    description "Un enorme guardia, más grande que los de la puerta, bloquea el pasillo. Por su corpulencia, debe ser un 
+              campeón Gamorreano, una bestia con aspecto porcino de casi 2 metros de altura y piel verdosa. Su enorme cabeza 
+              luce un par de robustos cuernos y de su boca surjen unos prominentes colmillos inferiores.",
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 45,
+    topvida 45,
+    dado_golpe 3 6 3, !1d6+0
+    !multiple 1,
+    !name_boss "el capitán",
+    name_tropa "el campeón gamorreano",
+    printname [nom;
+      nom="";
+      if (self.multiple>1) nom= self.name_tropa;
+      else {
+	      if (self provides name_boss ) nom=self.name_boss;
+	      else nom=self.name_tropa;
+      } 
+      return nom;
+    ],
+    printcasename [nom;
+      nom="";
+      if (self.multiple>1) nom= Cap(self.name_tropa);
+      else {
+	      if (self provides name_boss) nom=Cap(self.name_boss);
+          else nom=Cap(self.name_tropa);
+      }
+      return nom;
+    ],
+    resisteFuerza [;
+      if (random(4)<2) {
+	      !Resiste el ataque de la Fuerza
+	      print "Parece que el gamorreano estaba esperando tu ataque usando la Fuerza, ya que
+	            con un rápido movimiento se adelanta a él y consigue esquivarlo.";
+	      return 1;
+      } 
+      return 0;
+    ],
+    almorir [new_cadaver;
+      new_cadaver = CadaverGamorreano.create(1);
+      if (new_cadaver == nothing) "Sin ninguna razón aparente, el cadáver del 
+          guardia que acabas de matar queda envuelto en una nube de fuego y 
+          desaparece ante tus narices.^";
+      move new_cadaver to parent(self);	            
+    ],
+    life [;
+	    Attack: give self estatico;
+	            move player to parent(self);
+	            if (second == nothing) 
+	              turno_combate(player,self,oSableLaser);
+	            else
+	              turno_combate(player,self,second);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+	            }
+                rtrue;
+	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, el gamorreano se lanza a por ti.^";
+	            give self estatico;
+	            move player to parent(self);
+	            multi_combate(player,self,oSableLaser);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+                }
+                rtrue;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
+        Levitar: "No serviría de nada.^";
+	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                   give self estatico;
+	                   move player to parent(self);
+                       turno_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 move self to limbo;
+		                 give player ~descubierto;
+	                   }
+	                   rtrue;
+        Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
+    ],
+has animate;
+
 Lugar CeldasBaseO4 "Celdas"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
@@ -6847,7 +7002,7 @@ with
   description "A tenor del número de sillas y mesas y de su distribución, esta amplia 
               sala cuadrada debe ser el comedor principal del complejo. Tienes suerte
               de que no sea hora de comida y está vacía, ya que si no podrías haberte
-              metido en un bien lío.",
+              metido en un buen lío.",
   w_to PasilloBaseO4,
   n_to Pasillo3BaseO4,
   s_to AlmacenBaseO4,
@@ -6924,9 +7079,9 @@ with  describe
 
 Object oGuardiasAlmacenO4 "guardias de Sotta" AlmacenBaseO4
   with
-    name 'guardia' 'guardias',
+    name 'guardia' 'guardias' 'gamorreano' 'gamorreanos',
     parse_name[;
-     if (NextWord()=='guardia' or 'guardias') return 100;
+     if (NextWord()=='guardia' or 'guardias' or 'gamorreano' or 'gamorreanos') return 100;
      return -1;
     ],
     description [;
@@ -7175,9 +7330,9 @@ with
 
 Object oGuardiasDescansoO4 "guardias de Sotta" SalaDescansoBaseO4
   with
-    name 'guardia' 'guardias',
+    name 'guardia' 'guardias' 'gamorreano' 'gamorreanos',
     parse_name[;
-     if (NextWord()=='guardia' or 'guardias') return 100;
+     if (NextWord()=='guardia' or 'guardias' or 'gamorreano' or 'gamorreanos') return 100;
      return -1;
     ],
     description "Diez guardias gamorreanos se divierten estruendosamente mientras están
@@ -7424,18 +7579,18 @@ has scenery switchable;
 
 Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
   with
-    name 'guardia' 'guardias',
+    name 'guardia' 'guardias' 'gamorreano' 'gamorreanos',
     parse_name[;
-     if (NextWord()=='guardia' or 'guardias') return 100;
+     if (NextWord()=='guardia' or 'guardias' or 'gamorreano' or 'gamorreanos') return 100;
      return -1;
     ],
     description [;
       switch(self.multiple){
 	      1: "Un guardia defiende la sala de control del complejo. Es un Gamorreano, una bestia corpulenta con aspecto porcino 
-	          de aproximadamente 1-75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Su enorme cabeza luce un par de robustos cuernos y de su boca
 	          surjen unos prominentes colmillos inferiores.";
 	      2: "Dos guardias defienden la sala de control del complejo. Son Gamorreanos, unas corpulentas bestias con aspecto porcino 
-	          de aproximadamente 1-75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
+	          de aproximadamente 1.75 metros de altura y piel verdosa. Sus enormes cabezas lucen un par de robustos cuernos y de sus bocas
 	          surjen unos prominentes colmillos inferiores.";
       }
       rtrue;
@@ -8439,8 +8594,8 @@ Include "includes/eujgramatica.inf";
 
   if (defensor.vida < 1) {
 	  give defensor muerto;
+	  print "^",(The)defensor, " cae muerto debido a las heridas sufridas.";
 	  if (defensor provides almorir) defensor.almorir();
-	  else "^",(The)defensor, " cae muerto debido a las heridas sufridas.";
 	  rtrue;
   }
   
