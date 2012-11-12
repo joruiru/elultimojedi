@@ -105,8 +105,8 @@ with
   ZIPI_titulo "Información adicional (mapas y solución)",
   ZIPI_item
     ZIPI_Menu11
-    ZIPI_Otro14
-    ZIPI_Menu13
+    ZIPI_Otro18
+    ZIPI_Menu14
 ;
 ZIPI_Menu ZIPI_Menu11
 with
@@ -114,6 +114,7 @@ with
   ZIPI_item
     ZIPI_Otro11
     ZIPI_Menu12
+    ZIPI_Menu13
 ;
 ZIPI_Menu ZIPI_Menu12
 with
@@ -124,19 +125,30 @@ with
 ;
 ZIPI_Menu ZIPI_Menu13
 with
-  ZIPI_titulo "Solución (prohibido leer esto)",
+  ZIPI_titulo "Orvax IV",
   ZIPI_item
+    ZIPI_Otro14
     ZIPI_Otro15
-    ZIPI_Menu14
+    ZIPI_Otro16
+    ZIPI_Otro17
 ;
 ZIPI_Menu ZIPI_Menu14
 with
+  ZIPI_titulo "Solución (prohibido leer esto)",
+  ZIPI_item
+    ZIPI_Otro19
+    ZIPI_Menu15
+;
+ZIPI_Menu ZIPI_Menu15
+with
   ZIPI_titulo "Puerto Espacial de Cadgel Meadows",
   ZIPI_item
-    ZIPI_Otro16
-    ZIPI_Otro17
-    ZIPI_Otro18
-    ZIPI_Otro19
+    ZIPI_Otro20
+    ZIPI_Otro21
+    ZIPI_Otro22
+    ZIPI_Otro23
+    ZIPI_Otro24
+    ZIPI_Otro25
 ;
 ZIPI_Pista ZIPI_Pista0
 with
@@ -568,11 +580,105 @@ with
   ];
 ZIPI_Otro ZIPI_Otro14
 with
+  ZIPI_titulo "La ciudad",
+  ZIPI_ejecutar [;
+       print "^^";
+       font off;
+       print "                     ^";
+       print "    +--------------+    +--------------+ ^";
+       print "    |    UHUMELE   |  < |    PUERTO    | ^";
+       print "    +--------------+    +--------------+ ^";
+       print "                               |         ^";
+       print "    +--------------+    +--------------+    +--------------+    +---------------+^";
+       print "    |     CALLE    | -- |    PLAZA     | -- |    CALLE     | -- |  ENTRADA BASE |      ^";
+       print "    +--------------+    +--------------+    +--------------+    +---------------+    ^";
+       print "           @@92/                                      @@92/       ^";
+       print "    +--------------+                        +--------------+^";
+       print "    |    RAMPA     |                        |   CANTINA    |^";
+       print "    +--------------+                        +--------------+^";
+       print "           @@92/       ^";
+       print "    +--------------+^";
+       print "    | NIV.INFERIOR |^";
+       print "    +--------------+^";
+       font on;
+  ];
+ZIPI_Otro ZIPI_Otro15
+with
+  ZIPI_titulo "La ciudad (laberinto)",
+  ZIPI_ejecutar [;
+       print "^^";
+       font off;
+       print "                     ^";
+       print "                                 +--------------+^";
+       print "                                 | NIV.INFERIOR |^";
+       print "                                 +--------------+^";
+       print "                                        |^";
+       print "                             +---+      |       +---+^";
+       print "                             |   @@92/     |      @@92/   |^";
+       print "                             |   +--------------+   |^";
+       print "                             +---|   CALLEJON   |---+^";
+       print "                                 +--------------+<--+<-+^";
+       print "                                        |           |  |^";
+       print "             +--------------+    +--------------+   |  |^";
+       print "             |    ACCESO    | -- |   CALLEJON   |---+  |^";
+       print "             +--------------+    +--------------+      |^";
+       print "                    @@92/                  |              |^";
+       print "             +--------------+           +--------------+^";
+       print "             |    CELDAS    |^";
+       print "             +--------------+                           ^";
+       font on;
+  ];
+ZIPI_Otro ZIPI_Otro16
+with
+  ZIPI_titulo "La base de Sotta el Hutt (nivel inferior)",
+  ZIPI_ejecutar [;
+       print "^^";
+       font off;
+       print "                                            +---------------+^";
+       print "                                            | SALA CONTROL  |^";
+       print "                                            +---------------+^";
+       print "                                                    |^";
+       print "                                            +---------------+^";
+       print "                                            |    PASILLO    |^";
+       print "                                            +---------------+^";
+       print "                      (Acceso al exterior)          |^";
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "    |    CELDAS    | -- |   PASILLO    | -- |    COMEDOR    |^";
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "                               |                    |^";
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "    | SALA DESCANSO| -- |   PASILLO    |    |    ALMACEN    | ^";
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "                               |    ^";
+       print "                        +--------------+ ^";
+       print "                        |   ASCENSOR   |^";
+       print "                        +--------------+ ^";
+       print "^";
+       font on;
+  ];
+ZIPI_Otro ZIPI_Otro17
+with
+  ZIPI_titulo "La base de Sotta el Hutt (nivel superior)",
+  ZIPI_ejecutar [;
+       print "^^";
+       font off;
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "    |   ASCENSOR   | -- |   PASILLO    | -- |  HAB. SOTTA   | ^";
+       print "    +--------------+    +--------------+    +---------------+^";
+       print "                               |    ^";
+       print "                        +--------------+ ^";
+       print "                        | DORMITORIOS  |^";
+       print "                        +--------------+ ^";
+       print "^";
+       font on;
+  ];
+ZIPI_Otro ZIPI_Otro18
+with
   ZIPI_titulo "",
   ZIPI_ejecutar [;
        rtrue;
   ];
-ZIPI_Otro ZIPI_Otro15
+ZIPI_Otro ZIPI_Otro19
 with
   ZIPI_titulo "En el Paso de Half-Axe",
   ZIPI_ejecutar [;
@@ -584,7 +690,7 @@ with
        print "^Saca a Bomo haciéndolo levitar con la Fuerza. ";
        print "^Ve al norte y luego hacia el oeste, hasta que llegues al exterior de Cadgel Meadows. ";
   ];
-ZIPI_Otro ZIPI_Otro16
+ZIPI_Otro ZIPI_Otro20
 with
   ZIPI_titulo "Exterior de Cadgel Meadows",
   ZIPI_ejecutar [;
@@ -595,7 +701,7 @@ with
        print "^Ve a la parte este del complejo y engaña a los guardias para que te dejen entrar cuando ";
        print "te den el alto. ";
   ];
-ZIPI_Otro ZIPI_Otro17
+ZIPI_Otro ZIPI_Otro21
 with
   ZIPI_titulo "Entrando al cuartel de mando",
   ZIPI_ejecutar [;
@@ -605,7 +711,7 @@ with
        print "llevado al resto. ";
        print "^Sal y vuelve al hangar este. ";
   ];
-ZIPI_Otro ZIPI_Otro18
+ZIPI_Otro ZIPI_Otro22
 with
   ZIPI_titulo "En la Uhumele",
   ZIPI_ejecutar [;
@@ -616,9 +722,9 @@ with
        print "^Dile que necesitáis ir a Orbax IV en busca de la famila de Bomo. ";
        print "^Pregúntale por el plan para escapar del bloqueo en el puerto espacial ";
   ];
-ZIPI_Otro ZIPI_Otro19
+ZIPI_Otro ZIPI_Otro23
 with
-  ZIPI_titulo "La huida final",
+  ZIPI_titulo "La huida",
   ZIPI_ejecutar [;
        print "^Debes ir al hangar norte a robar un caza V-wing. ";
        print "^Solo puedes acercarte al caza yendo disfrazado de clon. ";
@@ -626,8 +732,55 @@ with
        print "^Mueve la palanca hacia delante para avanzar hasta la pista. ";
        print "^Mueve la palanca hacia delante para avanzar hasta el hangar sur. ";
        print "^Dispara a la Valance, para provocar el caos y que el resto de naves despeguen... ";
-       print "^^";
-       print "******** FIN ******** ";
+  ];
+ZIPI_Otro ZIPI_Otro24
+with
+  ZIPI_titulo "En Orvax IV",
+  ZIPI_ejecutar [;
+       print "^Desde la plaza, ve al oeste para ayudar a Mezgraf. ";
+       print "^Sana a Mezgraf y pregúntale si sabe algo de los prisioneros. ";
+       print "^Baja al nivel inferior y adéntrate en los callejones. ";
+       print "^El nivel inferior de Orvax IV es un laberinto. En cualquier momento, yendo ";
+       print "S-S-O llegarás a la entrada a las celdas. ";
+       print "^Deshazte de los guardias y entra a las celdas. ";
+       print "^Examina las celdas para encontrar en la que tienen encerrados a los nosaurianos. ";
+       print "^Localiza a Mixa entre los prisioneros y pregúntale por la familia de Bomo. ";
+       print "^Libera a los prisioneros o no. A tu elección. ";
+       print "^Vuelve al nivel superior, a la plaza. Desde allí ve al este. ";
+       print "^Entra a la cantina y pregúntale a Sniffles si ha averiguado algo sobre los esclavos. ";
+       print "^Vuelve a la plaza para buscar a Meetto. ";
+       print "^Meetto te pedirá dinero para darte la información que quieres. ";
+       print "^Vuelve a la cantina y pregúntale a Sniffles cómo podrías conseguir algo de dinero. ";
+       print "^Te informará que Jaxf Seval hace apuestas jugando al Dejarik. ";
+       print "^Habla con Jaxf Seval para jugar contra él, pero te pedirá que te apuestes algo. ";
+       print "Si le hablas de la Uhumele, aceptará que te la apuestes. ";
+       print "^Ve a la Uhumele y coge el módulo de control. ";
+       print "^Vuelve a la cantina y dale el módulo de control a la Uhumele. Ahora juega al Dejarik ";
+       print "contra Jaxf Seval. ";
+       print "^Antes de hacer tu movimiento, concéntrate en Jaxf Seval. Así sabrás cuál será su ";
+       print "próximo movimiento y podrás ganarle con facilidad. ";
+       print "^Con el dinero y el módulo, vuelve a la plaza y dale el dinero a Meetto. ";
+       print "^Pregúntale por el mercado de esclavos. Te dirá que todo está bajo control de Sotta el Hutt. ";
+  ];
+ZIPI_Otro ZIPI_Otro25
+with
+  ZIPI_titulo "En la base de Sotta",
+  ZIPI_ejecutar [;
+       print "^Desde la plaza, ve en dirección E-E, hasta que llegues a la entrada de la base de Sotta. ";
+       print "^Acaba con los guardas gamorreanos que custodian la puerta. ";
+       print "^Coge la tarjeta que tienen los guardias para abrir la puerta del complejo. ";
+       print "^Una vez dentro, ve al E, al comedor. En el comedor, ve al N, a otro pasillo. ";
+       print "^Abre la puerta cerrada con el sable láser y entra a la sala de control. ";
+       print "^Acaba con los guardias de la sala y localiza el interruptor de seguridad del ascensor. ";
+       print "^Enciéndelo. ";
+       print "^Vuelve al pasillo de entrada y desde allí muévete hacia el S. ";
+       print "^Entra en el ascensor y sube al nivel superior. ";
+       print "^Al salir del ascensor te esperará un cazarrecompensas de Sotta. Acaba con él. ";
+       print "^Ve al este, a las habitaciones de Sotta. ";
+       print "^Te encontrarás frente a frente con Sotta el Hutt. Pregúntale por la hija de Bomo... ";
+       print "^... el final de la aventura dependerá de lo que hagas tras hablar con Sotta. ";
+       print "^ ";
+       print "^******** FIN ******** ";
        print "^^";
   ];
 [ ZIPI_Empezar ;

@@ -370,7 +370,94 @@ Desplázate con las flechas del cursor. Pulsa ~Entrar~ para seleccionar, ~P~ para
           </NOFONT>
         </TEXTO>
       </MENU>
+
+      <MENU>Orvax IV
         
+        <TEXTO>La ciudad
+        
+          <NOFONT>
+                     
+    +--------------+    +--------------+ 
+    |    UHUMELE   |  < |    PUERTO    | 
+    +--------------+    +--------------+ 
+                               |         
+    +--------------+    +--------------+    +--------------+    +---------------+
+    |     CALLE    | -- |    PLAZA     | -- |    CALLE     | -- |  ENTRADA BASE |      
+    +--------------+    +--------------+    +--------------+    +---------------+    
+           \/                                      \/       
+    +--------------+                        +--------------+
+    |    RAMPA     |                        |   CANTINA    |
+    +--------------+                        +--------------+
+           \/       
+    +--------------+
+    | NIV.INFERIOR |
+    +--------------+
+          </NOFONT>
+        </TEXTO>
+        <TEXTO>La ciudad (laberinto)
+        
+          <NOFONT>
+                     
+                                 +--------------+
+                                 | NIV.INFERIOR |
+                                 +--------------+
+                                        |
+                             +---+      |       +---+
+                             |   \/     |      \/   |
+                             |   +--------------+   |
+                             +---|   CALLEJON   |---+
+                                 +--------------+<--+<-+
+                                        |           |  |
+             +--------------+    +--------------+   |  |
+             |    ACCESO    | -- |   CALLEJON   |---+  |
+             +--------------+    +--------------+      |
+                    \/                  |              |
+             +--------------+           +--------------+
+             |    CELDAS    |
+             +--------------+                           
+          </NOFONT>
+        </TEXTO>
+
+        <TEXTO>La base de Sotta el Hutt (nivel inferior)
+        
+          <NOFONT>
+                                            +---------------+
+                                            | SALA CONTROL  |
+                                            +---------------+
+                                                    |
+                                            +---------------+
+                                            |    PASILLO    |
+                                            +---------------+
+                      (Acceso al exterior)          |
+    +--------------+    +--------------+    +---------------+
+    |    CELDAS    | -- |   PASILLO    | -- |    COMEDOR    |
+    +--------------+    +--------------+    +---------------+
+                               |                    |
+    +--------------+    +--------------+    +---------------+
+    | SALA DESCANSO| -- |   PASILLO    |    |    ALMACEN    | 
+    +--------------+    +--------------+    +---------------+
+                               |    
+                        +--------------+ 
+                        |   ASCENSOR   |
+                        +--------------+ 
+
+          </NOFONT>
+        </TEXTO>
+        <TEXTO>La base de Sotta el Hutt (nivel superior)
+        
+          <NOFONT>
+    +--------------+    +--------------+    +---------------+
+    |   ASCENSOR   | -- |   PASILLO    | -- |  HAB. SOTTA   | 
+    +--------------+    +--------------+    +---------------+
+                               |    
+                        +--------------+ 
+                        | DORMITORIOS  |
+                        +--------------+ 
+
+          </NOFONT>
+        </TEXTO>
+      </MENU>
+              
     </MENU>
     
     <NADA>
@@ -414,17 +501,61 @@ llevado al resto.
 ^Pregúntale por el plan para escapar del bloqueo en el puerto espacial
         </TEXTO>
 
-        <TEXTO>La huida final
+        <TEXTO>La huida
 ^Debes ir al hangar norte a robar un caza V-wing.
 ^Solo puedes acercarte al caza yendo disfrazado de clon.
 ^Dentro del caza mueve la palanca de mando hacia arriba para despegar.
 ^Mueve la palanca hacia delante para avanzar hasta la pista.
 ^Mueve la palanca hacia delante para avanzar hasta el hangar sur.
 ^Dispara a la Valance, para provocar el caos y que el resto de naves despeguen...
+        </TEXTO>
 
-******** FIN ********
+        <TEXTO>En Orvax IV
+^Desde la plaza, ve al oeste para ayudar a Mezgraf.
+^Sana a Mezgraf y pregúntale si sabe algo de los prisioneros.
+^Baja al nivel inferior y adéntrate en los callejones.
+^El nivel inferior de Orvax IV es un laberinto. En cualquier momento, yendo
+S-S-O llegarás a la entrada a las celdas.
+^Deshazte de los guardias y entra a las celdas.
+^Examina las celdas para encontrar en la que tienen encerrados a los nosaurianos.
+^Localiza a Mixa entre los prisioneros y pregúntale por la familia de Bomo.
+^Libera a los prisioneros o no. A tu elección.
+^Vuelve al nivel superior, a la plaza. Desde allí ve al este.
+^Entra a la cantina y pregúntale a Sniffles si ha averiguado algo sobre los esclavos.
+^Vuelve a la plaza para buscar a Meetto.
+^Meetto te pedirá dinero para darte la información que quieres.
+^Vuelve a la cantina y pregúntale a Sniffles cómo podrías conseguir algo de dinero.
+^Te informará que Jaxf Seval hace apuestas jugando al Dejarik.
+^Habla con Jaxf Seval para jugar contra él, pero te pedirá que te apuestes algo.
+Si le hablas de la Uhumele, aceptará que te la apuestes.
+^Ve a la Uhumele y coge el módulo de control.
+^Vuelve a la cantina y dale el módulo de control a la Uhumele. Ahora juega al Dejarik
+contra Jaxf Seval.
+^Antes de hacer tu movimiento, concéntrate en Jaxf Seval. Así sabrás cuál será su
+próximo movimiento y podrás ganarle con facilidad.
+^Con el dinero y el módulo, vuelve a la plaza y dale el dinero a Meetto.
+^Pregúntale por el mercado de esclavos. Te dirá que todo está bajo control de Sotta el Hutt.
+        </TEXTO>
+
+        <TEXTO>En la base de Sotta
+^Desde la plaza, ve en dirección E-E, hasta que llegues a la entrada de la base de Sotta.
+^Acaba con los guardas gamorreanos que custodian la puerta.
+^Coge la tarjeta que tienen los guardias para abrir la puerta del complejo.
+^Una vez dentro, ve al E, al comedor. En el comedor, ve al N, a otro pasillo.
+^Abre la puerta cerrada con el sable láser y entra a la sala de control.
+^Acaba con los guardias de la sala y localiza el interruptor de seguridad del ascensor.
+^Enciéndelo.
+^Vuelve al pasillo de entrada y desde allí muévete hacia el S.
+^Entra en el ascensor y sube al nivel superior.
+^Al salir del ascensor te esperará un cazarrecompensas de Sotta. Acaba con él.
+^Ve al este, a las habitaciones de Sotta.
+^Te encontrarás frente a frente con Sotta el Hutt. Pregúntale por la hija de Bomo...
+^... el final de la aventura dependerá de lo que hagas tras hablar con Sotta.
+^
+^******** FIN ********
 
         </TEXTO>
+
 
       </MENU>
 

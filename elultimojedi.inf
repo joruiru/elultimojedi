@@ -6949,7 +6949,7 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
 	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, el gamorreano se lanza a por ti.^";
 	            give self estatico;
 	            move player to parent(self);
-	            multi_combate(player,self,oSableLaser);
+	            turno_combate(player,self,oSableLaser);
 	            viewImageSlide(pngSablesLuz);
 	            if (self has muerto) {
 		            move self to limbo;
