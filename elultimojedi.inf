@@ -57,6 +57,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/11/12  Joruiru - Evitar poder salir de la sala de control o del pasillo
+!              si hay enemigos.
 !  2012/10/28  Joruiru - Un poco de aleatoriedad al intentar entrar a la base de
 !              Sotta saltando por el balcon.
 !  2012/10/10  Joruiru - QuitarAcentos modificada para admitir '?' al final de
@@ -6568,12 +6570,17 @@ with  describe
                excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." 0
        'muros' "Los muros que conforman la base de Sotta el Hutt no parecen tener ninguna conexión con el exterior,
                excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." G_PLURAL
+       'pared' "Los muros que conforman la base de Sotta el Hutt no parecen tener ninguna conexión con el exterior,
+               excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." G_FEMENINO
+       'paredes' "Los muros que conforman la base de Sotta el Hutt no parecen tener ninguna conexión con el exterior,
+               excepto la puerta de entrada y un balcón que hay en el segundo piso de una de las torres." G_FEMENINO+G_PLURAL
        'torre' "Las torres de cemento y piedra se elevan sobre el resto del complejo. Ninguna, excepto una en la
                que se puede ver un balcón en el segundo piso, parece tener ningún tipo de conexión con el exterior." G_FEMENINO
        'torres' "Las torres de cemento y piedra se elevan sobre el resto del complejo. Ninguna, excepto una en la
                que se puede ver un balcón en el segundo piso, parece tener ningún tipo de conexión con el exterior." G_FEMENINO+G_PLURAL,
   before[;
     examine: rfalse;
+    climb: <<climb oVentanaBaseO4>>;
     default: "No conviene hacer eso.";
   ],
 ;
@@ -6588,9 +6595,10 @@ Object oVentanaBaseO4 "ventana" EntradaBaseO4
       climb: if (oGuardiasPuertaO4 in EntradaBaseO4) "Después de estudiar la posibilidad de trepar 
                 hasta la ventana, descartas la idea, ya que sería muy lento y te convertiría en un
                 blanco fácil para los guardias que protegen el complejo.";
-             print "Trepas por los muros de la base y, ya sin la amenaza de los guardias, alcanzas fácilmente 
-             el balcón del segundo piso, lo que te da acceso al interior del complejo.^";
-             playerTo(SottaBaseO4,2);
+!             print "Trepas por los muros de la base y, ya sin la amenaza de los guardias, alcanzas fácilmente 
+!             el balcón del segundo piso, lo que te da acceso al interior del complejo.^";
+!             playerTo(SottaBaseO4,2);*/
+             print "No hay elementos suficientes en los que apoyarte para trepar hasta el balcón.^"; 
              rtrue;
       enter, jumpover: if (oGuardiasPuertaO4 notin EntradaBaseO4) {
                          print "Saltar hasta el balcón que da a la ventana es sin duda la mejor manera
@@ -6707,6 +6715,7 @@ with
 	                permitiéndote el acceso al interior del complejo.";
                  }
               }
+              if (second==oMecanismoPuertaSalaControlO4 or PuertaSalaControlO4) <<open PuertaSalaControlO4 oLlavePuertaO4>>;
               "No parece que vaya a servir para nada.";
       take: if (parent(self) ofclass CadaverGamorreano) {
 	          move self to player;
@@ -6918,7 +6927,7 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
       return nom;
     ],
     resisteFuerza [;
-      if (random(4)<2) {
+      if (random(2)<2) {
 	      !Resiste el ataque de la Fuerza
 	      print "Parece que el gamorreano estaba esperando tu ataque usando la Fuerza, ya que
 	            con un rápido movimiento se adelanta a él y consigue esquivarlo.";
@@ -6960,6 +6969,9 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
     orders [;
       Mild, Strong: <<Ask self>>;
       NotUnderstood, Tell: <<Ask self>>;
+    ],
+    react_before[;
+      go: <<ask self>>;
     ],
     before [;
         Sentir, Concentrar: "La Fuerta está presente en el interior de todos los seres vivos.^";
@@ -7475,6 +7487,8 @@ Object PuertaSalaControlO4 "puerta" Pasillo3BaseO4
          open,
          unlock: if (self hasnt lockable && self hasnt openable)
                    "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
+                 if (second==oLlavePuertaO4) "La puerta no se abre. Esta tarjeta electrónica no debe servir 
+                   para abrir esta puerta.";
                  if (second==oSableLaser) {
 	               give self ~lockable;
 	               give self ~locked;
@@ -7489,16 +7503,17 @@ Object PuertaSalaControlO4 "puerta" Pasillo3BaseO4
          lock: if (self hasnt lockable && self hasnt openable)
                    "La puerta está destrozada debido al tratamiento que le dispensaste con tu espada láser.";
        ],
-has static door openable lockable locked female objetivo;
+has static door openable lockable locked female container objetivo;
 
 Object oMecanismoPuertaSalaControlO4 "mecanismo de control" Pasillo3BaseO4
 with
-  name 'mecanismo' 'control',
+  name 'mecanismo' 'control' 'apertura',
   name_f 'ranura',
   description "A un lado de la puerta se encuentra el mecanismo que la controla, que consiste en una ranura 
                para introducir la llave electrónica correspondiente.",
   before [;
-      receive: "No parece que vaya a servir para nada.";
+      receive: if (second==oLlavePuertaO4) <<open PuertaSalaControlO4 oLlavePuertaO4>>;
+               "No parece que vaya a servir para nada.";
   ],
 has scenery container;
 
@@ -7511,7 +7526,8 @@ with
   s_to Pasillo3BaseO4,
   before [;
     exit: <<go s_obj>>;
-    go: if (noun==out_obj) {
+    go: if (oGuardiasControlO4 in self) <<ask oGuardiasControlO4>>;
+        if (noun==out_obj) {
 	      <<exit>>;
         }
   ],
@@ -7835,7 +7851,7 @@ Object oBobaFettO4 "cazarrecompensas" Pasillo4BaseO4
       "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, mientras ves como desaparece por el pasillo.";
     ],
     resisteFuerza [;
-      if (random(2)<2) {
+      if (random(3)<3) {
 	      !Resiste el ataque de la Fuerza
 	      print "Parece que el cazarrecompensas estaba esperando tu ataque usando la Fuerza, ya que
 	            con un rápido movimiento se adelanta a él y consigue esquivarlo.";
