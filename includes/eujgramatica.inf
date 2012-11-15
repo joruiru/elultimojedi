@@ -155,6 +155,7 @@ Extend 'salta' replace
     * noun                               -> JumpOver
     * 'a//' noun                         -> Enter
     * 'sobre' noun                       -> JumpOver
+    * 'por' noun                       -> JumpOver
     * 'por' 'encima' 'de' noun           -> JumpOver
     * 'a//' 'otro' 'lado' 'de' noun      -> JumpOver;  
 
@@ -165,6 +166,7 @@ Verb 'saltar'
     * noun                               -> JumpOver
     * 'a//' noun                         -> Enter
     * 'sobre' noun                       -> JumpOver
+    * 'por' noun                       -> JumpOver
     * 'por' 'encima' 'de' noun           -> JumpOver
     * 'a//' 'otro' 'lado' 'de' noun      -> JumpOver; 
 

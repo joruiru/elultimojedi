@@ -57,6 +57,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/11/15  Joruiru - Sotta solo aparecerá al matar al cazarrecompensas. El
+!              cazarrecompensas solo aparecerá al desbloquear el ascensor.
 !  2012/11/12  Joruiru - Evitar poder salir de la sala de control o del pasillo
 !              si hay enemigos.
 !  2012/10/28  Joruiru - Un poco de aleatoriedad al intentar entrar a la base de
@@ -7585,10 +7587,12 @@ with
                 give self on;
                 give oAscensorO4 open;
                 Achieved(19);
+                if (oBobaFettO4 hasnt muerto) move oBobaFettO4 to Pasillo4BaseO4;
                 "Activas el ascensor que da acceso al segundo piso. Ahora parece que el ascensor es utilizable.";
       SwitchOff: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
                  give self ~on; 
                  give oAscensorO4 ~open;
+                 if (oBobaFettO4 hasnt muerto) move oBobaFettO4 to limbo;
                  "Desactivas el ascensor que da acceso al segundo piso. Ahora el ascensor está bloqueado.";
   ],
 has scenery switchable;
@@ -7827,7 +7831,7 @@ Object oAscensorPiso2O4 "ascensor" Pasillo4BaseO4
        ],
 has static scenery door openable container objetivo;
 
-Object oBobaFettO4 "cazarrecompensas" Pasillo4BaseO4
+Object oBobaFettO4 "cazarrecompensas" limbo
   with
     name 'boba' 'fett' 'cazarrecompensas' 'mandaloriano',
     description "El cazarrecompensas bloquea tu camino. A tenor de su vestimenta, debe ser un mandaloriano. Debajo de
@@ -7843,12 +7847,15 @@ Object oBobaFettO4 "cazarrecompensas" Pasillo4BaseO4
     topvida 50,
     dado_golpe 2 6 6, !2d6+6
     almorir [;
+      move oSottaO4 to SottaBaseO4;
       print "^Cuando parece que estás a punto de acabar con el cazarrecompensas y que la victoria es tuya, el mandaloriano
       enciende los retrocohetes que lleva a la espalda, escapando de tu ataque definitivo y consiguiendo huir por el
       pasillo. Cuando está a punto de desaparecer, da media vuelta y te grita:^";
       HablaPersonaje("Cazarrecompensas","¡Esto no acaba aquí, maldito Jedi! ¡Recuerda el nombre de Boba Fett la próxima
         vez que nos encontremos, pues no tendré piedad de ti!");
-      "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, mientras ves como desaparece por el pasillo.";
+      "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, 
+       mientras ves como desaparece por el pasillo. ^A la par, te parece escuchar
+       movimientos en la habitación que hay al este.";
     ],
     resisteFuerza [;
       if (random(3)<3) {
@@ -7965,7 +7972,8 @@ with
               debe dirigirse a los habitantes de Orvax IV cuando realiza alguna aparición en público.",
   describe [;
     self.Lugar::describe();
-    if (self hasnt visited) {
+    if (self hasnt conocido && oSottaO4 in self) {
+	    give self conocido;
 	    "^Frente a ti, reclinándose en un estrado situado en el lado opuesto a la enorme cama, se halla Sotta el Hutt.
 	    Su cabeza es tres o cuatro veces mayor que la de un hombre. Sus ojos, amarillos y reptilescos; la piel 
 	    como de serpiente grasienta. No tiene cuello, sino una serie creciente de papadas que se expanden hasta 
@@ -7979,21 +7987,20 @@ with
   ],
   w_to Pasillo4BaseO4,
   before [;
+!    enter: if (oSottaO4 notin self) {
+!	         give self ~visited;
+!	         rtrue;
+!           }
     exit: <<go w_obj>>;
-    go: if (noun==out_obj) <<exit>>;
+    go: if (oSottaO4 in self) "La búsqueda de la familia de Bomo te ha traído hasta aquí. 
+           No es una buena idea irte ahora.";
+        if (noun==out_obj) <<exit>>;
   ],
 ;
 
 Object decorado_SottaBaseO4 SottaBaseO4
 class decorado
 with  describe
-       'balcon' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
-       'cristal' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
-       'cristales' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_PLURAL
-       'puerta' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO
-       'puertas' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO+G_PLURAL
-       'ventanal' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." 0
-       'ventana' "Unas grandes puertas de cristal que dan al balcón, desde el que Sotta se dirige al público que le escucha en la calle." G_FEMENINO
        'cama' "Una cama de tamaño descomunal. Sin duda adecuada para el particular tamaño de su dueño." G_FEMENINO,
   before[;
     examine: rfalse;
@@ -8001,7 +8008,27 @@ with  describe
   ],
 ;
 
-Object oSottaO4 "Sotta el Hutt" SottaBaseO4
+Object oBalconSottaO4 "balcon" SottaBaseO4
+  with
+    name 'balcon' 'cristal' 'ventanal' 'cristales',
+    name_f 'ventana' 'puerta' 'puertas',
+    description "Unas grandes puertas de cristal que dan al balcón, desde el que 
+                Sotta se dirige al público que le escucha en la calle.",
+    before [;
+      examine: rfalse;
+      open: "Las puertas que dan al balcón son de apertura automática por proximidad.";
+      close: "Las puertas que dan al balcón son de cierre automático cuando no hay nadie cerca.";
+      climb: print "No hay elementos suficientes en los que apoyarte para descolgarte hasta el suelo.^"; 
+             rtrue;
+      enter, jumpover: print "Saltar desde el balcón es la manera más rápida de llegar al nivel de la calle,
+                             por lo que no dudas un instante en hacerlo.^";
+                       playerTo(EntradaBaseO4,2);
+                       rtrue;
+      default: "Aunque es una idea que se te ha ocurrido, enseguida la deshechas.";
+    ],
+has scenery;
+
+Object oSottaO4 "Sotta el Hutt" limbo
   with
     name 'sotta' 'hutt',
     description "Frente a ti, reclinándose en un estrado situado en el lado opuesto a la enorme cama, se halla Sotta el Hutt.
