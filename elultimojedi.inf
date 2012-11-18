@@ -48,7 +48,7 @@
 ! 
 !  Archivo :  elultimojedi.inf 
 !  Fecha   :  2011/02/25 
-!  Version :  1.111009 
+!  Version :  1.121118 
 !  Autor   :  Josevi Ruiz 
 !  e-Mail  :  joruiru AT gmail DOT com 
 ! 
@@ -57,6 +57,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/11/18  Joruiru - Se añaden puntos de Fuerza que se gastan al usar los
+!              poderes, para que el uso de la Fuerza no sea infinito.
 !  2012/11/15  Joruiru - Sotta solo aparecerá al matar al cazarrecompensas. El
 !              cazarrecompensas solo aparecerá al desbloquear el ascensor.
 !  2012/11/12  Joruiru - Evitar poder salir de la sala de control o del pasillo
@@ -141,7 +143,7 @@ Constant Headline "^(c)2011 Joruiru.^^
                    Para HABLAR con otros personajes, utiliza ~>NOMBRE_PERSONAJE, LO QUE SEA~.^^";
 
 Release 1;
-Serial "111209";
+Serial "121118";
 
 ! Queremos usar el comando 'salidas'
 Constant ADMITIR_COMANDO_SALIDAS;
@@ -1268,11 +1270,18 @@ Object  mySelfObj "(self object)"
                     logrando escapar de la muerte por los pelos. Tus antiguos enemigos nosaurianos te escondieron, 
                     y ahora lideras su resistencia frente a la invasión del ejército imperial.^^";
                     print "Te quedan ",self.vida," puntos de vida de un total de 50.^";
+                    print "Te quedan ",self.fuerza," puntos de fuerza de un total de 10.^";
                     rtrue;
         ],
         before NULL,
         after NULL,
         life NULL,
+        react_before [;
+          if (action == ##Sentir or ##Concentrar or ##ExFuerza or ##Levitar or ##Enganyar) {
+	        if (self.fuerza<1) "1: Estás demasiado agotado para usar la Fuerza en estos momentos.^";
+	        self.fuerza = self.fuerza-2;
+          }
+        ],
         each_turn [;
           if (reactor_countdown<0) {
 	          if (location==EntradaBaseO4 or PasilloBaseO4 or CeldasBaseO4 or ComedorBaseO4
@@ -1302,8 +1311,11 @@ Object  mySelfObj "(self object)"
 	          };
           };
           if (planeta==2 && oInterruptorO4 has muerto) {
-	          reactor_countdown--; print "^Reactor:",reactor_countdown,"^";
+	          reactor_countdown--; !print "^Reactor:",reactor_countdown,"^";
           };
+          if (self.fuerza<10) {
+	          self.fuerza++;
+          }
         ],
         time_out NULL,
         describe NULL,
@@ -1318,14 +1330,14 @@ Object  mySelfObj "(self object)"
                 Levitar: if (self has concentrado) "Estás demasiado concentrado ahora mismo para hacer cualquier otra cosa.^"; 
                          if (noun ~= player) rfalse;
                          "Un jedi es incapaz de levitarse a si mismo. Volar no entra entre los poderes que proporciona la Fuerza.^";
-               Sanar: if (self has concentrado) {
+                Sanar: if (self has concentrado) {
 	                     print "Estás demasiado concentrado ahora mismo para hacer cualquier otra cosa.^";
 	                     rtrue;
-                      }
-                      if ((noun ~= player) && (noun ~= nothing)) rfalse;
-                      print "Te concentras en ti mismo y notas como fluye la Fuerza, sanándote por completo.^";
-                      self.vida = 50;
-                      rtrue;
+                       }
+                       if ((noun ~= player) && (noun ~= nothing)) rfalse;
+                       print "Te concentras en ti mismo y notas como fluye la Fuerza, sanándote por completo.^";
+                       self.vida = 50;
+                       rtrue;
 !                 Attack: give noun estatico;
 !                         if (second == nothing) 
 !                           turno_combate(self,noun,oSableLaser);
@@ -1344,6 +1356,7 @@ Object  mySelfObj "(self object)"
         bonif_defensiva 15,
         vida 50,
         oscuro 0,
+        fuerza 10,
 has concealed animate proper transparent;
 
 Object oMiTraje "mi traje"
@@ -8594,7 +8607,7 @@ Include "includes/eujgramatica.inf";
 
 ! Ejecuta un turno de combate.
 ! Realiza un ataque del atacante y otro del defensor.
-[ turno_combate atacante defensor arma bo bd golpe resFuerza;
+[ turno_combate atacante defensor arma bo bd golpe resFuerza noFuerza;
 
   if (defensor provides multiple) {
 	  multi_combate(atacante,defensor,arma);
@@ -8605,6 +8618,18 @@ Include "includes/eujgramatica.inf";
   bd = get_bd(defensor);
   golpe = 0;
   resFuerza = 0;
+  noFuerza = 0;
+  
+  if (atacante provides fuerza) {
+	  print ":::1:::";
+    if (arma==oFuerza && atacante.fuerza<1) {
+	  print "Intentas atacar ",(al)defensor," usando la Fuerza, pero te encuentras 
+	        demasiado agotado para usarla en estos momentos.^";
+	  noFuerza=1;
+    }
+  };
+  
+  if (noFuerza==0) {
   
   if (bo>bd) {
 	  !El ataque tiene éxito
@@ -8614,6 +8639,7 @@ Include "includes/eujgramatica.inf";
 	    golpe = calcular_golpe(arma);
 	  if (atacante == player)
 	    if (arma==oFuerza) {
+	      atacante.fuerza = atacante.fuerza - 2;
 		  if (defensor provides resisteFuerza) resFuerza=defensor.resisteFuerza();
 		  if (resFuerza==0)
 	        !print "^Con una ráfaga de Fuerza que sale de tu mano abierta derribas con éxito a ",(the)defensor,", quitándole ",golpe," puntos de vida.";
@@ -8651,6 +8677,8 @@ Include "includes/eujgramatica.inf";
   
   !Si el ataque es usando la Fuerza, el rival no tiene capacidad de respuesta
   if (arma==oFuerza && resFuerza==0) rtrue;
+  
+  }; !De noFuerza==0
   
   bo = get_bo(defensor, nothing);
   bd = get_bd(atacante);
@@ -8722,7 +8750,7 @@ Include "includes/eujgramatica.inf";
 
 ! Ejecuta un turno de combate en combates con múltiples oponentes.
 ! Realiza un ataque del atacante y otro por cada uno de los oponentes.
-[ multi_combate atacante defensor arma bo bd golpe multi k;
+[ multi_combate atacante defensor arma bo bd golpe multi k noFuerza;
   bo = get_bo(atacante, arma);
   bd = get_bd(defensor);
   golpe = 0;
@@ -8730,6 +8758,18 @@ Include "includes/eujgramatica.inf";
   if (defensor provides multiple) multi=defensor.multiple;
   else multi=1;
   
+  noFuerza = 0;
+
+  if (atacante provides fuerza) {
+    if (arma==oFuerza && atacante.fuerza<multi) {
+	  print "Intentas atacar ",(al)defensor," usando la Fuerza, pero te encuentras 
+	        demasiado agotado para usarla en estos momentos.^";
+	  noFuerza=1;
+    }
+  };
+  
+  if (noFuerza==0) {
+ 
   !Si hay empate, 50% de tener éxito
   if (bo==bd)
     if (random(2)==1) bo++;
@@ -8741,12 +8781,13 @@ Include "includes/eujgramatica.inf";
 	  else 
 	    golpe = calcular_golpe(arma);
 	  if (atacante == player)
-	    if (arma==oFuerza)
+	    if (arma==oFuerza) {
+	      atacante.fuerza = atacante.fuerza - (multi+1);
 ! 	      print "Con una ráfaga de Fuerza que sale de tu mano abierta derribas 
 !                  con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
 	      print "Con una ráfaga de Fuerza que sale de tu mano abierta derribas 
                  con éxito a ",(string)defensor.printname(),", ",(string)verbo_golpeFuerza()," en ",(string)zona_golpe()," al caer.^";
-	    else
+        } else
 !          print "Atacas con éxito a ",(string)defensor.printname(),", quitándole ",golpe," puntos de vida.^";
           print "Atacas con éxito a ",(string)defensor.printname(),", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
       else
@@ -8786,6 +8827,8 @@ Include "includes/eujgramatica.inf";
   
   !Si el ataque es usando la Fuerza, el rival no tiene capacidad de respuesta
   if (arma==oFuerza && multi>0 && defensor.vida ~= defensor.topvida ) multi--;
+  
+  }; !De noFuerza==0
   
   for (k=1:k<=multi:k++) {
   bo = get_bo(defensor, nothing)*multi;

@@ -5,7 +5,7 @@ EL ULTIMO JEDI es una aventura conversacional que te sumerge en el universo de
 STAR WARS, donde tú eres el protagonista y con el que podrás interactuar 
 introduciendo órdenes con el teclado.
 
-https://sites.google.com/site/aventuraelultimojedi/
+https://elultimojedi.joruiru.es/
 
 =============================================================================== 
                                LICENCIA / LICENSE 
