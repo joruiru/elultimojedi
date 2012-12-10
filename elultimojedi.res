@@ -1,7 +1,9 @@
 CODE elultimojedi.ulx
 PICTURE pngPaso res/img/paso.png
 PICTURE pngLadera res/img/ladera.png
+PICTURE pngAtaqueClones res/img/ataqueclones.png
 PICTURE pngAgujero res/img/agujero.png
+PICTURE pngLaderaMuerte res/img/laderamuerte.png
 PICTURE pngCima res/img/cima.png
 PICTURE pngCamino res/img/camino.png
 PICTURE pngExtCadgel res/img/extcadgel.png
@@ -13,9 +15,24 @@ PICTURE pngHangarSur res/img/hangarsur.png
 PICTURE pngHangarEste res/img/hangareste.png
 PICTURE pngHangarOeste res/img/hangaroeste.png
 PICTURE pngCuartelMando res/img/cuartelmando.png
+PICTURE pngUhumeleAbierta res/img/uhumele_abierta.png
 PICTURE pngUhumele res/img/inUhumele.png
+PICTURE pngCaza res/img/caza.png
+PICTURE pngRampa res/img/rampa.png
 PICTURE pngCeldas res/img/celdas.png
-PICTURE jpgCaza res/img/caza.jpg
+PICTURE pngCalleO4 res/img/calleorvax4.png
+PICTURE pngCantina res/img/cantina.png
+PICTURE pngPuertoO4 res/img/puertoorvax4.png
+PICTURE pngPuenteMandoUhumele res/img/puentemandouhumele.png
+PICTURE pngEntradaSotta res/img/entradasotta.png
+PICTURE pngEntradaSottaAbierta res/img/entradasottaabierta.png
+PICTURE pngEntradaSottaRota res/img/entradasottarota.png
+PICTURE pngPasilloSotta res/img/pasilloSotta.png
+PICTURE pngAlmacenSotta res/img/almacenSotta.png
+PICTURE pngAscensor res/img/ascensor.png
+PICTURE pngCeldasSotta res/img/celdasSotta.png
+PICTURE pngComedorSotta res/img/comedorsotta.png
+PICTURE pngSalaControl res/img/salacontrol.png
 PICTURE pngYoda res/img/yoda.png
 PICTURE jpgSchurk res/img/schurk.jpg
 PICTURE pngBomo res/img/bomo.png
@@ -36,6 +53,7 @@ SOUND sndJungla res/snd/ambientejungla.ogg
 SOUND sndCantina res/snd/cantina.ogg
 SOUND sndPuerto res/snd/puertoorvax.ogg
 SOUND sndPlaza res/snd/plazaorvax.ogg
+SOUND sndCalleO4 res/snd/calleorvax.ogg
 PICTURE intro1 res/img/euj1.png
 PICTURE intro2 res/img/euj2.png
 PICTURE intro3 res/img/euj3.png
