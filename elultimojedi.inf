@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/12/10  Joruiru - Imágenes nuevas y arreglo de bugs tras auto testeo.
 !  2012/11/18  Joruiru - Se añaden puntos de Fuerza que se gastan al usar los
 !              poderes, para que el uso de la Fuerza no sea infinito.
 !  2012/11/15  Joruiru - Sotta solo aparecerá al matar al cazarrecompensas. El
@@ -664,7 +665,7 @@ Include "VerbLib";
     !print (s_reverse) "^¡¡¡BOOOOOOOMMMMMMMMM!!!^^^^^^^^^^^^^";
       
     !EsperarTecla("...");
-    faseorvax4();
+    !faseorvax4();
 
  
 ];
@@ -2070,6 +2071,7 @@ Object -> oArboles2 "arboles"
 	             repetir la misma jugada que antes. - ", (s_underline) "~¡Bomo, quédate conmigo y cúbreme!~^^";
 	           EsperarTecla("[Pulsa una tecla para continuar...]^");
 	           BorrarPantalla();
+	           viewImageCenter(pngAtaqueClones);
                Corto_Caida.proyeccion();
                EsperarTecla("[Pulsa una tecla]^");
                BorrarPantalla();
@@ -2099,6 +2101,7 @@ Object -> oArboles2 "arboles"
 		             repetir la misma jugada que antes. - ", (s_underline) "~¡Bomo, quédate conmigo y cúbreme!~^^";
 		           EsperarTecla("[Pulsa una tecla para continuar...]^");
 		           BorrarPantalla();
+		           viewImageCenter(pngAtaqueClones);
 	               Corto_Caida.proyeccion();
 	               EsperarTecla("[Pulsa una tecla]^");
 	               BorrarPantalla();
@@ -2143,6 +2146,7 @@ Object -> oEjercito2 "ejercito"
 	                   Sin embargo, los tanques reaccionan rápido...^";
 		           EsperarTecla("[Pulsa una tecla para continuar...]^");
 		           BorrarPantalla();
+		           viewImageCenter(pngAtaqueClones);
 	               Corto_Caida2.proyeccion();
 	               EsperarTecla("[Pulsa una tecla]^");
 	               BorrarPantalla();
@@ -2290,7 +2294,7 @@ has scenery;
 
 Lugar ladera2 "Exterior del agujero"
   with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+    sgw_img pngLaderaMuerte,       ! el grafico de la localidad
     sgw_mus sndJungla,
     sgw_vol VOLUMEN_BAJO,
     name 'ladera',
@@ -4677,7 +4681,7 @@ has static;
 
 Lugar CazaVwing "Cabina del V-wing (en el hangar norte)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -4831,7 +4835,7 @@ has female static;
 
 Lugar CazaVwingN "Cabina del V-wing (sobrevolando hangar norte)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -4875,7 +4879,7 @@ has nosalidas;
 
 Lugar CazaVwingS "Cabina del V-wing (sobrevolando hangar sur)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -4920,7 +4924,7 @@ Lugar CazaVwingS "Cabina del V-wing (sobrevolando hangar sur)"
 
 Lugar CazaVwingE "Cabina del V-wing (sobrevolando hangar este)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -4965,7 +4969,7 @@ has nosalidas;
 
 Lugar CazaVwingO "Cabina del V-wing (sobrevolando hangar oeste)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -5010,7 +5014,7 @@ has nosalidas;
 
 Lugar CazaVwingP "Cabina del V-wing (sobrevolando pista)"
   with
-    sgw_img jpgCaza,       ! el grafico de la localidad
+    sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
     name 'v-wing' 'caza',
@@ -5061,19 +5065,20 @@ has nosalidas;
 [FaseOrvax4 ;
  move oTrajeTrooper to limbo;
  !move oModuloControlO4 to player;
- move oLlavePuertaO4 to player;
+ !move oLlavePuertaO4 to player;
  !give oNosaurianaCeldaO4 conocido;
  planeta=2;
  glk_request_timer_events(0);
  EsperarTecla("...[Pulsa una tecla]...");
  BorrarPantalla();
+ viewImageCenter(pngUhumele);
  Corto_Fase2.proyeccion();
  EsperarTecla("...[Pulsa una tecla]...");
  if (Corto_Fase2.aborted==1) Damusix.PararCanalesExtra(); !silenceChannel(chan1);
  BorrarPantalla();
  Damusix.PararTodo();
- !playerTo(PuertoO4,2);
- playerTo(EntradaBaseO4,2);
+ playerTo(PuertoO4,2);
+ !playerTo(EntradaBaseO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -5173,7 +5178,7 @@ has scenery concealed;
 
 Lugar PuertoO4 "Puerto Espacial de Orvax IV"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngPuertoO4,       ! el grafico de la localidad
   sgw_mus sndPuerto,
   sgw_vol VOLUMEN_BAJO,
   description "El puerto espacial de Orvax IV está repleto de naves que vienen de cualquier parte de la galaxia
@@ -5212,7 +5217,7 @@ has scenery female objetivo;
 
 Lugar inUhumeleO4 "Puente de mando de la Uhumele"
 with 
-  sgw_img pngUhumele,
+  sgw_img pngPuenteMandoUhumele,
   description "Te encuentras en el interior de la Uhumele. Aunque por fuera la nave está poco cuidada, el interior tiene 
               muy buen aspecto, dando sensación de amplitud, calidez y limpieza. Aquí, en el puente, se encuentran los
               mandos y controles principales de la nave.",
@@ -5255,8 +5260,11 @@ Object oModuloControlO4 "Módulo de control" oCuadroO4
     before [;
       take,
       remove: if (self in oMesaO4) "Será mejor que no quites nada de la mesa.";
+              if (oSnifflesO4 notin CantinaO4) "El módulo de control de la Uhumele ya no te hace falta para nada.";
               give self ~concealed;
               Achieved(14);
+      drop: if (location == inUhumeleO4) <<insert self oCuadroO4>>;
+            "No puedes ir dejando el módulo de control de la Uhumele por ahí.";
       puton,
       insert: if (second==oMesaO4) {
 	            oJaxfSevalO4.jugando=1;
@@ -5397,7 +5405,8 @@ with  describe
 
 Lugar CalleO4_1 "Calle"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngCalleO4,       ! el grafico de la localidad
+  sgw_mus sndCalleO4,
   description "Una calle bastante transitada, ya que por el lado oeste desemboca a la plaza principal. Por el lado este se 
               adentra en los suburbios de la ciudad. Una cantina ocupa un lugar preferencial en esta calle.",
   w_to PlazaO4,
@@ -5629,6 +5638,7 @@ with  describe
 
 Lugar AccesoNivInfO4 "Acceso al nivel inferior"
 with 
+  sgw_img pngRampa, 
   description "Una rampa comunica el nivel superior con el inferior de Orvax IV.",
   u_to CalleO4_2,
   d_to NivelInfO4_1,
@@ -5647,6 +5657,9 @@ with  describe
 
 Lugar NivelInfO4_1 "Nivel inferior de Orvax IV"
 with 
+  !!  2012/11/18  Joruiru - Se añaden puntos de Fuerza que se gastan al usar los
+!              poderes, para que el uso de la Fuerza no sea infinito.
+  !sgw_img pngRampa, 
   description "El nivel inferior es la zona más antigua de Orvax IV y, en consecuencia, donde los viejos vicios florecen con más vigor.
             Las clases más bajas de la ciudad se hacinan en estas calles y todo aquí huele a miseria.",
   u_to AccesoNivInfO4,
@@ -6171,6 +6184,7 @@ with  describe
 Lugar CantinaO4 "Interior de la Cantina"
 with 
   name 'cantina',
+  sgw_img pngCantina,
   sgw_mus sndCantina,
   sgw_vol VOLUMEN_BAJO,
   description "La cantina es el lugar donde pilotos, contrabandistas y habitantes del lugar vienen a beber y jugar. El interior está más
@@ -6182,14 +6196,28 @@ with
   out_to CalleO4_1,
   before [;
     JugarSin: <<Jugar oJaxfSevalO4>>;
-    go: if (oJaxfSevalO4.jugando ~=0 or 4) {
+    go: if (oJaxfSevalO4.jugando ~=0 or 4 or 100) {
 	      HablaPersonaje("Jaxf Seval","¿A dónde crees que vas, chaval? No te muevas de aquí hasta que terminemos la partida.");
 	      rtrue;
         }  
         if (oJaxfSevalO4.jugando == 4) {
 	      HablaPersonaje("Sniffles","Dass, no creo que debamos marcharnos de aquí sin la nave... 
-	            el capitán se enfadará al enterarse de que la perdido hemos perdido apostando.");
+	            el capitán se enfadará al enterarse de que la hemos perdido apostando.");
 	      rtrue;
+        }
+        if (oJaxfSevalO4.jugando == 100 && oSnifflesO4 in self && oMeettoO4 in PlazaO4) {
+	      if (oModuloControlO4 in player) {
+	        HablaPersonaje("Sniffles","Dass, mejor me llevo el módulo de control a la nave...
+	            antes de que el capitán se dé cuenta.");
+          }
+	      move oSnifflesO4 to limbo;
+	      move oModuloControlO4 to oCuadroO4;
+	      give oModuloControlO4 concealed;
+	      rfalse;
+        }
+        if (oJaxfSevalO4.jugando == 100 && oSnifflesO4 in self && oMeettoO4 notin PlazaO4) {
+	      HablaPersonaje("Sniffles","Dass, seguiré por aquí por si me necesitas para algo.");
+	      rfalse;
         }
   ],
 ;
@@ -6411,6 +6439,7 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
     dejavalorDass 6 3 10,
     puntos 0,
     puntosDass 0,
+    hablado 0,
     life [tema;
 	    Attack: if (oJaxfSevalO4.jugando == 4) {
 		          move oModuloControlO4 to player;
@@ -6435,10 +6464,29 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
              tema=AveriguarTema(TemasOrvax4);
              if (self.jugando==0) {
 	           switch(tema) {
-                 t_dineroO4: HablaPersonaje("Jaxf Seval","Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos."); 
-                 t_dejarikO4: HablaPersonaje("Jaxf Seval","¿Quieres jugar contra mi? Pon tu dinero en la mesa y juguemos."); 
-                 t_apuestasO4: HablaPersonaje("Jaxf Seval","¿Crees que me puedes ganar, chaval? Pon tu dinero en la mesa y juguemos."); 
-                 t_uhumeleO4: HablaPersonaje("Jaxf Seval","¿Quieres apostar tu nave? Tráeme el módulo de control y jugaré contigo."); 
+                 t_dineroO4: if (self.hablado==0 or 2 or 4 or 6) {
+	                           HablaPersonaje("Jaxf Seval","Si crees que me puedes ganar, pon tu dinero en la mesa y juguemos.");
+	                           self.hablado = self.hablado + 1;
+                             } else {
+	                           HablaPersonaje("Jaxf Seval","¿No tienes créditos en efectivo? ¿Tienes nave, chaval? 
+	                           Aceptaría apuestas con vehículos, por ser tú.");
+                             }
+                 t_dejarikO4: if (self.hablado==0 or 1 or 4 or 5) {
+	                            HablaPersonaje("Jaxf Seval","¿Quieres jugar contra mi? Pon tu dinero en la mesa y juguemos.");
+	                            self.hablado = self.hablado + 2;
+                              } else {
+	                            HablaPersonaje("Jaxf Seval","¿No tienes créditos en efectivo para jugar? ¿Tienes nave, chaval? 
+	                            Aceptaría apuestas con vehículos, por hacerte un favor.");
+                              }
+                 t_apuestasO4: if (self.hablado==0 or 1 or 2 or 3) {
+	                             HablaPersonaje("Jaxf Seval","¿Crees que me puedes ganar, chaval? Pon tu dinero en la mesa y juguemos."); 
+	                             self.hablado = self.hablado + 3;
+                               } else {
+	                             HablaPersonaje("Jaxf Seval","¿No tienes créditos en efectivo para apostar? ¿Tienes nave, chaval? 
+	                             Aceptaría apuestas con vehículos, porque me has caído bien.");
+                               }
+                 t_uhumeleO4,
+                 t_repuestosO4: HablaPersonaje("Jaxf Seval","¿Quieres apostar tu nave? Tráeme el módulo de control y jugaré contigo."); 
                  t_despedidaO4: HablaPersonaje("Jaxf Seval","Vuelve cuando tengas algo con lo que apostar, chaval."); 
                  default: switch(random(3)) {
 	                        1: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si crees que me puedes ganar, pon tu dinero 
@@ -6455,7 +6503,8 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
                      t_dineroO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
                      t_dejarikO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
                      t_apuestasO4: HablaPersonaje("Jaxf Seval","¿No has tenido suficiente, chaval? Trae más dinero y juguemos otra partida."); 
-                     t_uhumeleO4: HablaPersonaje("Jaxf Seval","¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
+                     t_uhumeleO4,
+                     t_repuestosO4: HablaPersonaje("Jaxf Seval","¿Qué quieres recuperar tu nave? ¡Jajaja! ¡No voy a ser tan tonto de jugarme
                                   una nave como esa! ¡Nunca la recuperarás! ¡Jajajaja!"); 
                      t_despedidaO4: HablaPersonaje("Jaxf Seval","¡JA, JA, JA! Vuelve cuando quieras, chaval. ¡Me encantará desplumarte otra vez!"); 
                      default: HablaPersonaje("Jaxf Seval","No me molestes, chaval. Si no has tenido suficiente, pon más dinero 
@@ -6490,6 +6539,7 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
 	           2: JugarDejarik(2); rtrue;
 	           3: JugarDejarik(3); 
 	              if (self.puntos>self.puntosDass) {
+		            self.jugando=4;
 		            HablaPersonaje("Jaxf Seval","¡JA, JA, JA! ¡Te he ganado, chaval! ¡Y ahora tu nave es mia! ¡JA, JA, JA!");
 	                "^Jaxf se jacta de haberte derrotado al dejarik con estruendosas carcajadas.";
                   }
@@ -6497,6 +6547,7 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
 		            move oModuloControlO4 to player;
 		            move oCreditosO4 to player;
 		            move oJaxfSevalO4 to limbo;
+		            self.jugando=100;
 		            HablaPersonaje("Jaxf Seval","¡Maldito seas! ¡Me ha ganado este turista de mierda! ¡Toma tu puto dinero y
 	                      el puto módulo de tu maldita nave!");
 	                Achieved(15);
@@ -6560,7 +6611,7 @@ with  describe
 
 Lugar EntradaBaseO4 "Entrada a la base de Sotta el Hutt"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngEntradaSotta,       ! el grafico de la localidad
   description "La base del cacique Sotta el Hutt parece más un búnker que una vivienda, perfectamente segura. Los muros
               de cemento y piedra conforman varias torres cilíndricas que se elevan sobre el resto del complejo. La 
               entrada consiste en una puerta acorazada en la planta inferior de un edificio de dos alturas",
@@ -6858,7 +6909,7 @@ has pluralname animate scenery;
 
 Lugar PasilloBaseO4 "Pasillo"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngPasilloSotta,       ! el grafico de la localidad
   description "Un largo pasillo, perfectamente iluminado, se adentra hacia el interior de la base.",
   out_to EntradaBaseO4,
   e_to ComedorBaseO4,
@@ -7007,14 +7058,14 @@ has animate;
 
 Lugar CeldasBaseO4 "Celdas"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngCeldasSotta,       ! el grafico de la localidad
   description "Sendos campos de fuerza de color rojo cierran lo que parecen ser dos celdas vacías.",
   e_to PasilloBaseO4,
 ;
 
 Object CamposFuerzaBaseO4 CeldasBaseO4
 with  
-  name 'campo' 'campos' 'fuerza' 'fuerzas',
+  name 'campo' 'campos' 'fuerza' 'fuerzas' 'celda' 'celdas',
   description "Los rojizos campos de fuerza hacen de rejas para cada una de las celdas. Abrasarían a cualquiera con solo tocarlos.",
   before[;
     examine: rfalse;
@@ -7025,7 +7076,7 @@ has scenery concealed;
 
 Lugar ComedorBaseO4 "Comedor"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngComedorSotta,       ! el grafico de la localidad
   description "A tenor del número de sillas y mesas y de su distribución, esta amplia 
               sala cuadrada debe ser el comedor principal del complejo. Tienes suerte
               de que no sea hora de comida y está vacía, ya que si no podrías haberte
@@ -7050,7 +7101,7 @@ with  describe
 
 Lugar AlmacenBaseO4 "Almacen"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngAlmacenSotta,       ! el grafico de la localidad
   description "Cientos de cajas embaladas ocupan casi por completo 
         el inmenso almacen de la nave.",
   describe [;
@@ -7271,7 +7322,7 @@ has female;
 
 Lugar Pasillo2BaseO4 "Pasillo"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngAscensor,       ! el grafico de la localidad
   description "El largo pasillo termina en lo que parece ser un ascensor que lleva a la planta superior del complejo.",
   n_to PasilloBaseO4,
   w_to SalaDescansoBaseO4,
@@ -7534,7 +7585,7 @@ has scenery container;
 
 Lugar SalaControlBaseO4 "Sala de vigilancia y control"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngSalaControl,       ! el grafico de la localidad
   description "Esta sala es el centro de seguridad y comunicaciones de la base. Desde los numerosos terminales 
               que se encuentran en este lugar se pueden controlar todos los sistemas que existen en el complejo: 
               el reactor de energía, las puertas interiores y exteriores, las puertas de seguridad, etc.",
@@ -8621,7 +8672,7 @@ Include "includes/eujgramatica.inf";
   noFuerza = 0;
   
   if (atacante provides fuerza) {
-	  print ":::1:::";
+	  !print ":::1:::";
     if (arma==oFuerza && atacante.fuerza<1) {
 	  print "Intentas atacar ",(al)defensor," usando la Fuerza, pero te encuentras 
 	        demasiado agotado para usarla en estos momentos.^";
