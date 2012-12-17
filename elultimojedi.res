@@ -19,6 +19,7 @@ PICTURE pngUhumeleAbierta res/img/uhumele_abierta.png
 PICTURE pngUhumele res/img/inUhumele.png
 PICTURE pngCaza res/img/caza.png
 PICTURE pngRampa res/img/rampa.png
+PICTURE pngRampaInf res/img/rampainferior.png
 PICTURE pngCeldas res/img/celdas.png
 PICTURE pngCalleO4 res/img/calleorvax4.png
 PICTURE pngCantina res/img/cantina.png

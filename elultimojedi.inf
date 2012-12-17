@@ -5657,9 +5657,7 @@ with  describe
 
 Lugar NivelInfO4_1 "Nivel inferior de Orvax IV"
 with 
-  !!  2012/11/18  Joruiru - Se añaden puntos de Fuerza que se gastan al usar los
-!              poderes, para que el uso de la Fuerza no sea infinito.
-  !sgw_img pngRampa, 
+  sgw_img pngRampaInf, 
   description "El nivel inferior es la zona más antigua de Orvax IV y, en consecuencia, donde los viejos vicios florecen con más vigor.
             Las clases más bajas de la ciudad se hacinan en estas calles y todo aquí huele a miseria.",
   u_to AccesoNivInfO4,
