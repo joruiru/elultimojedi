@@ -57,6 +57,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
+!                        droide JO3FE.
 !  2012/12/10  Joruiru - Imágenes nuevas y arreglo de bugs tras auto testeo.
 !  2012/11/18  Joruiru - Se añaden puntos de Fuerza que se gastan al usar los
 !              poderes, para que el uso de la Fuerza no sea infinito.
@@ -5683,7 +5685,7 @@ with  describe
 Object oRobot "JO3FE" NivelInfO4_1
   with
     name 'robot' 'androide' 'droide' 'jo3fe',
-    adjetives 'protocolo',
+    adjectives 'protocolo',
     description [;
        print "Son los restos de un robot humanoide, posiblemente un droide de protocolo, 
               usado principalmente para llevar a cabo tareas de traducción y para dar
@@ -5712,6 +5714,7 @@ Object oRobot "JO3FE" NivelInfO4_1
     ],
     before [;
       Examine: self.description(); rtrue;
+      Reparar,
       SwitchOn: if (self has muerto) "La energía está totalmente agotada. El droide está inservible.";
                 HablaPersonaje("JO3FE","Fffff... ¡Oh! ¡Oh! ¿Dónde estoy?... Zzzzzz...");
                 HablaPersonaje("JO3FE","Fffff... ¿Quién es usted?... Zzzzzz...");
@@ -6714,6 +6717,8 @@ Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               give self ~openable;
 	               give self open;
 	               move oCampeonGamorreanoO4 to PasilloBaseO4;
+	               EntradaBaseO4.sgw_img=pngEntradaSottaRota;
+	               viewImageCenter(EntradaBaseO4.sgw_img);
 	               Achieved(17);
 	               "Empuñas tu sable láser y lo clavas en la puerta del complejo. Lentamente, el acero de la puerta
 	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
@@ -6723,6 +6728,8 @@ Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               if (oMecanismoPuertaO4 has muerto) "El mecanismo para abrir la puerta está inservible.";
 	               give self open;
 	               give self ~locked;
+	               EntradaBaseO4.sgw_img=pngEntradaSottaAbierta;
+	               viewImageCenter(EntradaBaseO4.sgw_img);
 	               Achieved(17);
 	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
 	               permitiéndote el acceso al interior del complejo.";
@@ -7645,6 +7652,8 @@ with
       Push: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
             if (self has on) <<switchoff self>>;
             <<switchon self>>;
+      Reparar: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
+               "El interruptor no necesita ser reparado.";
       SwitchOn: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
                 give self on;
                 give oAscensorO4 open;

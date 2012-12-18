@@ -41,6 +41,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/12/18  Joruiru - Gramática para Reparar y Arreglar. 
 !  2012/10/10  Joruiru - Se añade isQuestion y removeQuestion para admitir '?' 
 !                        al final de palabras.
 !  2012/09/12  Joruiru - Se añade activar/desactivar como sinónimos de 
@@ -259,7 +260,10 @@ Verb 'desactiva'
   
 Verb 'activa'
   * noun -> SwitchOn;
-  
+
+Verb 'arregla' 'repara'
+  * noun -> Reparar;
+    
 Verb 'teclea' 'escribe' 'introduce'
   *                 -> TeclearMal
   * topic 'en'      -> TeclearMal
@@ -443,6 +447,10 @@ Array StringBuffer2->102; ! Temporary string buffers
 
 [ JugarSinSub ;
     "No es momento de ponerse a jugar a nada.";
+];
+
+[ RepararSub ;
+    "No necesita reparación alguna.";
 ];
 
 [ TeclearSub;
