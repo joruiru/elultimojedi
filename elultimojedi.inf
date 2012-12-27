@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2012/12/27  Joruiru - Imágenes nuevas 
 !  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
 !                        droide JO3FE.
 !  2012/12/10  Joruiru - Imágenes nuevas y arreglo de bugs tras auto testeo.
@@ -5741,6 +5742,7 @@ has static animate switchable;
 
 Lugar NivelInfO4_2 "Nivel inferior de Orvax IV"
 with 
+  sgw_img pngCallejon,
   description "Las calles se vuelven cada vez más estrechas y agobiantes. Las destartaladas estructuras y los seres de aspecto igualmente 
            indeseable no te ayudan a minimizar esa sensación.",
   describe [;
@@ -5778,6 +5780,7 @@ with  describe
 
 Lugar NivelInfO4_3 "Nivel inferior de Orvax IV"
 with 
+  sgw_img pngCallejon2,
   description "Las calles se vuelven cada vez más estrechas y agobiantes. Las destartaladas estructuras y los seres de aspecto igualmente 
            indeseable no te ayudan a minimizar esa sensación.",
   describe [;
@@ -5812,7 +5815,7 @@ with  describe
 
 Lugar NivelInfO4 "Nivel inferior de Orvax IV"
 with 
-  !name 'cantina',
+  sgw_img pngEntradaCeldas,
   describe [;
     if (oCeldaNosaurianos hasnt open) {
       print "Los estrechos callejones se ensanchan para desembocar en los accesos a los calabozos. ";
