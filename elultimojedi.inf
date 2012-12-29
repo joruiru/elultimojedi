@@ -232,7 +232,7 @@ Global fase = 1;
 Global bomo_sigue = 1; !1: Bomo sigue al PJ cuando se mueve. 0:Bomo no sigue al PJ cuando se mueve
 Global caza_countdown = 20; !Se dan 20 turnos en el V-Wing para destruir la Valance. Cuando llegue a 0, el ejército clon destruye la nave con el PJ dentro.
 Global planeta = 1; !1: Nuevo Plympto, 2: Orvax IV
-Global reactor_countdown = 6; !Se dan 30 turnos si el reactor de la base se estropea. Cuando llegue a 0, el complejo explota matando al PJ.
+Global reactor_countdown = 30; !Se dan 30 turnos si el reactor de la base se estropea. Cuando llegue a 0, el complejo explota matando al PJ.
 Global mensajes_aleatorios = true; ! ELIUK: flag con el estado de los mensajes aletorio
 ! para el que marco de trabajo, al mostrar las imagenes de objeto, sepa si debe reactivar
 ! el temporizador glk o si no debe hacerlo.
@@ -1281,7 +1281,7 @@ Object  mySelfObj "(self object)"
         after NULL,
         life NULL,
         react_before [;
-          if (action == ##Sentir or ##Concentrar or ##ExFuerza or ##Levitar or ##Enganyar) {
+          if (action == ##Sentir or ##Concentrar or ##ExFuerza or ##Levitar or ##Enganyar or ##Sanar) {
 	        if (self.fuerza<1) "1: Estás demasiado agotado para usar la Fuerza en estos momentos.^";
 	        self.fuerza = self.fuerza-2;
           }
@@ -1317,6 +1317,23 @@ Object  mySelfObj "(self object)"
           if (planeta==2 && oInterruptorO4 has muerto) {
 	          reactor_countdown--; !print "^Reactor:",reactor_countdown,"^";
           };
+          if (reactor_countdown < 21 && oInterruptorO4 has muerto &&
+              location==EntradaBaseO4 or PasilloBaseO4 or CeldasBaseO4 or ComedorBaseO4
+	          or Pasillo3BaseO4 or AlmacenBaseO4 or SalaControlBaseO4 or Pasillo2BaseO4
+	          or SalaDescansoBaseO4 or Pasillo4BaseO4 or HabitacionesBaseO4 or SottaBaseO4) {
+	        EntradaBaseO4.sgw_mus=sndAlarma;
+	        PasilloBaseO4.sgw_mus=sndAlarma;
+	        CeldasBaseO4.sgw_mus=sndAlarma;
+	        ComedorBaseO4.sgw_mus=sndAlarma;
+	        Pasillo3BaseO4.sgw_mus=sndAlarma;
+	        AlmacenBaseO4.sgw_mus=sndAlarma;
+	        SalaControlBaseO4.sgw_mus=sndAlarma;
+	        Pasillo2BaseO4.sgw_mus=sndAlarma;
+	        SalaDescansoBaseO4.sgw_mus=sndAlarma;
+	        Pasillo4BaseO4.sgw_mus=sndAlarma;
+	        HabitacionesBaseO4.sgw_mus=sndAlarma;
+	        SottaBaseO4.sgw_mus=sndAlarma;
+          }
           if (self.fuerza<10) {
 	          self.fuerza++;
           }
