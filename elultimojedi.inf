@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/01/25  Joruiru - Cueva Darth Vader 
 !  2012/12/27  Joruiru - Imágenes nuevas 
 !  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
 !                        droide JO3FE.
@@ -2459,12 +2460,77 @@ Lugar camino "Camino a Cadgel Meadows"
 Object -> oArboles3 "arboles"
   with
     name 'arboles' 'bosque' 'arbol' 'arbolada' 'arboleda' 'zona' 'zonas',
-    description "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
-                acercara compañía poco deseable.",
-    before [;
-      esconder,enter: "No hay nada cerca de lo que haya que ocultarse.";
+!    description "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
+!                acercara compañía poco deseable.",
+    description [;
+        if (parent(player) == self) {
+          print "La zona de arbustos te proporciona una estupenda cobertura.";
+        } else {
+          print "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
+                acercara compañía poco deseable.";
+        };
     ],
-has scenery;
+    out_to camino,
+    before [;
+!      esconder,enter: "No hay nada cerca de lo que haya que ocultarse.";
+      esconder,enter: give player escondido;
+                move player to self;
+                if (oBomo in location) move oBomo to self;
+                print "Te ocultas entre los árboles.^";
+                rtrue;
+      exit,getoff: give player ~escondido;
+            move player to cima;
+            if (oBomo in self) move oBomo to cima;
+            print "Sales de entre los árboles.^";
+            rtrue;
+      look: "Percibes algo peligroso, algo perverso. Miras a tu alrededor para intentar
+             descubrir qué es lo que emite un halo tan potente. Entre las raices de un 
+             enorme y enmarañado árbol de corteza ennegrecida distingues la entrada de una 
+             cueva oscuramente siniestra.";
+    ],
+has scenery transparent enterable;
+
+Object cueva "cueva" oArboles3
+with
+  name 'cueva' 'entrada' 'oscuridad',
+  description "Paralizado,observas la siniestra monstruosidad. Respiras con dificultad y te 
+    das cuenta de que no puedes hablar. Te estremeces al sentir un repentino frío. Sin duda
+    alguna, la cueva está dominada por el lado oscuro de la Fuerza. Es esclava del mal.",
+  out_to oArboles3,
+  before [;
+      enter: give player escondido;
+             playerTo(intCueva,2);
+             if (oBomo in location) move oBomo to self;
+             print "Te ocultas entre los árboles.^";
+             rtrue;
+      exit,getoff: give player ~escondido;
+            move player to cima;
+            if (oBomo in self) move oBomo to cima;
+            print "Sales de entre los árboles.^";
+            rtrue;
+    ],
+has light concealed scenery enterable;
+
+Lugar intCueva "cueva"
+with
+  name 'cueva',
+  description "La oscuridad interior es tan profunda que puedes sentirla contra 
+    tu piel, tan negra que la luz de tu espada láser es rápidamente absorbida y 
+    apenas ilumina más de un metro. Mientras avanzas la humedad del empapado suelo 
+    de la caverna se filtra en tus botas.",
+  out_to oArboles3,
+  w_to intPasilloCueva,
+;
+
+Lugar intPasilloCueva "cueva"
+with
+  name 'cueva',
+  description "Al avanzar utilizando el sable de luz como débil linterna, sientes
+   que el espacio se ensancha a tu alrededor. Te esfuerzas por ver en medio de la 
+   penumbra, haciendo todo lo posible por escuchar algo, pero ningún sonido
+   llega hasta ti.",
+  e_to intCueva,
+;
 
 Lugar extOeste "Exterior de Cadgel Meadows (lado oeste)"
   with
