@@ -1123,7 +1123,7 @@ Lugar limbo "limbo"
 Object oLocGenerico "lugar"
 with
     name 'lugar' 'sitio' 'suelo' 'paso' 'desfiladero' 'camino' 'puerto' 'cadgel' 'meadows' 
-         'hangar' 'hangares' 'darth' 'vader' 'lord' 'rio' 'tripulantes',
+         'hangar' 'hangares' 'rio' 'tripulantes',
     name_f 'pista' 'ladera' 'cima' 'cabina' 'montana' 'montanas' 'vegetacion' 'planta' 'plantas' 'agua' 'tripulacion',
     description [w;
         wn = 2;
@@ -1229,8 +1229,6 @@ with
             !'cuartel' : if (location == CuartelMando) <<look>>; else "Desde aquí no puedes ver eso que dices.";
             'cabina': if (location==CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) <<look>>;
 	                  else "Desde aquí no puedes ver eso que dices.";
-	        'darth','vader','lord': if (location == CuartelMando) "No te ha dado tiempo a fijarte demasiado."; 
-	                                else "Desde aquí no puedes ver eso que dices.";
             default : "Desde aquí no puedes ver eso que dices.";
         };
     ],
@@ -2542,6 +2540,7 @@ with  describe
 
 Lugar intCueva "Cueva"
 with
+  sgw_img pngCueva,       ! el grafico de la localidad
   name 'cueva',
   description "La oscuridad interior es tan profunda que puedes sentirla contra 
     tu piel, tan negra que la luz de tu espada láser es rápidamente absorbida y 
@@ -2560,22 +2559,37 @@ with
 
 Lugar intPasilloCueva "Cueva"
 with
+  sgw_img pngPasilloCueva,       ! el grafico de la localidad
   name 'cueva',
   description "Al avanzar utilizando el sable de luz como débil linterna, sientes
    que el espacio se ensancha a tu alrededor. Te esfuerzas por ver en medio de la 
    penumbra, haciendo todo lo posible por escuchar algo, pero ningún sonido
    llega hasta ti.",
+   describe [;
+      self.Lugar::describe();
+      if (self hasnt visited) {
+	    "^Después escuchas un siseo muy claro. El sonido te resulta conocido. ^
+         Permaneces inmóvil en tu lugar. Has oído ese siseo incluso en pesadillas: 
+         es la respiración dificultosa de una cosa que antaño fue un hombre.^
+         Una luz aparece en la oscuridad; la llama de una espada láser recién encendida. 
+         Gracias a ella, ves que la alta figura del lord sith Darth Vader eleva
+         su arma encendida para atacar y arremeter contra ti.";
+      }
+      rtrue;
+   ],
   e_to intCueva,
 ;
 
 Object oVader "Darth Vader" intPasilloCueva
   with
     name 'darth' 'vader' 'sith' 'lord',
-    parse_name[;
-     if (NextWord()=='darth' or 'vader' or 'sith' or 'lord') return 100;
-     return -1;
-    ],
-    description "Darth Vader.",
+!    parse_name[;
+!     if (NextWord()=='darth' or 'vader' or 'sith' or 'lord') return 100;
+!     return -1;
+!    ],
+    description "La luz de su espada láser te permite ver en la oscuridad la alta 
+         figura del lord sith Darth Vader, con su arma en posición dispuesto a
+         arremeter contra ti.",
     bonif_defensiva 15,
     bonif_ofensiva 20,
     vida 50,
@@ -2590,8 +2604,20 @@ Object oVader "Darth Vader" intPasilloCueva
       } 
       return 0;
     ],
-    almorir [new_cadaver;
-      " Cae la cabeza.^";
+    almorir [;
+      player.oscuro=10;
+      "^Con ese poderoso último golpe, la cabeza del lord Sith queda separada del
+      su cuerpo. La cabeza, junto al casco, caen rodando por el suelo de la caverna
+      con un ruidoso estrépito metálico, a la par que, asombrado, ves como la
+      oscuridad se traga todo el cuerpo de Vader.^
+      Después, ti fijas en el casco, que se detiene justo delante de ti. Durante unos segundos,
+      el casco permanece totalmente inmóvil, pero después se parte por la mitad, abriéndose.^
+      Sobresaltado y sin poder creerlo, ves que el casco roto no muestra el rostro
+      desconocido e imaginado de Darth Vader sino tu propia cara, que, inerte, te mira.^
+      Quedas horrorizado y boquiabierto. A continuación, con la misma rapidez con que
+      ha aparecido, la cabeza decapitada desaparece como si se tratara de una visión espectral.^
+      Te preguntas si realmente luchabas contra ti mismo o si has cedido a las tentaciones
+      del lado oscuro de la Fuerza. Quizás podrías convertirte en una figura tan perversa como Darth Vader.";
     ],
     life [;
 	    Attack: give self estatico;
@@ -2623,7 +2649,7 @@ Object oVader "Darth Vader" intPasilloCueva
       go: <<ask self>>;
     ],
     before [;
-        Sentir, Concentrar: "El reverso tenebroso es poderoso en lord Sith. No 
+        Sentir, Concentrar: "El reverso tenebroso es poderoso en un lord Sith. No 
           hay esperanza para Darth Vader.^";
         Levitar: "No serviría de nada.^";
 	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
@@ -3579,6 +3605,17 @@ with  describe
     default: print "No conviene hacer eso."; rtrue;
   ],
 ;
+
+Object oDecoradoVader "Darth Vader" CuartelMando
+with
+    name 'darth' 'vader' 'lord' 'sith',
+    description "No te ha dado tiempo a fijarte demasiado.",
+    ],
+    before [;
+      Examine: rfalse;
+      default: print "No conviene hacer eso."; rtrue;
+    ],
+has scenery concealed animate proper;
 
 Object -> oComandanteVill "Comandante Vill"
   with

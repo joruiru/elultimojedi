@@ -6,6 +6,8 @@ PICTURE pngAgujero res/img/agujero.png
 PICTURE pngLaderaMuerte res/img/laderamuerte.png
 PICTURE pngCima res/img/cima.png
 PICTURE pngCamino res/img/camino.png
+PICTURE pngCueva res/img/cuevavader.png
+PICTURE pngPasilloCueva res/img/cuevavader2.png
 PICTURE pngExtCadgel res/img/extcadgel.png
 PICTURE pngExtCadgelB res/img/extcadgelB.png
 PICTURE pngExtCadgelC res/img/extcadgelC.png
