@@ -2553,7 +2553,6 @@ with
   	        playerto(camino,1);
   	        move player to oArboles3;
   	        <<Look>>;
-            rtrue;
   ],
 ;
 
@@ -3610,7 +3609,6 @@ Object oDecoradoVader "Darth Vader" CuartelMando
 with
     name 'darth' 'vader' 'lord' 'sith',
     description "No te ha dado tiempo a fijarte demasiado.",
-    ],
     before [;
       Examine: rfalse;
       default: print "No conviene hacer eso."; rtrue;
