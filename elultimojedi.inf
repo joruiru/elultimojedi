@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/01/25  Joruiru - Cueva Darth Vader 
 !  2012/12/27  Joruiru - Imágenes nuevas 
 !  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
 !                        droide JO3FE.
@@ -183,10 +184,10 @@ Constant TASKS_PROVIDED;
 
 ! Numero de tareas que el jugador debe realizar a lo largo
 ! del juego (por defecto: 1)
-Constant NUMBER_TASKS = 21;
+Constant NUMBER_TASKS = 22;
 
 ! Puntuacion maxima del juego (por defecto: 0)
-Constant MAX_SCORE = 220;
+Constant MAX_SCORE = 270;
 
 Constant SGW_SIN_GRAFICOS;
 
@@ -199,7 +200,7 @@ Constant SGW_SIN_GRAFICOS;
 ! Constant ROOM_SCORE = 3;
 
 ! El array que contiene los puntos por cada tarea realizada
-Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20;
+Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20 50;
 
 !Replace WordInProperty;
 Replace QuitarAcentos;
@@ -702,6 +703,7 @@ Include "VerbLib";
       19: "Desbloquear el ascensor.";
       20: "Matar a Sotta el Hutt.";
       21: "Bomo mata a Sotta el Hutt.";
+      22: "Derrotar a Darth Vader.";
     }
 ];
 
@@ -719,8 +721,8 @@ Include "VerbLib";
     if (score<50) print_ret "Iniciado~.";
     if (score<100) print_ret "Padawan~.";
     if (score<150) print_ret "Caballero Jedi~.";
-    if (score<200) print_ret "Maestro Jedi~.";
-    if (score>199) print_ret "Gran Maestro Jedi~.";
+    if (score<250) print_ret "Maestro Jedi~.";
+    if (score>249) print_ret "Gran Maestro Jedi~.";
     print_ret "~.";
 ];
 
@@ -2452,19 +2454,191 @@ Lugar camino "Camino a Cadgel Meadows"
     name 'camino',
     description "El camino hacia Cadgel Meadows discurre por una zona poblada de zonas boscosas a ambos lados, aunque ya no son los árboles
                  gigantescos que se pueden encontrar en el Paso de Half-Axe.",
+    describe [;
+      if (parent(player)== oArboles3) {
+	      "Percibes algo peligroso, algo perverso. Miras a tu alrededor para intentar
+          descubrir qué es lo que emite un halo tan potente. Entre las raices de un 
+          enorme y enmarañado árbol de corteza ennegrecida distingues la entrada de una 
+          cueva oscuramente siniestra.";
+      };      
+      self.Lugar::describe();
+      rtrue;
+    ],
     w_to cima,
     e_to extOeste,
+    before [;
+	  exit: if (player in oArboles3) {
+		        give player ~escondido;
+                move player to camino;
+                if (oBomo in oArboles3) move oBomo to camino;
+                print "Sales de entre los árboles.";
+                rtrue;
+	        } else {
+		        rfalse;
+	        };
+    ],
 ;
 
 Object -> oArboles3 "arboles"
   with
     name 'arboles' 'bosque' 'arbol' 'arbolada' 'arboleda' 'zona' 'zonas',
-    description "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
-                acercara compañía poco deseable.",
-    before [;
-      esconder,enter: "No hay nada cerca de lo que haya que ocultarse.";
+!    description "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
+!                acercara compañía poco deseable.",
+    description [;
+        if (parent(player) == self) {
+          print "La zona de arbustos te proporciona una estupenda cobertura.";
+        } else {
+          print "La oscuridad de la noche y la protección de las zonas arboladas podrían propiciar un buen escondite en caso de que se 
+                acercara compañía poco deseable.";
+        };
     ],
-has scenery;
+    out_to camino,
+    before [;
+!      esconder,enter: "No hay nada cerca de lo que haya que ocultarse.";
+      esconder,enter: give player escondido;
+                move player to self;
+                if (oBomo in location) move oBomo to self;
+                print "Te ocultas entre los árboles.^";
+                rtrue;
+      exit,getoff: give player ~escondido;
+            move player to camino;
+            if (oBomo in self) move oBomo to camino;
+            print "Sales de entre los árboles.^";
+            rtrue;
+    ],
+has scenery transparent enterable pluralname;
+
+Object cueva "cueva" oArboles3
+with
+  name 'cueva' 'entrada' 'oscuridad',
+  description "Paralizado,observas la siniestra monstruosidad. Respiras con dificultad y te 
+    das cuenta de que no puedes hablar. Te estremeces al sentir un repentino frío. Sin duda
+    alguna, la cueva está dominada por el lado oscuro de la Fuerza. Es esclava del mal.",
+  before [;
+      enter: give player escondido;
+             playerTo(intCueva,2);
+!             if (oBomo in location) move oBomo to self;
+!             print "Te ocultas entre los árboles.^";
+             rtrue;
+      exit,getoff: move player to oArboles3;
+!            if (oBomo in self) move oBomo to cima;
+!            print "Sales de entre los árboles.^";
+            rtrue;
+    ],
+has light concealed scenery enterable;
+
+Object decorado_cueva limbo
+class decorado
+with  describe
+       'cueva' "La oscuridad interior es tan profunda que puedes sentirla contra 
+                tu piel, tan negra que la luz de tu espada láser es rápidamente 
+                absorbida y apenas ilumina más de un metro." G_FEMENINO,
+  before[;
+    examine: rfalse;
+    default: print "No conviene hacer eso."; rtrue;
+  ],
+  found_in intCueva intPasilloCueva,
+;
+
+Lugar intCueva "Cueva"
+with
+  name 'cueva',
+  description "La oscuridad interior es tan profunda que puedes sentirla contra 
+    tu piel, tan negra que la luz de tu espada láser es rápidamente absorbida y 
+    apenas ilumina más de un metro. Mientras avanzas la humedad del empapado suelo 
+    de la caverna se filtra en tus botas.",
+  out_to oArboles3,
+  w_to intPasilloCueva,
+  before [;
+  	  exit: print "Sales de la cueva.";
+  	        playerto(camino,1);
+  	        move player to oArboles3;
+  	        <<Look>>;
+            rtrue;
+  ],
+;
+
+Lugar intPasilloCueva "Cueva"
+with
+  name 'cueva',
+  description "Al avanzar utilizando el sable de luz como débil linterna, sientes
+   que el espacio se ensancha a tu alrededor. Te esfuerzas por ver en medio de la 
+   penumbra, haciendo todo lo posible por escuchar algo, pero ningún sonido
+   llega hasta ti.",
+  e_to intCueva,
+;
+
+Object oVader "Darth Vader" intPasilloCueva
+  with
+    name 'darth' 'vader' 'sith' 'lord',
+    parse_name[;
+     if (NextWord()=='darth' or 'vader' or 'sith' or 'lord') return 100;
+     return -1;
+    ],
+    description "Darth Vader.",
+    bonif_defensiva 15,
+    bonif_ofensiva 20,
+    vida 50,
+    topvida 50,
+    dado_golpe 2 6 6, !1d6+0
+    resisteFuerza [;
+      if (random(3)<3) {
+	      !Resiste el ataque de la Fuerza
+	      print "Los poderes del reverso tenebroso que domina Darth Vader consiguen
+	        neutralizar tu ataque mediante la Fuerza.";
+	      return 1;
+      } 
+      return 0;
+    ],
+    almorir [new_cadaver;
+      " Cae la cabeza.^";
+    ],
+    life [;
+	    Attack: give self estatico;
+	            move player to parent(self);
+	            if (second == nothing) 
+	              turno_combate(player,self,oSableLaser);
+	            else
+	              turno_combate(player,self,second);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+	            }
+                rtrue;
+	    Answer,ask,tell: print "Darth Vader no muestra ningún interés en hablar contigo.^";
+	            ataque_enemigo(player,self,nothing);
+	            viewImageSlide(pngSablesLuz);
+	            if (self has muerto) {
+		            move self to limbo;
+		            give player ~descubierto;
+	            }
+                rtrue;
+    ],
+    orders [;
+      Mild, Strong: <<Ask self>>;
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    react_before[;
+      go: <<ask self>>;
+    ],
+    before [;
+        Sentir, Concentrar: "El reverso tenebroso es poderoso en lord Sith. No 
+          hay esperanza para Darth Vader.^";
+        Levitar: "No serviría de nada.^";
+	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                   give self estatico;
+	                   move player to parent(self);
+                       turno_combate(player,self,oFuerza);
+                       viewImageSlide(pngSablesLuz);
+	                   if (self has muerto) {
+		                 move self to limbo;
+		                 give player ~descubierto;
+	                   }
+	                   rtrue;
+        Enganyar: "No servirá de nada.^";
+    ],
+has animate proper;
 
 Lugar extOeste "Exterior de Cadgel Meadows (lado oeste)"
   with
@@ -8758,6 +8932,63 @@ Include "includes/eujgramatica.inf";
   
   }; !De noFuerza==0
   
+  bo = get_bo(defensor, nothing);
+  bd = get_bd(atacante);
+  golpe = 0;
+  
+  if (bo>bd) {
+	  !El ataque tiene éxito
+      golpe = calcular_golpe(defensor);
+  
+	  if (atacante == player)
+        !print "^",(The)defensor, " te ataca con éxito, quitándote ",golpe," puntos de vida.";
+        print "^",(The)defensor, " te ataca con éxito, ",(string)verbo_golpeArma(),"te en ",(string)zona_golpe(),".^";
+      else
+        !print "^",(The)defensor, " ataca con éxito a ",(the)atacante,", quitándole ",golpe," puntos de vida.";
+        print "^",(The)defensor, " ataca con éxito a ",(the)atacante,", ",(string)verbo_golpeArma(),"le en ",(string)zona_golpe(),".^";
+      
+      atacante.vida = atacante.vida - golpe;
+  } else {
+	  !El ataque falla
+	  if (atacante == player)
+        print "^",(The)defensor, " lanza su ataque, pero lo esquivas con facilidad.";
+      else
+        print "^",(The)defensor, " lanza su ataque, pero ",(the)atacante," lo esquiva con facilidad.";
+  }
+  
+  if (atacante == player) {
+    switch(atacante.vida) {
+	  1,2,3,4,5,6,7,8,9,10: print "^Tienes heridas extremadamente graves.";
+	  11,12,13,14,15,16,17,18,19,20: print "^Tienes heridas graves.";
+	  21,22,23,24,25,26,27,28,29,30: print "^Tienes heridas moderadas.";
+	  31,32,33,34,35,36,37,38,39,40: print "^Estás levemente herido.";
+    }
+  } else {
+    switch(atacante.vida) {
+	  1,2,3,4,5,6,7,8,9,10: print "^",(The)atacante, " tiene heridas extremadamente graves.";
+	  11,12,13,14,15,16,17,18,19,20: print "^",(The)atacante, " tiene heridas graves.";
+	  21,22,23,24,25,26,27,28,29,30: print "^",(The)atacante, " tiene heridas moderadas.";
+	  31,32,33,34,35,36,37,38,39,40: print "^",(The)atacante, " está levemente herido.";
+    }
+  }
+
+  
+  if (atacante.vida < 1) {
+	  if (atacante == player) {
+        print "^",(The)defensor, " te derrota y caes muerto.";
+        deadflag=1;
+      } else {
+	    give atacante muerto;
+        print "^",(The)defensor, " derrota a ",(the)atacante,", que cae muerto debido a las heridas causadas.";
+      }
+  }
+
+];
+
+! Ejecuta un turno de combate.
+! Realiza un ataque del enemigo.
+[ ataque_enemigo atacante defensor arma bo bd golpe resFuerza noFuerza;
+
   bo = get_bo(defensor, nothing);
   bd = get_bd(atacante);
   golpe = 0;
