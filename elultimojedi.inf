@@ -5309,7 +5309,7 @@ has nosalidas;
  BorrarPantalla();
  Damusix.PararTodo();
  playerTo(PuertoO4,2);
- playerTo(EntradaBaseO4,2);
+ !playerTo(EntradaBaseO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
 
