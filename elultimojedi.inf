@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/01/28  Joruiru - Holocubo de la Estrella de la Muerte 
 !  2013/01/25  Joruiru - Cueva Darth Vader 
 !  2012/12/27  Joruiru - Imágenes nuevas 
 !  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
@@ -184,10 +185,10 @@ Constant TASKS_PROVIDED;
 
 ! Numero de tareas que el jugador debe realizar a lo largo
 ! del juego (por defecto: 1)
-Constant NUMBER_TASKS = 22;
+Constant NUMBER_TASKS = 23;
 
 ! Puntuacion maxima del juego (por defecto: 0)
-Constant MAX_SCORE = 270;
+Constant MAX_SCORE = 320;
 
 Constant SGW_SIN_GRAFICOS;
 
@@ -200,7 +201,7 @@ Constant SGW_SIN_GRAFICOS;
 ! Constant ROOM_SCORE = 3;
 
 ! El array que contiene los puntos por cada tarea realizada
-Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20 50;
+Array task_scores -> 10 5 15 10 5 15 5 20 15 5 10 5 10 5 5 20 5 10 15 5 5 20 50 50;
 
 !Replace WordInProperty;
 Replace QuitarAcentos;
@@ -704,6 +705,7 @@ Include "VerbLib";
       20: "Matar a Sotta el Hutt.";
       21: "Bomo mata a Sotta el Hutt.";
       22: "Derrotar a Darth Vader.";
+      23: "Robar los planos de la Estrella de la Muerte.";
     }
 ];
 
@@ -721,8 +723,9 @@ Include "VerbLib";
     if (score<50) print_ret "Iniciado~.";
     if (score<100) print_ret "Padawan~.";
     if (score<150) print_ret "Caballero Jedi~.";
-    if (score<250) print_ret "Maestro Jedi~.";
-    if (score>249) print_ret "Gran Maestro Jedi~.";
+    if (score<220) print_ret "Maestro Jedi~.";
+    if (score<290) print_ret "Gran Maestro Jedi~.";
+    if (score>289) print_ret "Miembro del Consejo Jedi~.";
     print_ret "~.";
 ];
 
@@ -2605,6 +2608,7 @@ Object oVader "Darth Vader" intPasilloCueva
     ],
     almorir [;
       player.oscuro=10;
+      Achieved(22);
       "^Con ese poderoso último golpe, la cabeza del lord Sith queda separada del
       su cuerpo. La cabeza, junto al casco, caen rodando por el suelo de la caverna
       con un ruidoso estrépito metálico, a la par que, asombrado, ves como la
@@ -2628,7 +2632,6 @@ Object oVader "Darth Vader" intPasilloCueva
 	            viewImageSlide(pngSablesLuz);
 	            if (self has muerto) {
 		            move self to limbo;
-		            give player ~descubierto;
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Darth Vader no muestra ningún interés en hablar contigo.^";
@@ -2636,7 +2639,6 @@ Object oVader "Darth Vader" intPasilloCueva
 	            viewImageSlide(pngSablesLuz);
 	            if (self has muerto) {
 		            move self to limbo;
-		            give player ~descubierto;
 	            }
                 rtrue;
     ],
@@ -2651,14 +2653,12 @@ Object oVader "Darth Vader" intPasilloCueva
         Sentir, Concentrar: "El reverso tenebroso es poderoso en un lord Sith. No 
           hay esperanza para Darth Vader.^";
         Levitar: "No serviría de nada.^";
-	    Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
-	                   give self estatico;
+	    Push, Aturdir: give self estatico;
 	                   move player to parent(self);
                        turno_combate(player,self,oFuerza);
                        viewImageSlide(pngSablesLuz);
 	                   if (self has muerto) {
 		                 move self to limbo;
-		                 give player ~descubierto;
 	                   }
 	                   rtrue;
         Enganyar: "No servirá de nada.^";
@@ -5296,6 +5296,8 @@ has nosalidas;
  !move oModuloControlO4 to player;
  !move oLlavePuertaO4 to player;
  !give oNosaurianaCeldaO4 conocido;
+ !move oHolocubo to player;
+ !move oJanOrs to CantinaO4;
  planeta=2;
  glk_request_timer_events(0);
  EsperarTecla("...[Pulsa una tecla]...");
@@ -5307,7 +5309,7 @@ has nosalidas;
  BorrarPantalla();
  Damusix.PararTodo();
  playerTo(PuertoO4,2);
- !playerTo(EntradaBaseO4,2);
+ playerTo(EntradaBaseO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -6423,6 +6425,13 @@ with
     recién llegados antes que éstos a ellos. Cuando tus ojos se acostumbran a la escasa luz interior, te asombras por la diversidad de seres
     que hay en la cantina. Un murmullo constante de conversaciones en lenguas de diferentes orígenes se mezcla con la música de la banda que
     toca en un rincón del local, formada por cuatro músicos Bith.",
+  describe [;
+    self.Lugar::describe();
+    if (oHolocubo in player && oJanOrs in self) {
+	  "Al entrar, notas una mínima alteración en la Fuerza. Podría significar un aviso.";
+    }
+    rtrue;
+  ],
   out_to CalleO4_1,
   before [;
     JugarSin: <<Jugar oJaxfSevalO4>>;
@@ -6449,6 +6458,12 @@ with
 	      HablaPersonaje("Sniffles","Dass, seguiré por aquí por si me necesitas para algo.");
 	      rfalse;
         }
+    sentir,exFuerza,
+    concentrar: if (oHolocubo in player && oJanOrs in self) {
+	              "Localizas el origen de la pequeña alteración en una niña que está al 
+	              fondo. Detectas una pureza en su interior difícil de igualar. Está asustada e
+                  intenta pasar desapercibida entre los clientes de la cantina.";
+                }
   ],
 ;
 
@@ -6838,6 +6853,62 @@ with  describe
     default: print "No conviene hacer eso."; rtrue;
   ],
 ;
+
+Object oJanOrs "Jan Ors" limbo
+  with
+    name 'jan' 'ors' 'nina',
+    description "Una niña humana de pelo castaño y ojos marrones. No debe tener más
+      de ocho años.", 
+    bonif_defensiva 15,
+    bonif_ofensiva 15,
+    vida 50,
+    dado_golpe 1 6 0, !1d6+0
+    life [tema;
+	    Attack: "¿Atacar a una niña indefensa? Te asustas al comprobar que cada vez te
+	      sientes más atraido por el reverso tenebroso de la Fuerza. ¿Hasta cuando
+	      podrás evitar caer al lado oscuro?";
+        tell,answer,
+        ask: tema=AveriguarTema(TemasJanOrs);
+	         switch(tema) {
+		       t_nombreJan: HablaPersonaje("Jan Ors","Mi nombre es Jan Ors. Soy de Alderaan y tengo 8 años.");
+		       t_simismoJan: HablaPersonaje("Jan Ors","Mi nombre es Jan Ors. Soy de Alderaan y tengo 8 años.");
+		       t_ayudaJan: HablaPersonaje("Jan Ors","No necesito ayuda. Puedo arreglármelas sola.");
+		       t_esclavosJan: HablaPersonaje("Jan Ors","¡No soy una esclava! ¡Soy una persona libre!");
+		       t_dineroJan: HablaPersonaje("Jan Ors","Puedo llegar a Alderaan por mis propios medios.");
+		       t_familiaJan: HablaPersonaje("Jan Ors","Estoy yo sola.");
+		       t_orvaxJan: HablaPersonaje("Jan Ors","Soy de Alderaan. Estoy en este planeta de paso. Vuelvo a casa.");
+		       t_saludoJan: HablaPersonaje("Jan Ors","Hola.");
+		       t_despedidaJan: HablaPersonaje("Jan Ors","Adiós.");
+		       t_misionJan: HablaPersonaje("Jan Ors","Vuelvo a mi planeta.");
+		       default: "La niña agacha incómoda la cabeza. No quiere hablar de ese tema.";
+	         }
+	         rtrue;
+	],
+    orders [;
+      Mild, Strong: "Te asustas con tus propias intenciones... ¿Hasta cuando
+	      podrás evitar caer al lado oscuro de la Fuerza?";
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+      Sanar,
+	  Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.";
+	  Push, Aturdir: <<Attack self>>;
+      Sentir, 
+      Concentrar: "La niña posee una pureza interior difícil de igualar. Está asustada e
+        intenta pasar desapercibida entre los clientes de la cantina. Es de Alderaan.";
+      Enganyar: if (oHolocubo in player) {
+	              HablaPersonaje("Dass","Debes llevar este holocubo a Alderaan.");
+	              HablaPersonaje("Jan Ors","Debo llevar este holocubo a Alderaan.");
+	              HablaPersonaje("Dass","Entrégale el holocubo al virrey Bail Organa. Dile que es un regalo de Skyhook.");
+	              HablaPersonaje("Jan Ors","Entregaré el holocubo al virrey Bail Organa. Es un regalo de Skyhook.");
+                  move oHolocubo to oJanOrs;
+                  move oJanOrs to limbo;
+                  Achieved(23);
+                  "Entregas el holocubo a la niña, que se lo guarda en la mochila y sale de la cantina.";
+                }
+                rtrue;
+    ],
+has animate proper objetivo scenery female;
 
 Lugar EntradaBaseO4 "Entrada a la base de Sotta el Hutt"
 with
@@ -8283,6 +8354,9 @@ with
 	    serpiente que se extiende por el estrado como una tubería mucilaginosa. La boca, sin labios, cruza su cara 
 	    de oreja a oreja, babeando continuamente. Es un ser completamente repugnante.";
     }
+    if (oHolocubo in self) {
+	    "Puedes ver lo que parece un holocubo en un rincón de la habitación.";
+    }
     rtrue;
   ],
   w_to Pasillo4BaseO4,
@@ -8307,6 +8381,40 @@ with  describe
     default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
   ],
 ;
+
+Object oHolocubo "holocubo" SottaBaseO4
+with
+  name 'holocubo' 'plano' 'cubo',
+  name_mp 'planos',
+  description "Un holocubo de color oscuro con el sello del Imperio. Es un soporte
+    de almacenamiento de datos que destaca por su gran capacidad.", 
+  before [;
+     give: if (second==oJanOrs) {
+	         <<Enganyar oJanOrs>>;
+           } else
+           "No es lo mejor que puedes hacer con el holocubo.";
+     Push: if (self has on) <<switchoff self>>;
+           <<switchon self>>;
+     SwitchOn: if (self has on) "Ya está encendido.";
+               give self on;
+               "Activas el holocubo y se despliega ante ti una pantalla holográfica en la
+               que aparece información detallada de pedidos de material realizados a
+               Sotta. Los apuntes de los pedidos están anotados bajo el epígrafe ~Solución 
+               Final: La Doctrina Tarkin~. También hay almacenados planos parciales del
+               montaje de los materiales en lo que parece ser una estación espacial.";
+     SwitchOff: if (self hasnt on) "Ya está apagado.";
+                give self ~on; 
+                "Apagas el holocubo. La información holográfica desaparece.";
+     take,
+     remove: move oJanOrs to CantinaO4;
+             move self to player;
+             "Será mejor que te lo lleves. Podría contener información útil para la Rebelión.
+             Aunque no sabes cómo hacerlo llegar hasta Alderaan...";
+     puton, insert,
+     drop: "Será mejor que lo lleves contigo. Podría contener información útil para la Rebelión.
+           Aunque no sabes cómo hacerlo llegar hasta Alderaan...";
+  ],
+has scenery switchable;
 
 Object oBalconSottaO4 "balcon" SottaBaseO4
   with
@@ -9763,6 +9871,17 @@ Object  -> t_uhumeleO4 "uhumele" with name 'nave' 'transporte' 'uhumele' 'modulo
 Object  -> t_saludoO4 "saludo" with name 'saludos' 'hola';
 Object  -> t_despedidaO4 "despedida" with name 'adios';
 
+Object TemasJanOrs "topics for ASK";
+Object -> t_nombreJan "nombre" with name 'nombre' 'quien' 'eres' 'nombres' 'quienes' 'sois' 'llamas';
+Object -> t_simismoJan with name 'ti' 'si' 'mismo' 'como' 'estas' 'bien' 'encuentras' 'años' 'edad';
+Object -> t_ayudaJan "ayuda"  with name 'ayuda' 'ayudame' 'algo';
+Object -> t_esclavosJan "esclavos"  with name 'esclavos' 'mercado' 'trafico' 'esclava' 'prisioneros' 'prisionera';
+Object -> t_dineroJan "dinero"  with name 'dinero' 'creditos';
+Object -> t_familiaJan "familia" with name 'familia' 'madre' 'padre' 'padres' 'papas' 'mama' 'papa' 'hermano' 'hermanos' 'hermana' 'familiares';
+Object -> t_orvaxJan "Orvax IV"  with name 'orvax' 'planeta' 'ciudad' 'cantina' 'bar' 'alderaan' 'casa' 'hogar';
+Object -> t_saludoJan "saludo" with name 'saludos' 'hola';
+Object -> t_despedidaJan "despedida" with name 'adios';
+Object -> t_misionJan "la misión" with name 'mision' 'objetivo' 'objetivos' 'plan' 'averiguar' 'averiguaciones' 'averiguado';
 
 
 
