@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/01/28  Joruiru - Holocubo de la Estrella de la Muerte 
 !  2013/01/25  Joruiru - Cueva Darth Vader 
 !  2012/12/27  Joruiru - Imágenes nuevas 
 !  2012/12/18  Joruiru - Añadida acción Reparar sobre interruptor del ascensor y 
@@ -6839,6 +6840,48 @@ with  describe
   ],
 ;
 
+Object oJanOrs "Jan Ors" CantinaO4
+  with
+    name 'jan' 'ors' 'nina',
+    description "Una niña humana de pelo castaño y ojos marrones. No debe tener más
+      de ocho años.", 
+    bonif_defensiva 15,
+    bonif_ofensiva 15,
+    vida 50,
+    dado_golpe 1 6 0, !1d6+0
+    life [;
+	    Attack: "¿Atacar a una niña indefensa? Te asustas al comprobar que cada vez te
+	      sientes más atraido por el reverso tenebroso de la Fuerza. ¿Hasta cuando
+	      podrás evitar caer al lado oscuro?";
+        tell,answer,
+        ask: "Está demasiado atareado para hacerte caso.";
+    ],
+    orders [;
+      Mild, Strong: "Te asustas con tus propias intenciones... ¿Hasta cuando
+	      podrás evitar caer al lado oscuro de la Fuerza?";
+      NotUnderstood, Tell: <<Ask self>>;
+    ],
+    before [;
+      Sanar,
+	  Levitar: "No deberías ir alardeando de tus poderes de jedi... son tiempos oscuros para los de tu Orden.";
+	  Push, Aturdir: <<Attack self>>;
+      Enganyar: "La persuasión mediante la Fuerza sólo funciona con seres de mente débil.^";
+      Sentir, 
+      Concentrar: "La niña posee una pureza interior difícil de igualar. Está asustada e
+        intenta pasar desapercibida entre los clientes de la cantina.";
+      Enganyar: if (oHolocubo in player) {
+	              HablaPersonaje("Dass","Debes llevar este holocubo a Alderaan.");
+	              HablaPersonaje("Jan Ors","Debo llevar este holocubo a Alderaan.");
+	              HablaPersonaje("Dass","Entrégale el holocubo al virrey Bail Organa. Dile que es un regalo de Skyhook.");
+	              HablaPersonaje("Jan Ors","Entregaré el holocubo al virrey Bail Organa. Es un regalo de Skyhook.");
+                  move oHolocubo to oJanOrs;
+                  move oJanOrs to limbo;
+                  "Entregas el holocubo a la niña, que se lo guarda en la mochila y sale de la cantina.";
+                }
+                rtrue;
+    ],
+has animate proper objetivo scenery female;
+
 Lugar EntradaBaseO4 "Entrada a la base de Sotta el Hutt"
 with
   sgw_img pngEntradaSotta,       ! el grafico de la localidad
@@ -8307,6 +8350,30 @@ with  describe
     default: print "No conviene hacer eso. Cuanto menos llames la atención dentro de la base, mejor."; rtrue;
   ],
 ;
+
+Object oHolocubo "holocubo" SottaBaseO4
+with
+  name 'holocubo' 'plano' 'cubo',
+  name_mp 'planos',
+  description "Un holocubo de color oscuro con el sello del Imperio. Es un soporte
+    de almacenamiento de datos que destaca por su gran capacidad.", 
+  before [;
+     give: if (second==oJanOrs) {
+	         <<Enganyar oJanOrs>>;
+           } else
+           "No es lo mejor que puedes hacer con el holocubo.";
+     Push: if (self has on) <<switchoff self>>;
+           <<switchon self>>;
+     SwitchOn: give self on;
+               "Activas el holocubo y se despliega ante ti una pantalla holográfica en la
+               que aparece información detallada de pedidos de material realizados a
+               Sotta. Los apuntes de los pedidos están anotados bajo el epígrafe ~Solución 
+               Final: La Doctrina Tarkin~. También hay almacenados planos parciales del
+               montaje de los materiales en lo que parece ser una estación espacial.";
+     SwitchOff: give self ~on; 
+                "Apagas el holocubo. La información holográfica desaparece.";
+  ],
+has pluralname scenery;
 
 Object oBalconSottaO4 "balcon" SottaBaseO4
   with
