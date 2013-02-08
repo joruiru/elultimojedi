@@ -2516,14 +2516,10 @@ with
     das cuenta de que no puedes hablar. Te estremeces al sentir un repentino frío. Sin duda
     alguna, la cueva está dominada por el lado oscuro de la Fuerza. Es esclava del mal.",
   before [;
-      enter: give player escondido;
+      enter: if (oVader notin intPasilloCueva) "No tienes ningún interés en volver a esa cueva.";
              playerTo(intCueva,2);
-!             if (oBomo in location) move oBomo to self;
-!             print "Te ocultas entre los árboles.^";
              rtrue;
       exit,getoff: move player to oArboles3;
-!            if (oBomo in self) move oBomo to cima;
-!            print "Sales de entre los árboles.^";
             rtrue;
     ],
 has light concealed scenery enterable;
