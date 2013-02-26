@@ -8215,6 +8215,7 @@ Object oBobaFettO4 "cazarrecompensas" limbo
     dado_golpe 2 6 6, !2d6+6
     almorir [;
       move oSottaO4 to SottaBaseO4;
+      move oHolocubo to limbo;
       print "^Cuando parece que estás a punto de acabar con el cazarrecompensas y que la victoria es tuya, el mandaloriano
       enciende los retrocohetes que lleva a la espalda, escapando de tu ataque definitivo y consiguiendo huir por el
       pasillo. Cuando está a punto de desaparecer, da media vuelta y te grita:^";
