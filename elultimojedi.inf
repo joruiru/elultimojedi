@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/02/26  Joruiru - Imagenes en localidades 
 !  2013/01/28  Joruiru - Holocubo de la Estrella de la Muerte 
 !  2013/01/25  Joruiru - Cueva Darth Vader 
 !  2012/12/27  Joruiru - Imágenes nuevas 
@@ -2663,7 +2664,8 @@ has animate proper;
 
 Lugar extOeste "Exterior de Cadgel Meadows (lado oeste)"
   with
-  sgw_img pngExtCadgel,       ! el grafico de la localidad
+    sgw_img pngExtCadgel,       ! el grafico de la localidad
+    sgw_mus sndJungla,
     name 'exterior',
     description "El puerto espacial de Cadgel Meadows esta rodeado de un muro que lo aisla del exterior. Las zonas arboladas podrían 
                 ayudar en caso de que se acercara compañía poco deseable.",
@@ -2754,7 +2756,8 @@ has scenery transparent enterable;
 
 Lugar extNorte "Exterior de Cadgel Meadows (lado norte)"
   with
-  sgw_img pngExtCadgelB,       ! el grafico de la localidad
+    sgw_img pngExtCadgelB,       ! el grafico de la localidad
+    sgw_mus sndJungla,
     name 'exterior',
     description "El puerto espacial de Cadgel Meadows esta rodeado de un muro que lo aisla del exterior. Las zonas arboladas podrían 
                 ayudar en caso de que se acercara compañía poco deseable.",
@@ -2845,6 +2848,7 @@ has scenery transparent enterable;
 Lugar extEste "Entrada a Cadgel Meadows"
   with
     sgw_img pngEntradaCadgel,       ! el grafico de la localidad
+    sgw_mus sndJungla,
     name 'exterior',
     description "La entrada a Cadgel Meadows está vigilada y protegida por soldados imperiales. Las zonas arboladas podrían 
                 ocultaros mientras pensáis cómo entrar.",
@@ -3248,7 +3252,8 @@ has scenery transparent enterable;
 
 Lugar extSur "Exterior de Cadgel Meadows (lado sur)"
   with
-  sgw_img pngExtCadgelC,       ! el grafico de la localidad
+    sgw_img pngExtCadgelC,       ! el grafico de la localidad
+    sgw_mus sndJungla,
     name 'exterior',
     description "El puerto espacial de Cadgel Meadows esta rodeado de un muro que lo aisla del exterior. Las zonas arboladas podrían 
                 ayudar en caso de que se acercara compañía poco deseable.",
@@ -7813,7 +7818,7 @@ has pluralname animate;
 
 Lugar Pasillo3BaseO4 "Pasillo"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngPasilloSotta,       ! el grafico de la localidad
   description "Este pasillo es exactamente igual a los otros que has visto en el resto del complejo.",
   n_to PuertaSalaControlO4,
   s_to ComedorBaseO4,
@@ -8087,7 +8092,7 @@ has pluralname animate;
 
 Lugar Pasillo4BaseO4 "Pasillo"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngPasilloSotta,       ! el grafico de la localidad
   description "El pasillo del nivel superior es similar a los que hay en el nivel
     inferior del complejo, aunque te da la impresión de que es un poco más amplio.
     En el lado oeste se encuentra el ascensor para bajar al nivel inferior del complejo.",
@@ -8215,6 +8220,7 @@ Object oBobaFettO4 "cazarrecompensas" limbo
     dado_golpe 2 6 6, !2d6+6
     almorir [;
       move oSottaO4 to SottaBaseO4;
+	  SottaBaseO4.sgw_img=pngHabSotta; !Cambiamos el gráfico de la habitación de Sotta
       move oHolocubo to limbo;
       print "^Cuando parece que estás a punto de acabar con el cazarrecompensas y que la victoria es tuya, el mandaloriano
       enciende los retrocohetes que lleva a la espalda, escapando de tu ataque definitivo y consiguiendo huir por el
@@ -8334,7 +8340,7 @@ with  describe
 
 Lugar SottaBaseO4 "Habitacion de Sotta"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngHabSottaVacia,       ! el grafico de la localidad
   description "Acabas de entrar a la habitación más lujosa de todo el complejo. Sin duda alguna, estás en
               los aposentos privados de Sotta el Hutt. Un gran ventanal da a un balcón, desde donde Sotta
               debe dirigirse a los habitantes de Orvax IV cuando realiza alguna aparición en público.",
