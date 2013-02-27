@@ -58,6 +58,7 @@ SOUND sndAlarma res/snd/alarma.ogg
 SOUND sndVill res/snd/vill.ogg
 SOUND sndTriste res/snd/bomosorrow.ogg
 SOUND sndJungla res/snd/ambientejungla.ogg
+SOUND sndCueva res/snd/enlacueva.ogg
 SOUND sndCantina res/snd/cantina.ogg
 SOUND sndPuerto res/snd/puertoorvax.ogg
 SOUND sndPlaza res/snd/plazaorvax.ogg

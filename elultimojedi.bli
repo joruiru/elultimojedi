@@ -1,9 +1,9 @@
 ! Blorb Resource Definitions File
-! Generated automatically by c:\jv\inform\bres.
+! Generated automatically by C:\jv\inform\bres.
 ! Do not edit!
 ! Include this file in your inform source with "Include "elultimojedi.bli";"
 
-Message "Including c:/jv/inform/bres resource declarations generated on 2-26-2013";
+Message "Including C:/jv/inform/bres resource declarations generated on 2-27-2013";
 
 Constant pngPaso 3;	!Blorb Pict:res/img/paso.png
 Constant pngLadera 4;	!Blorb Pict:res/img/ladera.png
@@ -64,10 +64,11 @@ Constant sndAlarma 9;	!Blorb Snd:res/snd/alarma.ogg
 Constant sndVill 10;	!Blorb Snd:res/snd/vill.ogg
 Constant sndTriste 11;	!Blorb Snd:res/snd/bomosorrow.ogg
 Constant sndJungla 12;	!Blorb Snd:res/snd/ambientejungla.ogg
-Constant sndCantina 13;	!Blorb Snd:res/snd/cantina.ogg
-Constant sndPuerto 14;	!Blorb Snd:res/snd/puertoorvax.ogg
-Constant sndPlaza 15;	!Blorb Snd:res/snd/plazaorvax.ogg
-Constant sndCalleO4 16;	!Blorb Snd:res/snd/calleorvax.ogg
+Constant sndCueva 13;	!Blorb Snd:res/snd/enlacueva.ogg
+Constant sndCantina 14;	!Blorb Snd:res/snd/cantina.ogg
+Constant sndPuerto 15;	!Blorb Snd:res/snd/puertoorvax.ogg
+Constant sndPlaza 16;	!Blorb Snd:res/snd/plazaorvax.ogg
+Constant sndCalleO4 17;	!Blorb Snd:res/snd/calleorvax.ogg
 Constant intro1 52;	!Blorb Pict:res/img/euj1.png
 Constant intro2 53;	!Blorb Pict:res/img/euj2.png
 Constant intro3 54;	!Blorb Pict:res/img/euj3.png

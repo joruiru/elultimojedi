@@ -2541,6 +2541,7 @@ with  describe
 Lugar intCueva "Cueva"
 with
   sgw_img pngCueva,       ! el grafico de la localidad
+  sgw_mus sndCueva,
   name 'cueva',
   description "La oscuridad interior es tan profunda que puedes sentirla contra 
     tu piel, tan negra que la luz de tu espada láser es rápidamente absorbida y 
@@ -2559,6 +2560,7 @@ with
 Lugar intPasilloCueva "Cueva"
 with
   sgw_img pngPasilloCueva,       ! el grafico de la localidad
+  sgw_mus sndCueva,
   name 'cueva',
   description "Al avanzar utilizando el sable de luz como débil linterna, sientes
    que el espacio se ensancha a tu alrededor. Te esfuerzas por ver en medio de la 
