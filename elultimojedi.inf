@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/02/28  Joruiru - Varios sonidos 
 !  2013/02/26  Joruiru - Imagenes en localidades 
 !  2013/01/28  Joruiru - Holocubo de la Estrella de la Muerte 
 !  2013/01/25  Joruiru - Cueva Darth Vader 
@@ -1325,18 +1326,18 @@ Object  mySelfObj "(self object)"
               location==EntradaBaseO4 or PasilloBaseO4 or CeldasBaseO4 or ComedorBaseO4
 	          or Pasillo3BaseO4 or AlmacenBaseO4 or SalaControlBaseO4 or Pasillo2BaseO4
 	          or SalaDescansoBaseO4 or Pasillo4BaseO4 or HabitacionesBaseO4 or SottaBaseO4) {
-	        EntradaBaseO4.sgw_mus=sndAlarma;
-	        PasilloBaseO4.sgw_mus=sndAlarma;
-	        CeldasBaseO4.sgw_mus=sndAlarma;
-	        ComedorBaseO4.sgw_mus=sndAlarma;
-	        Pasillo3BaseO4.sgw_mus=sndAlarma;
-	        AlmacenBaseO4.sgw_mus=sndAlarma;
-	        SalaControlBaseO4.sgw_mus=sndAlarma;
-	        Pasillo2BaseO4.sgw_mus=sndAlarma;
-	        SalaDescansoBaseO4.sgw_mus=sndAlarma;
-	        Pasillo4BaseO4.sgw_mus=sndAlarma;
-	        HabitacionesBaseO4.sgw_mus=sndAlarma;
-	        SottaBaseO4.sgw_mus=sndAlarma;
+	        EntradaBaseO4.sgw_mus=sndAlarmaReactor;
+	        PasilloBaseO4.sgw_mus=sndAlarmaReactor;
+	        CeldasBaseO4.sgw_mus=sndAlarmaReactor;
+	        ComedorBaseO4.sgw_mus=sndAlarmaReactor;
+	        Pasillo3BaseO4.sgw_mus=sndAlarmaReactor;
+	        AlmacenBaseO4.sgw_mus=sndAlarmaReactor;
+	        SalaControlBaseO4.sgw_mus=sndAlarmaReactor;
+	        Pasillo2BaseO4.sgw_mus=sndAlarmaReactor;
+	        SalaDescansoBaseO4.sgw_mus=sndAlarmaReactor;
+	        Pasillo4BaseO4.sgw_mus=sndAlarmaReactor;
+	        HabitacionesBaseO4.sgw_mus=sndAlarmaReactor;
+	        SottaBaseO4.sgw_mus=sndAlarmaReactor;
           }
           if (self.fuerza<10) {
 	          self.fuerza++;
@@ -4221,6 +4222,7 @@ with
 	      print "^^";
         };
         if (noun == out_obj && oVwing in hangarNorte) {
+          Damusix.TocarV(sndNave,VOLUMEN_ALTO);
 	      print "Produciendo un ruido ensordecedor, una nave de combate pasa cerca de tu posición y aterriza en el hangar norte.^^";
         };
         rfalse;
@@ -5301,6 +5303,7 @@ has nosalidas;
  !give oNosaurianaCeldaO4 conocido;
  !move oHolocubo to player;
  !move oJanOrs to CantinaO4;
+ !move oGranadaEnergia to player;
  planeta=2;
  glk_request_timer_events(0);
  EsperarTecla("...[Pulsa una tecla]...");
@@ -5312,7 +5315,7 @@ has nosalidas;
  BorrarPantalla();
  Damusix.PararTodo();
  playerTo(PuertoO4,2);
- !playerTo(EntradaBaseO4,2);
+ !playerTo(SalaDescansoBaseO4,2);
  !move oGuardiasAlmacenO4 to limbo;
 ];
 
@@ -5955,6 +5958,8 @@ Object oRobot "JO3FE" NivelInfO4_1
                                toda la galaxia.... Chrrrrkkk...");
                 HablaPersonaje("JO3FE","Kkkrrrkkrkr... No, por favor, no me desactive.... Kkkkrrkrkrrkk...");
                 HablaPersonaje("JO3FE","....Chrrkkkchrrrkkkchrrkkkkk...");
+	            Damusix.AsignarCanal(sndRobot,0,VOLUMEN_ALTO,-1);
+	            Damusix.TocarV(sndRobot,VOLUMEN_ALTO);
                 give self muerto;
                 "^Tras esto, el droide se apaga. Parece que la energía se ha agotado definitivamente.";
       SwitchOff: if (self has muerto) "La energía está totalmente agotada. El droide está inservible.";
@@ -7023,6 +7028,7 @@ Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               EntradaBaseO4.sgw_img=pngEntradaSottaRota;
 	               viewImageCenter(EntradaBaseO4.sgw_img);
 	               Achieved(17);
+	               Damusix.TocarV(sndRompePuerta,VOLUMEN_ALTO);
 	               "Empuñas tu sable láser y lo clavas en la puerta del complejo. Lentamente, el acero de la puerta
 	               comienza a derretirse allá por donde pasas la espada láser. Al cabo de unos minutos, completas un
 	               círculo por el que poder entrar a la base.";
@@ -7034,6 +7040,7 @@ Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               EntradaBaseO4.sgw_img=pngEntradaSottaAbierta;
 	               viewImageCenter(EntradaBaseO4.sgw_img);
 	               Achieved(17);
+	               Damusix.TocarV(sndAbrirPuerta,VOLUMEN_ALTO);
 	               "Introduces la llave electrónica en el mecanismo de control y el resultado es el esperado: la puerta se abre,
 	               permitiéndote el acceso al interior del complejo.";
                  }
@@ -7162,6 +7169,7 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
 	              move self to limbo;
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
 		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
 		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión.";
 	            }
@@ -7218,6 +7226,7 @@ has pluralname animate scenery;
 Lugar PasilloBaseO4 "Pasillo"
 with
   sgw_img pngPasilloSotta,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "Un largo pasillo, perfectamente iluminado, se adentra hacia el interior de la base.",
   out_to EntradaBaseO4,
   e_to ComedorBaseO4,
@@ -7367,6 +7376,7 @@ has animate;
 Lugar CeldasBaseO4 "Celdas"
 with
   sgw_img pngCeldasSotta,       ! el grafico de la localidad
+  sgw_mus sndCampoEnergia,
   description "Sendos campos de fuerza de color rojo cierran lo que parecen ser dos celdas vacías.",
   e_to PasilloBaseO4,
 ;
@@ -7385,6 +7395,7 @@ has scenery concealed;
 Lugar ComedorBaseO4 "Comedor"
 with
   sgw_img pngComedorSotta,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "A tenor del número de sillas y mesas y de su distribución, esta amplia 
               sala cuadrada debe ser el comedor principal del complejo. Tienes suerte
               de que no sea hora de comida y está vacía, ya que si no podrías haberte
@@ -7410,6 +7421,7 @@ with  describe
 Lugar AlmacenBaseO4 "Almacen"
 with
   sgw_img pngAlmacenSotta,       ! el grafico de la localidad
+  sgw_mus sndAlmacenSotta,
   description "Cientos de cajas embaladas ocupan casi por completo 
         el inmenso almacen de la nave.",
   describe [;
@@ -7436,6 +7448,7 @@ with  describe
     examine: rfalse;
     pull, push, ThrowAt,
     levitar: if (oGuardiasAlmacenO4 notin AlmacenBaseO4) "No tiene sentido hacer que las pilas de cajas se desplomen.";
+	         Damusix.TocarV(sndRompeCaja,VOLUMEN_ALTO);
              print "Canalizando el poder que te proporciona el dominio de la Fuerza, consigues hacer que varias pilas 
                    de cajas se derrumen sobre los guardias gamorreanos, que quedan sepultados bajo las mismas.";
 	         !Se crean los cadáveres
@@ -7451,6 +7464,7 @@ with  describe
           new_suministro = Suministro.create(random(10));
           if (new_suministro == nothing) "Por mucho que te esfuerzas, no puedes abrir la caja.";
           move new_suministro to parent(self);
+	      Damusix.TocarV(sndAbrirCaja,VOLUMEN_ALTO);
           switch (new_suministro.tipo) {
 	        1,2,3,4,5: "Rompes la tapa para abrir la caja, que contiene varios tipos de comida.";
 	        6,7: "Rompes la tapa para abrir la caja, que contiene diferentes armas.";
@@ -7529,6 +7543,7 @@ Object oGuardiasAlmacenO4 "guardias de Sotta" AlmacenBaseO4
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 		          deadflag=8;
+	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
 		          "Lanzas la granada de energía contra los montones de cajas que hay en el
 		          almacen. Te pones a cubierto, justo a tiempo para oir la explosión.^
 		          Sin embargo, a la explosión que has provocado, le siguen otras explosiones
@@ -7600,6 +7615,7 @@ Object oGranadaEnergia "granada de energia" limbo
                if (second==nothing && location==AlmacenBaseO4 && oGuardiasAlmacenO4 in location) <<attack oGuardiasAlmacenO4 self>>;
                if (second==nothing && location==AlmacenBaseO4 && oGuardiasAlmacenO4 notin location) {
 	              deadflag=8;
+	              Damusix.Tocar(sndGranada,VOLUMEN_ALTO);
 		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
 		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión.^
 		          Sin embargo, a la explosión que has provocado, le siguen otras explosiones
@@ -7614,6 +7630,7 @@ Object oGranadaEnergia "granada de energia" limbo
                if (second==nothing && location==SalaControlBaseO4 && oGuardiasControlO4 in location) <<attack oGuardiasControlO4 self>>;
                if (second==nothing && location==SalaControlBaseO4 && oGuardiasControlO4 notin location) {
 	              give oInterruptorO4 muerto;
+	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
 		          "Lanzas la granada de energía al interior de la sala de control. Te pones a cubierto, 
 		          justo a tiempo para oir la explosión. Al reincorporarte puedes comprobar que todos 
 		          los terminales de la sala están inutilizados. ¡Mierda! ¿Cómo un caballero Jedi puede 
@@ -7631,6 +7648,7 @@ has female;
 Lugar Pasillo2BaseO4 "Pasillo"
 with
   sgw_img pngAscensor,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "El largo pasillo termina en lo que parece ser un ascensor que lleva a la planta superior del complejo.",
   n_to PasilloBaseO4,
   w_to SalaDescansoBaseO4,
@@ -7709,6 +7727,7 @@ has static scenery door openable container objetivo;
 Lugar SalaDescansoBaseO4 "Sala de descanso"
 with
   !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_mus sndSalaDescanso,
   description "La sala de descanso es una zona amplia y diáfana preparada para que los invitados, empleados y el propio Sotta el Hutt
               puedan pasar sus momentos de ocio bailando, bebiendo y disfrutando de espectáculos varios.",
   e_to Pasillo2BaseO4,
@@ -7773,6 +7792,9 @@ Object oGuardiasDescansoO4 "guardias de Sotta" SalaDescansoBaseO4
 	              move self to limbo;
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+		          Damusix.PararTodo();
+	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
+	              SalaDescansoBaseO4.sgw_mus=0;
 		          "Dudas antes de lanzar la granada al interior de la sala de descanso... ¿vale la
 		          pena alejarse de las enseñanzas jedi, aunque solo sea por unos momentos, para salvar
 		          la vida de la pequeña hija de tu amigo Bomo? Pero Bomo se merece que hagas todo lo
@@ -7821,6 +7843,7 @@ has pluralname animate;
 Lugar Pasillo3BaseO4 "Pasillo"
 with
   sgw_img pngPasilloSotta,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "Este pasillo es exactamente igual a los otros que has visto en el resto del complejo.",
   n_to PuertaSalaControlO4,
   s_to ComedorBaseO4,
@@ -7894,6 +7917,7 @@ has scenery container;
 Lugar SalaControlBaseO4 "Sala de vigilancia y control"
 with
   sgw_img pngSalaControl,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "Esta sala es el centro de seguridad y comunicaciones de la base. Desde los numerosos terminales 
               que se encuentran en este lugar se pueden controlar todos los sistemas que existen en el complejo: 
               el reactor de energía, las puertas interiores y exteriores, las puertas de seguridad, etc.",
@@ -8034,6 +8058,7 @@ Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 	              give oInterruptorO4 muerto;
+	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
 		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
 		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión. Al 
 		          reincorporarte puedes comprobar como no sólo los guardias han muerto, sino que también
@@ -8095,6 +8120,7 @@ has pluralname animate;
 Lugar Pasillo4BaseO4 "Pasillo"
 with
   sgw_img pngPasilloSotta,       ! el grafico de la localidad
+  sgw_mus sndBaseSotta,
   description "El pasillo del nivel superior es similar a los que hay en el nivel
     inferior del complejo, aunque te da la impresión de que es un poco más amplio.
     En el lado oeste se encuentra el ascensor para bajar al nivel inferior del complejo.",
