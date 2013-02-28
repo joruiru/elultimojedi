@@ -4017,6 +4017,9 @@ Object -> oUhumele "Uhumele"
 			       self.abierta = 0;
 			       move oCrys to limbo;
 			       move oCrysAusente to hangarEste;
+		       } else {
+   	               hangarEste.sgw_img=pngHangarEste; !Se cambia la imagen por la de la Uhumele abierta
+	               viewImageCenter(hangarEste.sgw_img);
 		       }
 	         }
 	      2: rtrue;
@@ -4025,6 +4028,8 @@ Object -> oUhumele "Uhumele"
 		       self.abierta = 0;
    		       move oCrys to limbo;
    		       move oCrysAusente to hangarEste;
+   	           hangarEste.sgw_img=pngHangarEste; !Se cambia la imagen por la de la Uhumele cerrada
+	           viewImageCenter(hangarEste.sgw_img);
 	         }
 	         if (oBomo.orvax==0) {
    		       switch(random(4)) {
