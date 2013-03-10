@@ -192,7 +192,7 @@ Constant NUMBER_TASKS = 23;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 320;
 
-Constant SGW_SIN_GRAFICOS;
+!Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
