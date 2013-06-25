@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/06/25  Joruiru - Nuevas imagenes 
 !  2013/02/28  Joruiru - Varios sonidos 
 !  2013/02/26  Joruiru - Imagenes en localidades 
 !  2013/01/28  Joruiru - Holocubo de la Estrella de la Muerte 
@@ -5678,7 +5679,7 @@ has scenery female objetivo;
 
 Lugar CalleO4_2 "Calle"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngRampa,       ! el grafico de la localidad
   description "Una calle poco transitada, ya que, aunque por el lado este desemboca a la plaza principal, por el lado oeste 
               baja al nivel inferior de la ciudad. Un lugar nada recomendado...",
   describe [;
@@ -6252,7 +6253,6 @@ has animate female concealed;
 
 Lugar CeldasO4 "Celdas (Nivel inferior de Orvax IV)"
 with 
-  !name 'cantina',
   sgw_img pngCeldas,  ! el grafico de la localidad
   description "Las celdas son huecos rectangulares excavados en el suelo de la estancia, cerrados cada uno por una pesada reja de acero.",
   describe [;
@@ -7731,7 +7731,7 @@ has static scenery door openable container objetivo;
 
 Lugar SalaDescansoBaseO4 "Sala de descanso"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngSalaDescanso,       ! el grafico de la localidad
   sgw_mus sndSalaDescanso,
   description "La sala de descanso es una zona amplia y diáfana preparada para que los invitados, empleados y el propio Sotta el Hutt
               puedan pasar sus momentos de ocio bailando, bebiendo y disfrutando de espectáculos varios.",
@@ -7799,6 +7799,8 @@ Object oGuardiasDescansoO4 "guardias de Sotta" SalaDescansoBaseO4
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 		          Damusix.PararTodo();
 	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
+	              SalaDescansoBaseO4.sgw_img=pngSalaDescansoVacia; !Cambiamos el gráfico de la sala
+	              viewImageCenter(SalaDescansoBaseO4.sgw_img);
 	              SalaDescansoBaseO4.sgw_mus=0;
 		          "Dudas antes de lanzar la granada al interior de la sala de descanso... ¿vale la
 		          pena alejarse de las enseñanzas jedi, aunque solo sea por unos momentos, para salvar
@@ -7821,6 +7823,8 @@ Object oGuardiasDescansoO4 "guardias de Sotta" SalaDescansoBaseO4
 		              self.almorir(10);
 	              }
 	              move self to limbo;
+	              SalaDescansoBaseO4.sgw_img=pngSalaDescansoVacia; !Cambiamos el gráfico de la sala
+	              viewImageCenter(SalaDescansoBaseO4.sgw_img);
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 	              "¡Bomo se merece que hagas todo lo que esté en tu mano para salvar la vida de su hija!

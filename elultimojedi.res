@@ -39,6 +39,8 @@ PICTURE pngAscensor res/img/ascensor.png
 PICTURE pngCeldasSotta res/img/celdasSotta.png
 PICTURE pngComedorSotta res/img/comedorsotta.png
 PICTURE pngSalaControl res/img/salacontrol.png
+PICTURE pngSalaDescanso res/img/saladescanso.png
+PICTURE pngSalaDescansoVacia res/img/saladescansovacia.png
 PICTURE pngHabSotta res/img/habitacionsotta.png
 PICTURE pngHabSottaVacia res/img/habitacionsottavacia.png
 PICTURE pngYoda res/img/yoda.png
