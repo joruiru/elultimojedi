@@ -41,6 +41,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/07/10  Joruiru - Mostrar imagen de localidad al volver de la ayuda.
+!                        Verbo transcript.
 !  2012/12/18  Joruiru - Gramática para Reparar y Arreglar. 
 !  2012/10/10  Joruiru - Se añade isQuestion y removeQuestion para admitir '?' 
 !                        al final de palabras.
@@ -282,6 +284,20 @@ Verb meta 'sonido' 'sonidos'
   *                                      -> Sonido
   * 'on' / 'encendido' / 'si'            -> EncenderSonido
   * 'off' / 'apagado' / 'no'             -> ApagarSonido;
+  
+Verb meta 'transcript'
+  *                                   -> ScriptOn
+  * 'off'/'no'                        -> ScriptOff
+  * 'on'/'si'                         -> ScriptOn;
+
+Extend 'consulta' replace
+    * creature 'sobre' topic            -> Ask
+    * 'a//' creature 'sobre' topic    -> Ask
+    * 'sobre' topic 'a//' creature    -> Ask reverse
+    * noun                            -> Consult
+    * noun 'sobre' topic                -> Consult
+    * noun 'acerca' 'de' topic            -> Consult
+    * topic 'en' noun            -> Consult reverse;
 !===============================================================================
 ! (11) Rutinas de Acciones Propias del Juego
 !-------------------------------------------------------------------------------
@@ -296,6 +312,7 @@ Verb meta 'sonido' 'sonidos'
   barra_estado.dibujar();
   BorrarPantalla();
   openGraphicWindow(40);
+  viewImageCenter(location.sgw_img);
   <<Look>>;
 ];
 

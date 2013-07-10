@@ -193,7 +193,7 @@ Constant NUMBER_TASKS = 23;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 320;
 
-!Constant SGW_SIN_GRAFICOS;
+Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -800,6 +800,7 @@ Include "VerbLib";
 
 [ DeathMessage;
 glk_request_timer_events(0); ! desactivamos los mensajes aleatorios
+mensajes_aleatorios = false;
       if (deadflag == 3) {
         print " Has sucumbido al Lado Oscuro de la Fuerza ";
       }
@@ -1473,7 +1474,8 @@ has female nofuerza;
 
 Object oSableLaser "Sable Laser"
   with
-    name 'sable' 'espada' 'laser',
+    name 'sable' 'espada' 'laser' 'hoja',
+    adjectives 'cristal',
     bonif_ofensiva 10,
     dado_golpe 2 6 6, !2d6+6
     description [;
@@ -1490,7 +1492,9 @@ Object oSableLaser "Sable Laser"
       give,
       drop: "Un caballero Jedi no abandona nunca su sable laser."; 
       Levitar: "Un sable laser no está hecho para jugar.";
-      Burn, SwitchOn, SwitchOff: "Mejor mantener el sable laser oculto. No conviene que vayas alardeando de ser un jedi.";
+      Burn, SwitchOn, SwitchOff: if (location==paso or ladera) "Mejor mantener el sable laser oculto hasta el momento oportuno. Si
+        alardeas en este momento de tu condición de jedi, concentrarán el fuego en ti y será imposible que sobrevivas.";
+        "Mejor mantener el sable laser oculto. No conviene que vayas alardeando de ser un jedi.";
     ],
 has clothing;
 
@@ -5312,6 +5316,7 @@ has nosalidas;
  !move oGranadaEnergia to player;
  planeta=2;
  glk_request_timer_events(0);
+ mensajes_aleatorios = false;
  EsperarTecla("...[Pulsa una tecla]...");
  BorrarPantalla();
  viewImageCenter(pngUhumele);
@@ -5463,16 +5468,20 @@ with
   sgw_img pngPuenteMandoUhumele,
   description "Te encuentras en el interior de la Uhumele. Aunque por fuera la nave está poco cuidada, el interior tiene 
               muy buen aspecto, dando sensación de amplitud, calidez y limpieza. Aquí, en el puente, se encuentran los
-              mandos y controles principales de la nave.",
+              mandos y controles principales de la nave. La tripulación está dispersa por otras estancias de la nave,
+              realizando las tareas de mantenimiento que cada uno tiene asignadas.",
   out_to PuertoO4,
 ;
 
 Object oCuadroO4 "cuadro de mandos" inUhumeleO4
 with
-    name 'cuadro' 'mandos' 'controles' 'panel' 'mando' 'control',
+    name 'cuadro' 'mandos' 'controles' 'panel' 'mando' 'control' 'boton' 'botonrd',
     description "El cuadro de mandos de la Uhumele es increiblemente amplio y complejo, con cientos de indicadores. En un
                 lugar privilegiado del cuadro se encuentra el módulo de control, esencial para que funcionen todos los
                 sistemas de la nave.",
+    before [;
+      touch,pull,push,squeeze: "No es momento de ponerse a jugar con los controles de la nave.";
+    ],
 has scenery supporter container transparent open;
 
 Object oIndicadoresO4 "indicadores" inUhumeleO4
@@ -5482,6 +5491,9 @@ with
     description "El puente de mando de la nave está llena de diversos indicadores luminosos y digitales, para informar de 
                  cualquier aspecto sobre el estado de la nave, del vuelo o del armamento. En un lugar privilegiado del 
                  cuadro se encuentra el módulo de control, esencial para que funcionen todos los sistemas de la nave.",
+    before [;
+      touch,pull,push,squeeze: "No es momento de ponerse a jugar con los indicadores.";
+    ],
 has pluralname scenery;
 
 Object oNaveO4 "nave" inUhumeleO4
@@ -5499,7 +5511,7 @@ Object oModuloControlO4 "Módulo de control" oCuadroO4
   with
     name 'modulo' 'control' 'disco' 'optico',
     adjectives 'uhumele' 'control',
-    description "El módulo de control de la Uhumele lleva en su interior un disco óptico necesario para poner en marcha la nave.", 
+    description "El módulo de control de la Uhumele lleva en su interior un pequeño disco óptico necesario para poner en marcha la nave.", 
     before [;
       take,
       remove: if (self in oMesaO4) "Será mejor que no quites nada de la mesa.";
@@ -5696,6 +5708,8 @@ with
   before [;
     go: if (noun==w_obj) <<go d_obj>>;
         if (noun==d_obj && oGuardiasO4 in self) "Los guardias bloquean el acceso al nivel inferior.";
+        if (noun==d_obj && oMezgrafO4.vida == 0) "No deberías irte dejando a Mezgraf en ese estado. Si los guardias le estaban atacando
+          lo más probable es que hubiera averiguado algo útil.";
         if (noun==d_obj && oMezgrafO4.vida > 0) {
 	        HablaPersonaje("Mezgraf","Jennir, yo me vuelvo a la nave.");
 	        move oMezgrafO4 to limbo;
@@ -6082,6 +6096,9 @@ with
   before [;
     go: if (noun==in_obj && oGuardiasNivInfO4 in self) "Los guardias bloquean el paso a la zona donde podrían estar retenidos los esclavos.^";
         if (noun==e_obj && oGuardiasNivInfO4_2 in self) "Los guardias bloquean el acceso a los callejones.^";
+        if (noun==e_obj && oMixaAgonizanteO4 in self && oMixaAgonizanteO4 hasnt muerto) "Entre los cuerpos inertes de los nosaurianos reconoces 
+          a Mixa, la esposa de uno de tus capitanes en la batalla del paso de Half-Axe. Parece que todavía está viva, aunque sus heridas son 
+          extremadamente graves. ¡Tienes que ayudarla!^";
   ],
 ;
 
@@ -6205,6 +6222,7 @@ with
 	         No sabes cuánto tiempo podrás seguir así...^";
     tell,answer,
     ask: if (oGuardiasNivInfO4_2 hasnt muerto) "Los guardias se interponen entre Mixa y tú.^";
+         if (self has muerto) "Mixa yace inerte en el suelo junto al resto de cadáveres.";
            tema=AveriguarTema(TemasOrvax4);
 	       switch(tema) {
              t_familiabomoO4,
@@ -6264,6 +6282,11 @@ with
     };
     self.Lugar::describe();
     rtrue;
+  ],
+  before [;
+    go: if (noun==d_obj) {
+	      <<Enter oCeldaNosaurianos>>;
+        };
   ],
   out_to NivelInfO4,
 ;
@@ -6351,12 +6374,15 @@ with
             }
             "No puedes abrir la celda de los nosaurianos.";
     levitar: <<unlock self oFuerza>>;
+    enter: if (self has locked) "Una reja de acero te impide bajar a la celda.";
+           if (oNosaurianaCeldaO4 has conocido) "Bajando a la celda solo perderías un valioso tiempo que puede ser vital para rescatar a la hija de Bomo.";
+           "Bajando a la celda solo perderías un valioso tiempo que puede ser vital para rescatar a la familia de Bomo.";
   ],
 has scenery female locked transparent;
 
 Object oNosaurianosCeldaO4 "prisioneros nosaurianos" oCeldaNosaurianos
 with
-  name 'prisioneros' 'nosaurianos',
+  name 'prisioneros' 'nosaurianos' 'prisionero' 'nosauriano',
   description [;
        give oNosaurianaCeldaO4 ~concealed;
        "Los nosaurianos están todos en la misma celda, a la espera de ser vendidos como esclavos. Todos son mujeres y niños.
@@ -6446,6 +6472,7 @@ with
     rtrue;
   ],
   out_to CalleO4_1,
+  necesita_ayuda 0,
   before [;
     JugarSin: <<Jugar oJaxfSevalO4>>;
     go: if (oJaxfSevalO4.jugando ~=0 or 4 or 100) {
@@ -6453,8 +6480,14 @@ with
 	      rtrue;
         }  
         if (oJaxfSevalO4.jugando == 4) {
+	      self.necesita_ayuda++;
+	      if (self.necesita_ayuda>3) {
+	        HablaPersonaje("Sniffles","Dass, tenemos que recuperar el módulo de control de la nave... 
+	            aunque sea a la fuerza y tengamos que salir de aquí huyendo. Sin la nave, no podremos salir del planeta.");
+	        rtrue;
+	      }
 	      HablaPersonaje("Sniffles","Dass, no creo que debamos marcharnos de aquí sin la nave... 
-	            el capitán se enfadará al enterarse de que la hemos perdido apostando.");
+	            el capitán nos matará al enterarse de que la hemos perdido apostando.");
 	      rtrue;
         }
         if (oJaxfSevalO4.jugando == 100 && oSnifflesO4 in self && oMeettoO4 in PlazaO4) {
@@ -8409,6 +8442,7 @@ with
     go: if (oSottaO4 in self) "La búsqueda de la familia de Bomo te ha traído hasta aquí. 
            No es una buena idea irte ahora.";
         if (noun==out_obj) <<exit>>;
+        if (noun==d_obj) <<enter oBalconSottaO4>>;
   ],
 ;
 
@@ -8453,6 +8487,7 @@ with
      puton, insert,
      drop: "Será mejor que lo lleves contigo. Podría contener información útil para la Rebelión.
            Aunque no sabes cómo hacerlo llegar hasta Alderaan...";
+     consult: <<SwitchOn self>>;
   ],
 has scenery switchable;
 
@@ -9718,12 +9753,14 @@ Object  Corto_Fase2
            rtrue;
          ]          
          [;
-           self.cadena = "Bien, entonces. Mezgraf y Sniffles acompañarán a Dass a buscar a la familia
-               de Bomo. Esto puede ser demasiado difícil para tí, así que te quedarás aquí. Calculo que tenemos hasta 
+           self.cadena = "Bien, entonces. Mezgraf y Sniffles ayudarán a Dass a buscar a la familia
+               de Bomo. Mezclaos entre la gente de la ciudad y averiguar cuanto podáis. Esto puede ser demasiado difícil 
+               para tí, así que te quedarás aquí. Calculo que tenemos hasta 
                medianoche para que los imperiales reconozcan nuestra nave y tengamos que irnos precipitadamente.";
            self.delay = LStrLen(self.cadena)*9/velocidad_texto+10;
-           HablaPersonaje("Schurk-Heren","Bien, entonces. Mezgraf y Sniffles acompañarán a Dass a buscar a la familia
-               de Bomo. Esto puede ser demasiado difícil para tí, así que te quedarás aquí. Calculo que tenemos hasta 
+           HablaPersonaje("Schurk-Heren","Bien, entonces. Mezgraf y Sniffles ayudarán a Dass a buscar a la familia
+               de Bomo. Mezclaos entre la gente de la ciudad y averiguar cuanto podáis. Esto puede ser demasiado difícil 
+               para tí, así que te quedarás aquí. Calculo que tenemos hasta 
                medianoche para que los imperiales reconozcan nuestra nave y tengamos que irnos precipitadamente.");
            rtrue;
          ]          
