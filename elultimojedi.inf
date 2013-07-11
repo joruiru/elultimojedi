@@ -2764,7 +2764,7 @@ has scenery transparent enterable;
 
 Lugar extNorte "Exterior de Cadgel Meadows (lado norte)"
   with
-    sgw_img pngExtCadgelB,       ! el grafico de la localidad
+    sgw_img pngExtCadgel,       ! el grafico de la localidad
     sgw_mus sndJungla,
     name 'exterior',
     description "El puerto espacial de Cadgel Meadows esta rodeado de un muro que lo aisla del exterior. Las zonas arboladas podrían 
@@ -3260,7 +3260,7 @@ has scenery transparent enterable;
 
 Lugar extSur "Exterior de Cadgel Meadows (lado sur)"
   with
-    sgw_img pngExtCadgelC,       ! el grafico de la localidad
+    sgw_img pngExtCadgel,       ! el grafico de la localidad
     sgw_mus sndJungla,
     name 'exterior',
     description "El puerto espacial de Cadgel Meadows esta rodeado de un muro que lo aisla del exterior. Las zonas arboladas podrían 
@@ -5692,6 +5692,7 @@ has scenery female objetivo;
 Lugar CalleO4_2 "Calle"
 with
   sgw_img pngRampa,       ! el grafico de la localidad
+  sgw_mus sndCalleO4,
   description "Una calle poco transitada, ya que, aunque por el lado este desemboca a la plaza principal, por el lado oeste 
               baja al nivel inferior de la ciudad. Un lugar nada recomendado...",
   describe [;
