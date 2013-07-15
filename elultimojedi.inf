@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/07/15  Joruiru - Se elimina las habitaciones de los soldados de Sotta. 
 !  2013/06/25  Joruiru - Nuevas imagenes 
 !  2013/02/28  Joruiru - Varios sonidos 
 !  2013/02/26  Joruiru - Imagenes en localidades 
@@ -8173,16 +8174,16 @@ with
       que te apunta con una enorme pistola láser dispuesto a disparar al menor movimiento.";
     rtrue;
   ],
-  s_to PuertaHabitacionesO4,
+!  s_to PuertaHabitacionesO4,
   e_to PuertaSottaO4,
   d_to oAscensorPiso2O4,
   before [;
     go: if (oBobaFettO4 in self) <<Ask oBobaFettO4>>;
-        if (noun==s_obj) {
-	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
-	      playerTo(HabitacionesBaseO4,2);
-	      rtrue;
-        }
+!        if (noun==s_obj) {
+!	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
+!	      playerTo(HabitacionesBaseO4,2);
+!	      rtrue;
+!        }
         if (noun==e_obj) {
 	      print "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el paso.^";
 	      playerTo(SottaBaseO4,2);
