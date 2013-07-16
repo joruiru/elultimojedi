@@ -75,8 +75,9 @@ Snd 24 OGGV res/snd/abrircaja.ogg
 Snd 25 OGGV res/snd/rompecaja.ogg
 Snd 26 OGGV res/snd/basesotta.ogg
 Snd 27 OGGV res/snd/forcefield.ogg
-Snd 28 OGGV res/snd/eastoftunisia.ogg
+Snd 28 OGGV res/snd/twilekdance.ogg
 Snd 29 OGGV res/snd/explosiongranada.ogg
+Snd 30 OGGV res/snd/discoveringthetruth.ogg
 Pict 54 PNG res/img/euj1.png
 Pict 55 PNG res/img/euj2.png
 Pict 56 PNG res/img/euj3.png

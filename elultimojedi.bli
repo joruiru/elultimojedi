@@ -3,7 +3,7 @@
 ! Do not edit!
 ! Include this file in your inform source with "Include "elultimojedi.bli";"
 
-Message "Including D:/inform/bres resource declarations generated on 6-25-2013";
+Message "Including D:/inform/bres resource declarations generated on 7-16-2013";
 
 Constant pngPaso 3;	!Blorb Pict:res/img/paso.png
 Constant pngLadera 4;	!Blorb Pict:res/img/ladera.png
@@ -81,8 +81,9 @@ Constant sndAbrirCaja 24;	!Blorb Snd:res/snd/abrircaja.ogg
 Constant sndRompeCaja 25;	!Blorb Snd:res/snd/rompecaja.ogg
 Constant sndBaseSotta 26;	!Blorb Snd:res/snd/basesotta.ogg
 Constant sndCampoEnergia 27;	!Blorb Snd:res/snd/forcefield.ogg
-Constant sndSalaDescanso 28;	!Blorb Snd:res/snd/eastoftunisia.ogg
+Constant sndSalaDescanso 28;	!Blorb Snd:res/snd/twilekdance.ogg
 Constant sndGranada 29;	!Blorb Snd:res/snd/explosiongranada.ogg
+Constant sndEnding 30;	!Blorb Snd:res/snd/discoveringthetruth.ogg
 Constant intro1 54;	!Blorb Pict:res/img/euj1.png
 Constant intro2 55;	!Blorb Pict:res/img/euj2.png
 Constant intro3 56;	!Blorb Pict:res/img/euj3.png

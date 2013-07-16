@@ -194,7 +194,7 @@ Constant NUMBER_TASKS = 23;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 320;
 
-Constant SGW_SIN_GRAFICOS;
+!Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -736,41 +736,169 @@ Include "VerbLib";
 ! Imprime las curiosidades
 [ Amusing ;
     closeGraphicWindow();
-    "Ésta es la versión Lite de EL ULTIMO JEDI para la FICOMP 2011, que se corresponde, aproximadamente, con un tercio de la historia completa. 
-    ^Actualmente se está desarrollando una versión extendida, con la historia desarrollada completamente, nuevos puzles, gráficos y sonidos.
-    ^El equipo de desarrollo no puede dar una fecha de publicación, pero esperamos que sea lo antes posible...
-    ^^¿Conseguirá Dass Jennir encontrar y rescatar a la familia de su buen amigo Bomo Greenbark? ¿La búsqueda le costará perder los valores propios
-    de los Jedi y se verá arrastrado irremediablemente al lado oscuro de la Fuerza?
-    ^^Información y trasfondo:
-    ^- http://starwars.wikia.com.
-    ^- http://www.loresdelsith.net.
-    ^- Star Wars: Republic.
-    ^- Star Wars: The Path to Nowhere.
-    ^- Star Wars: The Revenge of the Sith.
-    ^- Star Wars: Purgue.
-    ^- Dark Lord: The Rise of Darth Vader.
-    ^^Banda Sonora Original (en la versión extendida):
-    ^- El Último Jedi Main Theme (J.Carlos Martínez).
-    ^- Bomo's Sorrow Theme (J.Carlos Martínez).
-    ^- Comandante Vill Theme (J.Carlos Martínez).
-    ^- V-Wing Theme (J.Carlos Martínez).
-    ^- Efectos ambientales y sonoros (http://www.freesfx.co.uk).
-    ^^Gráficos (en la versión extendida):
-    ^- J.A.E.
-    ^^Programación:
-    ^- Joruiru.
-    ^^Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias:
-    ^- Damusix, de Eliuk Blau.
-    ^- sgw+dmx, de Eliuk Blau.
-    ^- Etemas,  de Zak.
-    ^- BajoNivel, de Zak (adaptación).
-    ^- Cortos, de Zak (adaptación).
-    ^- Barra v2, de Presi.
-    ^- PNJMovil, de Zak.
-    ^- intnombre, de Jarel.
-    ^- ZIPI, de Zak (adaptación).
-    ^- Decorado, de Zak y Mel Hython.";
+!    "Ésta es la versión Lite de EL ULTIMO JEDI para la FICOMP 2011, que se corresponde, aproximadamente, con un tercio de la historia completa. 
+!    ^Actualmente se está desarrollando una versión extendida, con la historia desarrollada completamente, nuevos puzles, gráficos y sonidos.
+!    ^El equipo de desarrollo no puede dar una fecha de publicación, pero esperamos que sea lo antes posible...
+!    ^^¿Conseguirá Dass Jennir encontrar y rescatar a la familia de su buen amigo Bomo Greenbark? ¿La búsqueda le costará perder los valores propios
+!    de los Jedi y se verá arrastrado irremediablemente al lado oscuro de la Fuerza?
+!    ^^Información y trasfondo:
+!    ^- http://starwars.wikia.com.
+!    ^- http://www.loresdelsith.net.
+!    ^- Star Wars: Republic.
+!    ^- Star Wars: The Path to Nowhere.
+!    ^- Star Wars: The Revenge of the Sith.
+!    ^- Star Wars: Purgue.
+!    ^- Dark Lord: The Rise of Darth Vader.
+!    ^^Banda Sonora Original (en la versión extendida):
+!    ^- El Último Jedi Main Theme (J.Carlos Martínez).
+!    ^- Bomo's Sorrow Theme (J.Carlos Martínez).
+!    ^- Comandante Vill Theme (J.Carlos Martínez).
+!    ^- V-Wing Theme (J.Carlos Martínez).
+!    ^- Efectos ambientales y sonoros (http://www.freesfx.co.uk).
+!    ^^Gráficos (en la versión extendida):
+!    ^- J.A.E.
+!    ^^Programación:
+!    ^- Joruiru.
+!    ^^Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias:
+!    ^- Damusix, de Eliuk Blau.
+!    ^- sgw+dmx, de Eliuk Blau.
+!    ^- Etemas,  de Zak.
+!    ^- BajoNivel, de Zak (adaptación).
+!    ^- Cortos, de Zak (adaptación).
+!    ^- Barra v2, de Presi.
+!    ^- PNJMovil, de Zak.
+!    ^- intnombre, de Jarel.
+!    ^- ZIPI, de Zak (adaptación).
+!    ^- Decorado, de Zak y Mel Hython.";
+    BorrarPantalla();
+	Damusix.PararTodo();
+	Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
+	Damusix.Tocar(sndMainTheme,0);
+    BorrarPantalla();
+    Creditos.proyeccion();
+
+    if (Creditos.aborted==1) Damusix.PararCanalesExtra(); !silenceChannel(chan1);
+    EsperarTecla("[Pulsa una tecla para continuar...]^");
+    BorrarPantalla();
+
 ];
+
+! Escena de cinemática de introducción a Orvax IV.
+Object  Creditos
+ class  cortometraje
+ with   
+   cadena "",
+   description
+         [;
+           BorrarPantalla();
+	       self.cadena = "EL ULTIMO JEDI";
+	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
+           print (s_user1) "EL ULTIMO JEDI";
+           rtrue;
+         ]
+         [; 
+           BorrarPantalla();
+	       self.cadena = "Una aventura de^ JORUIRU";
+	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
+           print (s_user1) "Una aventura de^JORUIRU.";
+           rtrue;
+         ]
+         [;
+           BorrarPantalla();
+	       self.cadena = "Gráficos:^- Saimazoom.^- Joruiru.";
+	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
+           print (s_user1) "Gráficos:^- Saimazoom.^- Joruiru.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+	       self.cadena = "Banda Sonora Original (J.Carlos Martínez):^- El Último Jedi Main Theme.
+	         ^- Bomo's Sorrow Theme.^- Comandante Vill Theme.
+	         ^- V-Wing Theme.^- Kata Rock Theme.
+	         ^- Twi'lek Dance.^- Discovering the truth.
+	         ^Efectos ambientales y sonoros:
+	         ^- http://www.freesfx.co.uk.^- http://www.freesound.org.";
+	       self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
+           print (s_user1) "Banda Sonora Original (J.Carlos Martínez):^- El Último Jedi Main Theme.
+	         ^- Bomo's Sorrow Theme.^- Comandante Vill Theme.
+	         ^- V-Wing Theme.^- Kata Rock Theme.
+	         ^- Twi'lek Dance.^- Discovering the truth.
+	         ^^Efectos ambientales y sonoros:
+	         ^- http://www.freesfx.co.uk.^- http://www.freesound.org.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+	       self.cadena = "Pruebas:^- Comely.^- Saimazoom.";
+	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
+           print (s_user1) "Pruebas:^- Comely.^- Saimazoom.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+	       self.cadena = "Información y trasfondo:
+             ^- http://starwars.wikia.com.
+             ^- http://www.loresdelsith.net.
+             ^- Star Wars: Republic.
+             ^- Star Wars: Dark Times: The Path to Nowhere.
+             ^- Star Wars: The Revenge of the Sith.
+             ^- Star Wars: Purgue.
+             ^- Dark Lord: The Rise of Darth Vader.";
+	       self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
+           print (s_user1) "Información y trasfondo:
+             ^- http://starwars.wikia.com.
+             ^- http://www.loresdelsith.net.
+             ^- Star Wars: Republic.
+             ^- Star Wars: Dark Times: The Path to Nowhere.
+             ^- Star Wars: The Revenge of the Sith.
+             ^- Star Wars: Purgue.
+             ^- Dark Lord: The Rise of Darth Vader.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+	       self.cadena = "Revisión de textos:^- Johan Paz.";
+	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
+           print (s_user1) "Revisión de textos:^- Johan Paz.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+	       self.cadena = "Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias:
+             ^- Damusix, de Eliuk Blau.
+             ^- sgw+dmx, de Eliuk Blau.
+             ^- Etemas,  de Zak.
+             ^- BajoNivel, de Zak (adaptación).
+             ^- Cortos, de Zak (adaptación).
+             ^- Barra v2, de Presi.
+             ^- PNJMovil, de Zak.
+             ^- intnombre, de Jarel.
+             ^- ZIPI, de Zak (adaptación).
+             ^- Decorado, de Zak y Mel Hython.";
+	       self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
+           print (s_user1) "Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias:
+             ^- Damusix, de Eliuk Blau.
+             ^- sgw+dmx, de Eliuk Blau.
+             ^- Etemas,  de Zak.
+             ^- BajoNivel, de Zak (adaptación).
+             ^- Cortos, de Zak (adaptación).
+             ^- Barra v2, de Presi.
+             ^- PNJMovil, de Zak.
+             ^- intnombre, de Jarel.
+             ^- ZIPI, de Zak (adaptación).
+             ^- Decorado, de Zak y Mel Hython.";
+           rtrue;
+         ]          
+         [;
+           BorrarPantalla();
+           self.cadena = "Mi más sincero agradecimiento a todas las personas que han hecho posible, directa o indirectamente, 
+             que el desarrollo de esa aventura llegase a buen puerto.";
+           self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
+           print (s_user1) "Mi más sincero agradecimiento a todas las personas que han hecho posible, directa o indirectamente, 
+             que el desarrollo de esa aventura llegase a buen puerto.^^*** GRACIAS A TODOS. ***^";
+           rtrue;
+         ]          
+;
 
 !Ponemos en el alcance a Bomo cuando esté en el agujero y nosotros fuera
 !para poder sacarlo usando la Fuerza
@@ -1946,6 +2074,7 @@ Object -> oArboles "arbol"
 	           !playSound(chan2,sndCaidaArbol,1,VOLUMEN_ALTO);
 	           Damusix.TocarV(sndCaidaArbol,VOLUMEN_ALTO);
 	           Achieved(0);
+	           deadflag = 2; !FIN DEL JUEGO
 	           rtrue;
            };
            "De esa manera no conseguiras nunca cortar ese árbol.";
@@ -8540,8 +8669,8 @@ Object oSottaO4 "Sotta el Hutt" limbo
                 Achieved(20);
                 Damusix.PararTodo();
                 Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
-                Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
-                Damusix.Tocar(sndMainTheme,0);
+                Damusix.AsignarCanal(sndEnding,0,VOLUMEN_ALTO,1);
+                Damusix.Tocar(sndEnding,0);
                 deadflag = 7; !FIN DEL JUEGO
                 "^Mientras ves alejarse la Uhumele con Bomo y los demás en el cielo, no puedes dejar de pensar en las
                 muchas cosas alejadas de los jedis que has hecho, en los actos malvados que has cometido en nombre de
@@ -8623,8 +8752,8 @@ Object oBomoO4 "Bomo Greenbark" limbo
       salidas: rfalse;
       default: Damusix.PararTodo();
                Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
-               Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
-               Damusix.Tocar(sndMainTheme,0);
+               Damusix.AsignarCanal(sndEnding,0,VOLUMEN_ALTO,1);
+               Damusix.Tocar(sndEnding,0);
                deadflag = 7; !FIN DEL JUEGO
                "Antes de que te de tiempo a reaccionar, Bomo dispara toda la potencia de su arma sobre
                Sotta el Hutt. Una y otra vez, incluso cuando el Hutt yace ya sin vida en el suelo.
@@ -8640,8 +8769,8 @@ Object oBomoO4 "Bomo Greenbark" limbo
 	  Attack: if (noun == oSottaO4) {
                 Damusix.PararTodo();
                 Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
-                Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
-                Damusix.Tocar(sndMainTheme,0);
+                Damusix.AsignarCanal(sndEnding,0,VOLUMEN_ALTO,1);
+                Damusix.Tocar(sndEnding,0);
                 deadflag = 7; !FIN DEL JUEGO
                 Achieved(21);
                 "Sin apenas haber acabado tus palabras, Bomo dispara toda la potencia de su arma sobre
@@ -9773,6 +9902,7 @@ Object  Corto_Fase2
            rtrue;
          ]          
 ;
+
 
 ! Dibuja una imagen y realiza una pausa. Para la escena de introducción gráfica.
 [ DrawPausa img delay;

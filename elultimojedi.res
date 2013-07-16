@@ -75,8 +75,9 @@ SOUND sndAbrirCaja res/snd/abrircaja.ogg
 SOUND sndRompeCaja res/snd/rompecaja.ogg
 SOUND sndBaseSotta res/snd/basesotta.ogg
 SOUND sndCampoEnergia res/snd/forcefield.ogg
-SOUND sndSalaDescanso res/snd/eastoftunisia.ogg
+SOUND sndSalaDescanso res/snd/twilekdance.ogg
 SOUND sndGranada res/snd/explosiongranada.ogg
+SOUND sndEnding res/snd/discoveringthetruth.ogg
 PICTURE intro1 res/img/euj1.png
 PICTURE intro2 res/img/euj2.png
 PICTURE intro3 res/img/euj3.png
