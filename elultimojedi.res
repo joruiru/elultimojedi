@@ -16,6 +16,7 @@ PICTURE pngHangarNorte res/img/hangarnorte.png
 PICTURE pngHangarSur res/img/hangarsur.png
 PICTURE pngHangarEste res/img/hangareste.png
 PICTURE pngHangarOeste res/img/hangaroeste.png
+PICTURE pngPista res/img/pista.png
 PICTURE pngCuartelMando res/img/cuartelmando.png
 PICTURE pngUhumeleAbierta res/img/uhumele_abierta.png
 PICTURE pngUhumele res/img/inUhumele.png
