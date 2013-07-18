@@ -245,8 +245,13 @@ Verb 'huye' = 'corre';
 VerboIrregular "huir" with imperativo 'huye';
 
 Verb 'pilota' 'conduce' 'guia'
+    *                                      -> Pilotar
     * noun                                 -> Pilotar;
 VerboIrregular "conducir" with imperativo 'conduce';
+
+Verb 'despega' 
+    *                                      -> Pilotar
+    * noun                                 -> Pilotar;
 
 Verb 'juega' 'jugar'
     *                                  -> JugarSin

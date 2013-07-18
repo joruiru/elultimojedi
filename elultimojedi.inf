@@ -57,6 +57,8 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/07/18  Joruiru - Algunas cosillas tras leer primera parte del transcript
+!                        de saimazoom
 !  2013/07/17  Joruiru - Añadida imagen de la pista de Cadgel Meadows. Rutina
 !                        AfterGameOver() sobreescrita. 
 !  2013/07/15  Joruiru - Se elimina las habitaciones de los soldados de Sotta. 
@@ -1587,6 +1589,8 @@ Object  mySelfObj "(self object)"
 !                         else
 !                           turno_combate(self,noun,second);
 !                         rtrue;
+                Pilotar: if (self in CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) <<pilotar oNave>>;
+                         "No es el momento adecuado para pilotar nada.";
                 default: if (self has concentrado) {
 	                         print "Estás demasiado concentrado ahora mismo para hacer cualquier otra cosa.^";
 	                         rtrue;
@@ -3599,6 +3603,7 @@ Lugar hangarNorte "Hangar Norte"
       go: if (noun == in_obj) {
 	        <<enter oCuartelMando>>;
           };
+      jump: <<jumpover oMuroNorte>>;
     ],
 ;
 
@@ -3948,6 +3953,9 @@ Lugar hangarSur "Hangar Sur"
       rtrue;
     ],
     n_to pista,
+    before [;
+      jump: <<jumpover oMuroSur>>;
+    ],
 ;
 
 Object decorado_hangarSur hangarSur
@@ -4113,6 +4121,7 @@ Lugar hangarEste "Hangar Este"
 		            rtrue;
 		        };
             };
+        jump: "La patrulla que vigila la puerta podría verte usar tus poderes de jedi.";
     ],
 ;
 
@@ -4536,7 +4545,7 @@ Object oSchurkHeren "Schurk Heren" interiorUhumele
                           move oVwing to hangarNorte;
                  t_ayuda,
                  t_orvax: print "^Capitán: ", (s_underline) "~Os ayudaremos a llegar a Orvax IV. Debemos hacer lo que podamos por
-                     ayudar a nuestros camaradas esclavos. Pero primero debemos escapar de este bloqueo.~";
+                     ayudar a nuestros camaradas esclavos. Pero primero debemos trazar un plan para escapar de este bloqueo.~";
                      oBomo.orvax=1;
                  t_prisionero: print "^Capitán: ", (s_underline) "Se los han llevado a todos a Orvax IV. En estos tiempos convulsos hay suficiente
                      demanda para que los comperciantes puedan encontrar un comprador para prácticamente cualquier esclavo.";
@@ -4997,6 +5006,9 @@ Lugar hangarOeste "Hangar Oeste"
       rtrue;
     ],
     e_to pista,
+    before [;
+      jump: <<jumpover oMuroOeste>>;
+    ],
 ;
 
 Object decorado_hangarOeste hangarOeste
@@ -5119,7 +5131,7 @@ with  describe
 ! SOBREVOLANDO CADGEL MEADOWS CON EL V-WING
 Object oVwing "V-wing"
 with
-    name 'v-wing' 'caza' 'nave',
+    name 'v-wing' 'caza' 'nave' 'vwing',
     description "Es un caza V-wing, una nave de combate rápida y manejable. Parece que acaban de repostarla y rearmarla.",
     before [;
       Enter:
@@ -5143,7 +5155,7 @@ Lugar CazaVwing "Cabina del V-wing (en el hangar norte)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     description "Desde el interior de la cabina del caza puedes ver el resto de naves del hangar. El cuadro de mandos de los cazas V-wing es bastante
                  sencillo. A parte de numerosos indicadores, puedes identificar claramente la palanca de mando con la que pilotar la nave.",
     out_to hangarNorte,
@@ -5217,7 +5229,10 @@ with
     found_in CazaVwing CazaVwingN CazaVwingS CazaVwingE CazaVwingO CazaVwingP,
     direccion 's',
     before [;
-      Push,Pull: "Recuerdas que, siendo todavía un padawan, te enseñaron en el templo Jedi que había que mover la palanca en algunas direcciones.";
+      Push: print "Recuerdas que, siendo todavía un padawan en el templo Jedi, te enseñaron que había que mover la palanca en algunas direcciones.^";
+            <<pushdir d_obj>>;
+      Pull: print "Recuerdas que, siendo todavía un padawan en el templo Jedi, te enseñaron que había que mover la palanca en algunas direcciones.^";
+            <<pushdir u_obj>>;
       Transfer,
       PushDir:
         if (second == u_obj ) {
@@ -5297,7 +5312,7 @@ Lugar CazaVwingN "Cabina del V-wing (sobrevolando hangar norte)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     describe [;
       print "Sobrevuelas el hangar norte. Puedes ver las naves imperiales. ", (string) DireccionCaza(oPalancaMando.direccion);
       rtrue;
@@ -5341,7 +5356,7 @@ Lugar CazaVwingS "Cabina del V-wing (sobrevolando hangar sur)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     describe [;
       print "Sobrevuelas el hangar sur. Puedes ver el resto de naves del hangar (la Nuitedes, la Valance y la Vindus). 
             ^El cuadro de mandos de los cazas V-wing es bastante sencillo. A parte de numerosos indicadores, puedes identificar 
@@ -5386,7 +5401,7 @@ Lugar CazaVwingE "Cabina del V-wing (sobrevolando hangar este)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     describe [;
       print "Sobrevuelas el hangar este. Puedes ver el resto de naves del hangar (la Solaine, la Aeolus y la Uhumele). 
             ^El cuadro de mandos de los cazas V-wing es bastante sencillo. A parte de numerosos indicadores, puedes identificar 
@@ -5431,7 +5446,7 @@ Lugar CazaVwingO "Cabina del V-wing (sobrevolando hangar oeste)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     describe [;
       print "Sobrevuelas el hangar oeste. Puedes ver el resto de naves del hangar (la Thorene, la Haltia y la Dzina). 
             ^El cuadro de mandos de los cazas V-wing es bastante sencillo. A parte de numerosos indicadores, puedes identificar 
@@ -5476,7 +5491,7 @@ Lugar CazaVwingP "Cabina del V-wing (sobrevolando pista)"
     sgw_img pngCaza,       ! el grafico de la localidad
     sgw_mus sndEnelcaza,  ! la musica de la localidad
     sgw_vol VOLUMEN_BAJO,
-    name 'v-wing' 'caza',
+    name 'v-wing' 'caza' 'vwing',
     describe [;
       print "Sobrevuelas la pista de Cadgel Meadows. El cuadro de mandos de los cazas V-wing es bastante sencillo. A parte de numerosos indicadores, 
              puedes identificar claramente la palanca de mando con la que pilotar la nave. ",(string) DireccionCaza(oPalancaMando.direccion);
