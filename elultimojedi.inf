@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/07/21  Joruiru - Añadidas imagenes de localidades con enemigos
 !  2013/07/18  Joruiru - Algunas cosillas tras leer primera parte del transcript
 !                        de saimazoom
 !  2013/07/17  Joruiru - Añadida imagen de la pista de Cadgel Meadows. Rutina
@@ -3587,6 +3588,7 @@ Lugar hangarNorte "Hangar Norte"
         hangarEste.desc_extra=1;
         hangarNorte.desc_extra=1;
         hangarSur.desc_extra=1;
+        ViewImageSlide(pngBomo);
       }
       if (self.desc_extra==1 && oBomo.orvax==1 && oBomo in location) {
         print "^Bomo (susurrando): ", (s_underline) "~Se han llevado a Mesa y Resa para venderlas como esclavos, Dass... ¡Debemos conseguir 
@@ -3595,6 +3597,7 @@ Lugar hangarNorte "Hangar Norte"
         hangarEste.desc_extra=2;
         hangarNorte.desc_extra=2;
         hangarSur.desc_extra=2;
+        ViewImageSlide(pngBomo);
       }
       rtrue;
     ],
@@ -3941,6 +3944,7 @@ Lugar hangarSur "Hangar Sur"
         hangarEste.desc_extra=1;
         hangarNorte.desc_extra=1;
         hangarSur.desc_extra=1;
+        ViewImageSlide(pngBomo);
       }
       if (self.desc_extra==1 && oBomo.orvax==1 && oBomo in location) {
         print "^Bomo (susurrando): ", (s_underline) "~Se han llevado a Mesa y Resa para venderlas como esclavos, Dass... ¡Debemos robar 
@@ -3949,6 +3953,7 @@ Lugar hangarSur "Hangar Sur"
         hangarEste.desc_extra=2;
         hangarNorte.desc_extra=2;
         hangarSur.desc_extra=2;
+        ViewImageSlide(pngBomo);
       }
       rtrue;
     ],
@@ -4059,7 +4064,7 @@ has scenery female objetivo;
 
 Lugar hangarEste "Hangar Este"
   with
-    sgw_img pngHangarEste,       ! el grafico de la localidad
+    sgw_img pngUhumeleCerrada,       ! el grafico de la localidad
     name 'hangar',
     description "Este es el hangar de la parte este del puerto espacial de Cadgel Meadows. Puedes ver atracadas las naves Solaine, Aeolus y Uhumele.",
     desc_extra 0,
@@ -4072,6 +4077,7 @@ Lugar hangarEste "Hangar Este"
         hangarEste.desc_extra=1;
         hangarNorte.desc_extra=1;
         hangarSur.desc_extra=1;
+        ViewImageSlide(pngBomo);
       }
       if (self.desc_extra==1 && oBomo.orvax==1 && oBomo in location) {
         print "^Bomo (susurrando): ", (s_underline) "~Se han llevado a Mesa y Resa para venderlas como esclavos, Dass... ¡Debemos robar 
@@ -4080,6 +4086,7 @@ Lugar hangarEste "Hangar Este"
         hangarEste.desc_extra=2;
         hangarNorte.desc_extra=2;
         hangarSur.desc_extra=2;
+        ViewImageSlide(pngBomo);
       }
       rtrue;
     ],
@@ -4246,8 +4253,10 @@ Object -> oUhumele "Uhumele"
 			       self.abierta = 0;
 			       move oCrys to limbo;
 			       move oCrysAusente to hangarEste;
+   	               hangarEste.sgw_img=pngUhumeleCerrada; !Se cambia la imagen por la de la Uhumele cerrada
+	               viewImageCenter(hangarEste.sgw_img);
 		       } else {
-   	               hangarEste.sgw_img=pngHangarEste; !Se cambia la imagen por la de la Uhumele abierta
+   	               hangarEste.sgw_img=pngUhumeleAbierta; !Se cambia la imagen por la de la Uhumele abierta
 	               viewImageCenter(hangarEste.sgw_img);
 		       }
 	         }
@@ -4257,7 +4266,7 @@ Object -> oUhumele "Uhumele"
 		       self.abierta = 0;
    		       move oCrys to limbo;
    		       move oCrysAusente to hangarEste;
-   	           hangarEste.sgw_img=pngHangarEste; !Se cambia la imagen por la de la Uhumele cerrada
+   	           hangarEste.sgw_img=pngUhumeleCerrada; !Se cambia la imagen por la de la Uhumele cerrada
 	           viewImageCenter(hangarEste.sgw_img);
 	         }
 	         if (oBomo.orvax==0) {
@@ -4310,7 +4319,8 @@ has scenery female objetivo;
 
 Object oCrys "Crys Taanzer" limbo
   with
-    name 'crys' 'mujer' 'piloto' 'humana' 'chica',
+    name 'crys' 'mujer' 'piloto' 'humana' 'chica' 'desconocida',
+    sgw_img pngCrys,
     description [;
       if (self hasnt conocido) "Una hermosa mujer de raza humana de piel canela y pelo castaño largo y rizado. Por sus rasgos dirías que es originaria
         de algún remoto planeta del Borde Exterior, probablemente de Nadiem.";
@@ -4387,6 +4397,7 @@ has female animate proper;
 Object oCrysInconsciente "Crys Taanzer inconsciente" limbo
   with
     name 'crys' 'mujer' 'piloto' 'humana' 'chica' 'cuerpo' 'inconsciente',
+    sgw_img pngCrys,
     description [;
       if (location ~= interiorUhumele) "El cuerpo de la humana está en el interior de la nave. Debes acercarte para examinarlo.";
       if (oCrys hasnt conocido) "Una hermosa mujer de raza humana de pelo largo y rubio y de ojos verdes. Por sus rasgos dirías que es originaria
@@ -4444,7 +4455,7 @@ with
     go: if (oSchurkHeren hasnt conocido) {
 	      print "^Capitán: ", (s_underline) "~¿No pensaréis iros sin decirme por qué entráis a mi nave atacando a mi tripulación y escondiéndoos?
                  Cualquiera diría que sois fugitivos del imperio...~";
-          viewImageSlide(jpgSchurk);
+          viewImageSlide(pngSchurk);
           rtrue;
         }
         if (noun == out_obj && bomo_sigue==1 && oVwing in hangarNorte) {
@@ -4466,7 +4477,7 @@ with
 Object oSchurkHeren "Schurk Heren" interiorUhumele
   with
     name 'capitan' 'yarkora' 'schurk' 'heren' 'humanoide',
-    sgw_img jpgSchurk,
+    sgw_img pngSchurk,
     cabreado 0,
     description "El capitán de la Uhumele es un yarkora, de alrededor de 2 metros de alto. Como todos los de su raza, sus manos son enormes, con tres
                 dedos en cada una. Su gran nariz tiene forma de hocico y termina en unos mostachos a ambos lados de la misma.", 
@@ -4508,7 +4519,7 @@ Object oSchurkHeren "Schurk Heren" interiorUhumele
                                 };
                               }; 
 	               }
-                   viewImageSlide(jpgSchurk);
+                   viewImageSlide(pngSchurk);
 	               rtrue;
                };
 	           switch(tema) {
@@ -4554,20 +4565,20 @@ Object oSchurkHeren "Schurk Heren" interiorUhumele
                      que debes saber por ahora. Necesitamos un plan para escapar.~";
                  default: print "^Capitán: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~"; 
                };
-             viewImageSlide(jpgSchurk);
+             viewImageSlide(pngSchurk);
              rtrue;
     ],
     orders [;
         Mild, Strong: self.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
-                          viewImageSlide(jpgSchurk);
+                          viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
-                          viewImageSlide(jpgSchurk);
+                          viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4609,6 +4620,7 @@ with  describe
 Object oMezgraf "Mezgraf" interiorUhumele
   with
     name 'mezgraf' 'humanoide' 'togoriano' 'leon',
+    sgw_img pngMezgraf,
     description "Mezgraf es un togoriano de pelo blanco, un humanoide con aspecto de león. Lleva una marca de esclavo en su brazo derecho.", 
     life [tema;
 	    Attack: print "Podría ser vuestra oportunidad de salir de Cadgel Meadows, así que no os conviene enfadarlo.";
@@ -4617,6 +4629,7 @@ Object oMezgraf "Mezgraf" interiorUhumele
         ask: tema=AveriguarTema(AskTopics);
                if (oSchurkHeren hasnt conocido) {
 	               print "^Mezgraf: ", (s_underline) "~Habla con el capitán.~";
+	               viewImageSlide(pngMezgraf);
 	               rtrue;
                };
 	           switch(tema) {
@@ -4642,17 +4655,20 @@ Object oMezgraf "Mezgraf" interiorUhumele
                  t_tripulacion: print "^Mezgraf: ", (s_underline) "~Soy el cocinero de la Uhumele.~"; 
                  default: print "^Mezgraf: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~"; 
                };
+	         viewImageSlide(pngMezgraf);
              rtrue;
     ],
     orders [;
         Mild, Strong: oSchurkHeren.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4690,6 +4706,7 @@ with  describe
 Object oSniffles "Sniffles" interiorUhumele
   with
     name 'sniffles' 'elomin' 'humanoide',
+    sgw_img pngSniffles,
     description "Sniffles es un elomin, un humanoide delgado con grandes orejas puntiagudas y cuatro protuberancias parecidas a pequeños 
                 cuernos sobre su cabeza. Mide 1.90 de altura y su color de piel es granate brillante.", 
     life [tema;
@@ -4699,6 +4716,7 @@ Object oSniffles "Sniffles" interiorUhumele
         ask: tema=AveriguarTema(AskTopics);
                if (oSchurkHeren hasnt conocido) {
 	               print "^Sniffles: ", (s_underline) "~¡Responde al capitán!~";
+	               viewImageSlide(pngSniffles);
 	               rtrue;
                };
 	           switch(tema) {
@@ -4719,17 +4737,20 @@ Object oSniffles "Sniffles" interiorUhumele
                  t_tripulacion: print "^Sniffles: ", (s_underline) "~Soy el copiloto de la Uhumele.~"; 
                  default: print "^Sniffles: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~"; 
                };
+	         viewImageSlide(pngSniffles);
              rtrue;
     ],
     orders [;
         Mild, Strong: oSchurkHeren.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4769,6 +4790,7 @@ with  describe
 Object oKoVakier "Ko Vakier" interiorUhumele
   with
     name 'ko' 'vakier' 'humanoide' 'insecto',
+    sgw_img pngKoVakier,
     description "Ko Vakier es un humanoide con aspecto de insecto, de piel dorada y ojos oscuros.", 
     life [tema;
 	    Attack: print "Podría ser vuestra oportunidad de salir de Cadgel Meadows, así que no os conviene enfadarlo.";
@@ -4777,7 +4799,7 @@ Object oKoVakier "Ko Vakier" interiorUhumele
         ask: tema=AveriguarTema(AskTopics);
                if (oSchurkHeren hasnt conocido) {
 	               print "^Ko Vakier: ", (s_underline) "~¡Responde a lo que te pregunta el capitán!~";
-	               viewImageSlide(pngRaty);
+	               viewImageSlide(pngKoVakier);
 	               rtrue;
                };
 	           switch(tema) {
@@ -4805,11 +4827,13 @@ Object oKoVakier "Ko Vakier" interiorUhumele
         Mild, Strong: oSchurkHeren.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4844,7 +4868,7 @@ with  describe
 Object oJanks "Janks" interiorUhumele
   with
     name 'janks' 'humanoide' 'phindiano',
-    description "Janks es un Phindiano, humanoides desgarvados de aspecto triste y piel verde oscura con brazos extremadamente largos.", 
+    sgw_img pngJanks,
     life [tema;
 	    Attack: print "Podría ser vuestra oportunidad de salir de Cadgel Meadows, así que no os conviene enfadarlo.";
                 rtrue;
@@ -4853,6 +4877,7 @@ Object oJanks "Janks" interiorUhumele
 
                if (oSchurkHeren hasnt conocido) {
 	               print "^Janks: ", (s_underline) "~Aquí el que hace las preguntas es el capitán...~";
+	               viewImageSlide(pngJanks);
 	               rtrue;
                };
 	           switch(tema) {
@@ -4873,17 +4898,20 @@ Object oJanks "Janks" interiorUhumele
                  t_tripulacion: print "^Janks: ", (s_underline) "~Soy el ayudante de el ingeniero jefe Meekerdin-maa.~"; 
                  default: print "^Janks: ", (s_underline) "~Lo siento, no te puedo contestar a eso.~"; 
                };
+	         viewImageSlide(pngJanks);
              rtrue;
     ],
     orders [;
         Mild, Strong: oSchurkHeren.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4918,6 +4946,7 @@ with  describe
 Object oMeekerdin "Meekerdin-maa" interiorUhumele
   with
     name 'Meekerdin-maa' 'Meekerdin' 'maa' 'roedor' 'tintinna' 'raty',
+    sgw_img pngRaty,
     description "Meekerdin-maa es un Tintinna, una especie con aspecto de roedores que no llegan al metro de altura.", 
     life [tema;
 	    Attack: print "Podría ser vuestra oportunidad de salir de Cadgel Meadows, así que no os conviene enfadarlo.";
@@ -4954,11 +4983,13 @@ Object oMeekerdin "Meekerdin-maa" interiorUhumele
         Mild, Strong: oSchurkHeren.cabreado++;
                       if (self.cabreado < 2) {
 	                      print "^Capitán: ", (s_underline) "~Haré como que no he escuchado eso que has dicho...~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } 
                       if (self.cabreado < 3) {
 	                      print "^Capitán: ", (s_underline) "~¿Vienes a mi nave a insultarme a mi y a mi tripulación? Vuelve a hacerlo y no tendré
 	                            piedad contigo ni con tu amigo.~";
+	                      viewImageSlide(pngSchurk);
 	                      rtrue;
                       } else {
 	                      print "Sin mediar palabra, ",(the) oSchurkHeren," ordena a su tripulación que abra fuego contra vosotros. Estáis rodeados
@@ -4994,6 +5025,7 @@ Lugar hangarOeste "Hangar Oeste"
         hangarEste.desc_extra=1;
         hangarNorte.desc_extra=1;
         hangarSur.desc_extra=1;
+        ViewImageSlide(pngBomo);
       }
       if (self.desc_extra==1 && oBomo.orvax==1 && oBomo in location) {
         print "^Bomo (susurrando): ", (s_underline) "~Se han llevado a Mesa y Resa para venderlas como esclavos, Dass... ¡Debemos robar 
@@ -5002,6 +5034,7 @@ Lugar hangarOeste "Hangar Oeste"
         hangarEste.desc_extra=2;
         hangarNorte.desc_extra=2;
         hangarSur.desc_extra=2;
+        ViewImageSlide(pngBomo);
       }
       rtrue;
     ],
@@ -5775,7 +5808,7 @@ has concealed;
 
 Lugar PlazaO4 "Plaza Principal de Orvax IV"
 with
-  !sgw_img grfSantaLucia,       ! el grafico de la localidad
+  sgw_img pngPlazaO4,       ! el grafico de la localidad
   sgw_mus sndPlaza,
   sgw_vol VOLUMEN_BAJO,
   description "La plaza principal es el centro neurálgico de Orvax IV. Observas el típico bullicio de las grandes ciudades. 
@@ -5800,6 +5833,8 @@ Object oMeettoO4 "Meetto" limbo
 	    Attack: "Mejor no llamar la atención provocando un alboroto.^";
         tell,answer,
         ask: tema=AveriguarTema(TemasOrvax4);
+   	         PlazaO4.sgw_img=pngMeetto; !Se cambia la imagen por la de Meetto
+	         viewImageCenter(PlazaO4.sgw_img);
              if (self.soborno==0) {
 	           switch(tema) {
                  t_familiabomoO4,
@@ -5921,7 +5956,7 @@ has scenery female objetivo;
 
 Lugar CalleO4_2 "Calle"
 with
-  sgw_img pngRampa,       ! el grafico de la localidad
+  sgw_img pngGuardiasO4,       ! el grafico de la localidad
   sgw_mus sndCalleO4,
   description "Una calle poco transitada, ya que, aunque por el lado este desemboca a la plaza principal, por el lado oeste 
               baja al nivel inferior de la ciudad. Un lugar nada recomendado...",
@@ -5943,6 +5978,7 @@ with
           lo más probable es que hubiera averiguado algo útil.";
         if (noun==d_obj && oMezgrafO4.vida > 0) {
 	        HablaPersonaje("Mezgraf","Jennir, yo me vuelvo a la nave.");
+            ViewImageSlide(pngMezgraf);
 	        move oMezgrafO4 to limbo;
         }
   ],
@@ -6019,6 +6055,8 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 		            move self to limbo;
 		            give player ~descubierto;
 		            Achieved(11);
+   	                CalleO4_2.sgw_img=pngRampa; !Se cambia la imagen por la de la calle despejada
+	                viewImageCenter(CalleO4_2.sgw_img);
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Sin mediar palabra, los guardias se lanzan a por ti.";
@@ -6030,6 +6068,8 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 		            move self to limbo;
 		            give player ~descubierto;
 		            Achieved(11);
+   	                CalleO4_2.sgw_img=pngRampa; !Se cambia la imagen por la de la calle despejada
+	                viewImageCenter(CalleO4_2.sgw_img);
 	            }
                 rtrue;
     ],
@@ -6049,6 +6089,8 @@ Object oGuardiasO4 "guardias de la ciudad" CalleO4_2
 		                 move self to limbo;
 		                 give player ~descubierto;
 		                 Achieved(11);
+   	                     CalleO4_2.sgw_img=pngRampa; !Se cambia la imagen por la de la calle despejada
+	                     viewImageCenter(CalleO4_2.sgw_img);
 	                   }
 	                   rtrue;
         Enganyar: print "Guardia: ",(s_underline) "~¿Acaso te crees un jedi intentando esos truquitos?~^"; rtrue;
@@ -6058,6 +6100,7 @@ has pluralname animate;
 Object oMezgrafO4 "Mezgraf" CalleO4_2
   with
     name 'mezgraf' 'humanoide' 'togoriano' 'leon',
+    sgw_img pngMezgraf,
     description [;
       if (oGuardiasO4 in location) "Para poder acercarte a Mezgraf primero deberás deshacerte de los guardias que le golpean.";
       if (self.vida==0) "Mezgraf yace inconsciente en el suelo, debido a los golpes recibidos.";
@@ -6091,6 +6134,7 @@ Object oMezgrafO4 "Mezgraf" CalleO4_2
              t_despedidaO4: HablaPersonaje("Mezgraf","Me quedaré por aquí haciendo averiguaciones."); 
              default: HablaPersonaje("Mezgraf","Lo siento, no te puedo contestar a eso."); 
            };
+           ViewImageSlide(pngMezgraf);
            rtrue;
     ],
     orders [;
@@ -6171,6 +6215,7 @@ with  describe
 Object oRobot "JO3FE" NivelInfO4_1
   with
     name 'robot' 'androide' 'droide' 'jo3fe',
+    sgw_img pngJo3fe,
     adjectives 'protocolo',
     description [;
        print "Son los restos de un robot humanoide, posiblemente un droide de protocolo, 
@@ -6212,6 +6257,7 @@ Object oRobot "JO3FE" NivelInfO4_1
 	            Damusix.AsignarCanal(sndRobot,0,VOLUMEN_ALTO,-1);
 	            Damusix.TocarV(sndRobot,VOLUMEN_ALTO);
                 give self muerto;
+                ViewImageSlide(pngJo3fe);
                 "^Tras esto, el droide se apaga. Parece que la energía se ha agotado definitivamente.";
       SwitchOff: if (self has muerto) "La energía está totalmente agotada. El droide está inservible.";
                  "El droide ya estaba apagado.";
@@ -6302,7 +6348,7 @@ with  describe
 
 Lugar NivelInfO4 "Nivel inferior de Orvax IV"
 with 
-  sgw_img pngEntradaCeldas,
+  sgw_img pngGuardiasO4,
   describe [;
     if (oCeldaNosaurianos hasnt open) {
       print "Los estrechos callejones se ensanchan para desembocar en los accesos a los calabozos. ";
@@ -6363,6 +6409,49 @@ with
 	          cabezas lucen numerosos cuernos, orejas grandes, una boca llena de dientes afilados y cuatro brillantes ojos rojos.";
     }
   ], 
+  life [;
+	  Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
+	          give self estatico;
+	          move player to parent(self);
+	          if (second == nothing) 
+	            multi_combate(player,self,oSableLaser);
+	          else
+	            multi_combate(player,self,second);
+	          viewImageSlide(pngSablesLuz);
+	          if (self has muerto) {
+		        move self to limbo;
+		        give player ~descubierto;
+     	        NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	            viewImageCenter(NivelInfO4.sgw_img);
+	          }
+              rtrue;
+	  Answer,ask,tell: print "Sin mediar palabra, los guardias se lanzan a por ti.^";
+	          give self estatico;
+	          move player to parent(self);
+	          multi_combate(player,self,oSableLaser);
+	          viewImageSlide(pngSablesLuz);
+	          if (self has muerto) {
+	            move self to limbo;
+	            give player ~descubierto;
+     	        NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	            viewImageCenter(NivelInfO4.sgw_img);
+	          }
+              rtrue;
+  ],
+  before[;
+  	 Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                give self estatico;
+	                move player to parent(self);
+                    multi_combate(player,self,oFuerza);
+                    viewImageSlide(pngSablesLuz);
+	                if (self has muerto) {
+	                  move self to limbo;
+	                  give player ~descubierto;
+     	              NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	                  viewImageCenter(NivelInfO4.sgw_img);
+	                }
+	                rtrue;
+     ],
 ;
 
 GuardiaOrvax4 oGuardiasNivInfO4_2 limbo
@@ -6398,6 +6487,49 @@ with
 	          cabezas lucen numerosos cuernos, orejas grandes, una boca llena de dientes afilados y cuatro brillantes ojos rojos.";
     }
   ], 
+  life [;
+	  Attack: !"Son demasiado numerosos para un ataque directo contra ellos.";
+	          give self estatico;
+	          move player to parent(self);
+	          if (second == nothing) 
+	            multi_combate(player,self,oSableLaser);
+	          else
+	            multi_combate(player,self,second);
+	          viewImageSlide(pngSablesLuz);
+	          if (self has muerto) {
+		        move self to limbo;
+		        give player ~descubierto;
+     	        NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	            viewImageCenter(NivelInfO4.sgw_img);
+	          }
+              rtrue;
+	  Answer,ask,tell: print "Sin mediar palabra, los guardias se lanzan a por ti.^";
+	          give self estatico;
+	          move player to parent(self);
+	          multi_combate(player,self,oSableLaser);
+	          viewImageSlide(pngSablesLuz);
+	          if (self has muerto) {
+	            move self to limbo;
+	            give player ~descubierto;
+     	        NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	            viewImageCenter(NivelInfO4.sgw_img);
+	          }
+              rtrue;
+  ],
+  before[;
+  	 Push, Aturdir: !"Hay demasiados soldados para usar la Fuerza contra ellos.^";
+	                give self estatico;
+	                move player to parent(self);
+                    multi_combate(player,self,oFuerza);
+                    viewImageSlide(pngSablesLuz);
+	                if (self has muerto) {
+	                  move self to limbo;
+	                  give player ~descubierto;
+     	              NivelInfO4.sgw_img=pngEntradaCeldas; !Se cambia la imagen por la de la entrada despejada
+	                  viewImageCenter(NivelInfO4.sgw_img);
+	                }
+	                rtrue;
+     ],
 ;
 
 Object decorado_nivelinferior4 NivelInfO4
@@ -6442,6 +6574,7 @@ with  describe
 Object oMixaAgonizanteO4 "prisionera nosauriana" limbo
 with
   name 'prisionera' 'nosauriana' 'hembra' 'mixa',
+  sgw_img pngMixa,
   description [;
     if (self hasnt muerto) "Entre los cuerpos inertes de los nosaurianos reconoces a Mixa, la esposa de uno de tus capitanes en 
            la batalla del paso de Half-Axe. Parece que todavía está viva, aunque sus heridas son extremadamente graves.";
@@ -6477,6 +6610,7 @@ with
                y mataron a Mesa cuando intentaba evitar que se la llevaran!"); 
              default: print "^Mixa tose, expulsando sangre por la boca, mientras dice algo ininteligible.^"; 
            };
+           ViewImageSlide(pngMixa);
            rtrue;
   ],
   orders [;
@@ -6587,6 +6721,7 @@ with
 	          move decorado_nivinfO4 to NivelInfO4;
 	          move oMixaAgonizanteO4 to NivelInfO4;
 	          Achieved(13);
+     	      NivelInfO4.sgw_img=pngGuardiasO4; !Se cambia la imagen por la de la entrada con guardias
 	          "Con el sable láser cortas fácilmente la reja de acero que retiene a los nosaurianos.^
 	          Los nosaurianos salen corriendo hacia el exterior, alejándose de las celdas y en busca de su libertad.";
             }
@@ -6600,6 +6735,7 @@ with
 	          move decorado_nivinfO4 to NivelInfO4;
 	          move oMixaAgonizanteO4 to NivelInfO4;
 	          Achieved(13);
+     	      NivelInfO4.sgw_img=pngGuardiasO4; !Se cambia la imagen por la de la entrada con guardias
 	          "Con un movimiento de tu mano y una gran concentración, consigues arrancar la reja y apartarla.^
 	          Los nosaurianos salen corriendo hacia el exterior, huyendo de las celdas y buscando su libertad.";
             }
@@ -6634,6 +6770,7 @@ has animate pluralname;
 Object oNosaurianaCeldaO4 "prisionera nosauriana" oCeldaNosaurianos
 with
   name 'prisionera' 'nosauriana' 'hembra' 'mixa',
+  sgw_img pngMixa,
   description "Una hembra nosauriana llama tu atención cuando comienza a llamarte para que les saques de allí. La reconoces como Mixa, 
     la esposa de uno de tus capitanes en la batalla del paso de Half-Axe.",
   life [tema;
@@ -6659,6 +6796,7 @@ with
              t_ayudaO4: HablaPersonaje("Mixa","¡No nos dejes en esta celda! ¡No queremos ser vendidos a nadie! ¡Se llevaron a Resa!");
              default: HablaPersonaje("Mixa","¡General Jennir! ¡Sácanos de esta celda!."); 
            };
+           ViewImageSlide(pngMixa);
            rtrue;
   ],
   orders [;
@@ -6708,6 +6846,7 @@ with
     JugarSin: <<Jugar oJaxfSevalO4>>;
     go: if (oJaxfSevalO4.jugando ~=0 or 4 or 100) {
 	      HablaPersonaje("Jaxf Seval","¿A dónde crees que vas, chaval? No te muevas de aquí hasta que terminemos la partida.");
+          ViewImageSlide(pngJaxf);
 	      rtrue;
         }  
         if (oJaxfSevalO4.jugando == 4) {
@@ -6715,16 +6854,19 @@ with
 	      if (self.necesita_ayuda>3) {
 	        HablaPersonaje("Sniffles","Dass, tenemos que recuperar el módulo de control de la nave... 
 	            aunque sea a la fuerza y tengamos que salir de aquí huyendo. Sin la nave, no podremos salir del planeta.");
+            ViewImageSlide(pngSniffles);
 	        rtrue;
 	      }
 	      HablaPersonaje("Sniffles","Dass, no creo que debamos marcharnos de aquí sin la nave... 
 	            el capitán nos matará al enterarse de que la hemos perdido apostando.");
+          ViewImageSlide(pngSniffles);
 	      rtrue;
         }
         if (oJaxfSevalO4.jugando == 100 && oSnifflesO4 in self && oMeettoO4 in PlazaO4) {
 	      if (oModuloControlO4 in player) {
 	        HablaPersonaje("Sniffles","Dass, mejor me llevo el módulo de control a la nave...
 	            antes de que el capitán se dé cuenta.");
+            ViewImageSlide(pngSniffles);
           }
 	      move oSnifflesO4 to limbo;
 	      move oModuloControlO4 to oCuadroO4;
@@ -6733,6 +6875,7 @@ with
         }
         if (oJaxfSevalO4.jugando == 100 && oSnifflesO4 in self && oMeettoO4 notin PlazaO4) {
 	      HablaPersonaje("Sniffles","Dass, seguiré por aquí por si me necesitas para algo.");
+          ViewImageSlide(pngSniffles);
 	      rfalse;
         }
     sentir,exFuerza,
@@ -6805,6 +6948,7 @@ has animate proper objetivo transparent scenery;
 Object oSnifflesO4 "Sniffles" CantinaO4
   with
     name 'sniffles' 'elomin' 'humanoide',
+    sgw_img pngSniffles,
     description [;
       if (self.vida==0) "Sniffles yace inconsciente en el suelo.";
       "Apoyado en una zona oscura de la barra, distingues las orejas puntiagudas de Sniffles, gracias a su altura de 1.90. Está en la 
@@ -6819,6 +6963,7 @@ Object oSnifflesO4 "Sniffles" CantinaO4
         tell,answer,
         ask: if (oNosaurianaCeldaO4 hasnt conocido && oMixaAgonizanteO4.hablado==0) {
 	           HablaPersonaje("Sniffles","Lo siento Jennir, todavía no he averiguado nada útil. Déjame algo más de tiempo.");
+               ViewImageSlide(pngSniffles);
 	           rtrue;
 	         }
            if (self.vida==0) {
@@ -6894,7 +7039,8 @@ Object oSnifflesO4 "Sniffles" CantinaO4
 	             default: HablaPersonaje("Sniffles","Lo siento, no te puedo contestar a eso."); 
 	           };
            }
-             rtrue;
+           ViewImageSlide(pngSniffles);
+           rtrue;
     ],
     orders [;
       Mild, Strong: "Sniffles es de los tuyos y no se merece este trato.^";
@@ -6931,6 +7077,7 @@ with  describe
 Object oJaxfSevalO4 "Jaxf Seval" limbo
   with
     name 'jaxf' 'seval' 'humano' 'jugador' 'apostante',
+    sgw_img pngJaxf,
     description [;
        if (self.jugando==1 or 2 or 3) "Sentado frente a ti, Jaxf Seval está concentrado en la partida de Dejarik, 
           mirando fijamente al tablero y pensando en su próximo movimento.";
@@ -7036,6 +7183,7 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
                      HablaPersonaje("Jaxf Seval","¡Cállate! ¡Estamos jugando!");
 	             }
              };
+             ViewImageSlide(pngJaxf);
              rtrue;
     ],
     orders [;
@@ -7189,7 +7337,7 @@ has animate proper objetivo scenery female;
 
 Lugar EntradaBaseO4 "Entrada a la base de Sotta el Hutt"
 with
-  sgw_img pngEntradaSotta,       ! el grafico de la localidad
+  sgw_img pngEntradaSottaGuardias,       ! el grafico de la localidad
   description "La base del cacique Sotta el Hutt parece más un búnker que una vivienda, perfectamente segura. Los muros
               de cemento y piedra conforman varias torres cilíndricas que se elevan sobre el resto del complejo. La 
               entrada consiste en una puerta acorazada en la planta inferior de un edificio de dos alturas",
@@ -7294,6 +7442,7 @@ Object oPuertaAcorazadaO4 "puerta acorazada" EntradaBaseO4
 	               give self ~openable;
 	               give self open;
 	               move oCampeonGamorreanoO4 to PasilloBaseO4;
+     	           PasilloBaseO4.sgw_img=pngPasilloSottaGuardia; !Se cambia la imagen por la del pasillo con guardia
 	               EntradaBaseO4.sgw_img=pngEntradaSottaRota;
 	               viewImageCenter(EntradaBaseO4.sgw_img);
 	               Achieved(17);
@@ -7439,6 +7588,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
 		          if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
+	              EntradaBaseO4.sgw_img=pngEntradaSotta;
+	              viewImageCenter(EntradaBaseO4.sgw_img);
 		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
 		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión.";
 	            }
@@ -7454,6 +7605,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
 		            give player ~descubierto;
 		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                EntradaBaseO4.sgw_img=pngEntradaSotta;
+	                viewImageCenter(EntradaBaseO4.sgw_img);
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, ambos guardias se lanzan a por ti.^";
@@ -7466,6 +7619,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
 		            give player ~descubierto;
 		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                EntradaBaseO4.sgw_img=pngEntradaSotta;
+	                viewImageCenter(EntradaBaseO4.sgw_img);
                 }
                 rtrue;
     ],
@@ -7486,6 +7641,8 @@ Object oGuardiasPuertaO4 "guardias de Sotta" EntradaBaseO4
 		                 give player ~descubierto;
 		                 if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		                     && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+	                     EntradaBaseO4.sgw_img=pngEntradaSotta;
+	                     viewImageCenter(EntradaBaseO4.sgw_img);
 	                   }
 	                   rtrue;
         Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
@@ -7605,6 +7762,8 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
 	            if (self has muerto) {
 		            move self to limbo;
 		            give player ~descubierto;
+     	            PasilloBaseO4.sgw_img=pngPasilloSotta; !Se cambia la imagen por la del pasillo despejado
+	                viewImageCenter(PasilloBaseO4.sgw_img);
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, el gamorreano se lanza a por ti.^";
@@ -7615,6 +7774,8 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
 	            if (self has muerto) {
 		            move self to limbo;
 		            give player ~descubierto;
+     	            PasilloBaseO4.sgw_img=pngPasilloSotta; !Se cambia la imagen por la del pasillo despejado
+	                viewImageCenter(PasilloBaseO4.sgw_img);
                 }
                 rtrue;
     ],
@@ -7636,6 +7797,8 @@ Object oCampeonGamorreanoO4 "campeón de Sotta" limbo
 	                   if (self has muerto) {
 		                 move self to limbo;
 		                 give player ~descubierto;
+     	                 PasilloBaseO4.sgw_img=pngPasilloSotta; !Se cambia la imagen por la del pasillo despejado
+	                     viewImageCenter(PasilloBaseO4.sgw_img);
 	                   }
 	                   rtrue;
         Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
@@ -8189,7 +8352,7 @@ has scenery container;
 
 Lugar SalaControlBaseO4 "Sala de vigilancia y control"
 with
-  sgw_img pngSalaControl,       ! el grafico de la localidad
+  sgw_img pngSalaControlGuardias,       ! el grafico de la localidad
   sgw_mus sndBaseSotta,
   description "Esta sala es el centro de seguridad y comunicaciones de la base. Desde los numerosos terminales 
               que se encuentran en este lugar se pueden controlar todos los sistemas que existen en el complejo: 
@@ -8258,12 +8421,20 @@ with
                 give self on;
                 give oAscensorO4 open;
                 Achieved(19);
-                if (oBobaFettO4 hasnt muerto) move oBobaFettO4 to Pasillo4BaseO4;
+                if (oBobaFettO4 hasnt muerto) {
+	                move oBobaFettO4 to Pasillo4BaseO4;
+	                Pasillo4BaseO4.sgw_img=pngPasilloSottaBobba; !Se cambia la imagen por la del pasillo con Bobba Fett
+	                viewImageCenter(Pasillo4BaseO4.sgw_img);
+                }
                 "Activas el ascensor que da acceso al segundo piso. Ahora parece que el ascensor es utilizable.";
       SwitchOff: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
                  give self ~on; 
                  give oAscensorO4 ~open;
-                 if (oBobaFettO4 hasnt muerto) move oBobaFettO4 to limbo;
+                 if (oBobaFettO4 hasnt muerto) {
+	                 move oBobaFettO4 to limbo;
+	                 Pasillo4BaseO4.sgw_img=pngPasilloSotta; !Se cambia la imagen por la del pasillo despejado
+	                 viewImageCenter(Pasillo4BaseO4.sgw_img);
+                 }
                  "Desactivas el ascensor que da acceso al segundo piso. Ahora el ascensor está bloqueado.";
   ],
 has scenery switchable;
@@ -8332,6 +8503,8 @@ Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
 		              && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
 	              give oInterruptorO4 muerto;
 	              Damusix.TocarV(sndGranada,VOLUMEN_ALTO);
+     	          SalaControlBaseO4.sgw_img=pngSalaControl; !Se cambia la imagen por la de la sala despejada
+	              viewImageCenter(SalaControlBaseO4.sgw_img);
 		          "Lanzas la granada de energía contra los guardias, que intentan huir en cualquier
 		          dirección al verla. Te pones a cubierto, justo a tiempo para oir la explosión. Al 
 		          reincorporarte puedes comprobar como no sólo los guardias han muerto, sino que también
@@ -8352,6 +8525,8 @@ Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
 		            give player ~descubierto;
 		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+     	            SalaControlBaseO4.sgw_img=pngSalaControl; !Se cambia la imagen por la de la sala despejada
+	                viewImageCenter(SalaControlBaseO4.sgw_img);
 	            }
                 rtrue;
 	    Answer,ask,tell: print "Lanzando unos gruñidos que no alcanzas a entender, ambos guardias se lanzan a por ti.^";
@@ -8364,6 +8539,8 @@ Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
 		            give player ~descubierto;
 		            if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		               && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+     	            SalaControlBaseO4.sgw_img=pngSalaControl; !Se cambia la imagen por la de la sala despejada
+	                viewImageCenter(SalaControlBaseO4.sgw_img);
                 }
                 rtrue;
     ],
@@ -8384,6 +8561,8 @@ Object oGuardiasControlO4 "guardias de Sotta" SalaControlBaseO4
 		                 give player ~descubierto;
 		                 if (oGuardiasPuertaO4 in limbo && oGuardiasDescansoO4 in limbo 
 		                    && oGuardiasControlO4 in limbo && oGuardiasAlmacenO4 in limbo) Achieved(18);
+     	                 SalaControlBaseO4.sgw_img=pngSalaControl; !Se cambia la imagen por la de la sala despejada
+	                     viewImageCenter(SalaControlBaseO4.sgw_img);
 	                   }
 	                   rtrue;
         Enganyar: HablaPersonaje("Guardia","¿Acaso te crees un jedi intentando esos truquitos?"); rtrue;
@@ -8441,24 +8620,24 @@ with  describe
   ],
 ;
 
-Object PuertaHabitacionesO4 "puerta" Pasillo4BaseO4
-  with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
-       name 'puerta',
-       when_closed "Una puerta cerrada impide el acceso al sur.",
-       door_to HabitacionesBaseO4,
-       door_dir s_to,
-       before [;
-         attack: <<open self>>;
-         open,
-         unlock: give self open;
-                 give self scenery;
-                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
-         close,
-         lock: give self ~open;
-               give self ~scenery;
-               "La puerta se cierra automáticamente cuando te alejas de ella.";
-       ],
-has static door openable female objetivo;
+!Object PuertaHabitacionesO4 "puerta" Pasillo4BaseO4
+!  with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
+!       name 'puerta',
+!       when_closed "Una puerta cerrada impide el acceso al sur.",
+!       door_to HabitacionesBaseO4,
+!       door_dir s_to,
+!       before [;
+!         attack: <<open self>>;
+!         open,
+!         unlock: give self open;
+!                 give self scenery;
+!                 "Al acercarte a la puerta, ésta se abre automáticamente, dejando libre el acceso.";
+!         close,
+!         lock: give self ~open;
+!               give self ~scenery;
+!               "La puerta se cierra automáticamente cuando te alejas de ella.";
+!       ],
+!has static door openable female objetivo;
 
 Object PuertaSottaO4 "puerta" Pasillo4BaseO4
   with description "Es una puerta automática como las que se encuentran en el resto del complejo.",
@@ -8506,7 +8685,8 @@ has static scenery door openable container objetivo;
 
 Object oBobaFettO4 "cazarrecompensas" limbo
   with
-    name 'boba' 'fett' 'cazarrecompensas' 'mandaloriano',
+    name 'boba' 'bobba' 'fett' 'cazarrecompensas' 'mandaloriano',
+    sgw_img pngBobbaFett,
     description "El cazarrecompensas bloquea tu camino. A tenor de su vestimenta, debe ser un mandaloriano. Debajo de
                 su vieja armadura de color verde oliva, va vestido con un traje ignífugo de color gris. Lleva un casco 
                 con el mismo color y motivos que la armadura, con una abertura horizontal a la altura de los ojos y una 
@@ -8523,11 +8703,14 @@ Object oBobaFettO4 "cazarrecompensas" limbo
       move oSottaO4 to SottaBaseO4;
 	  SottaBaseO4.sgw_img=pngHabSotta; !Cambiamos el gráfico de la habitación de Sotta
       move oHolocubo to limbo;
+      Pasillo4BaseO4.sgw_img=pngPasilloSotta; !Se cambia la imagen por la del pasillo despejado
+	  viewImageCenter(Pasillo4BaseO4.sgw_img);
       print "^Cuando parece que estás a punto de acabar con el cazarrecompensas y que la victoria es tuya, el mandaloriano
       enciende los retrocohetes que lleva a la espalda, escapando de tu ataque definitivo y consiguiendo huir por el
       pasillo. Cuando está a punto de desaparecer, da media vuelta y te grita:^";
       HablaPersonaje("Cazarrecompensas","¡Esto no acaba aquí, maldito Jedi! ¡Recuerda el nombre de Boba Fett la próxima
         vez que nos encontremos, pues no tendré piedad de ti!");
+      ViewImageSlide(pngBobbaFett);
       "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, 
        mientras ves como desaparece por el pasillo. ^A la par, te parece escuchar
        movimientos en la habitación que hay al este.";
