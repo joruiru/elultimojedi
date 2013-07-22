@@ -244,14 +244,14 @@ Verb 'apunta'
 Verb 'huye' = 'corre';
 VerboIrregular "huir" with imperativo 'huye';
 
-Verb 'pilota' 'conduce' 'guia'
+Verb 'pilota' 'conduce' 'guia' 'despega'
     *                                      -> Pilotar
     * noun                                 -> Pilotar;
 VerboIrregular "conducir" with imperativo 'conduce';
 
-Verb 'despega' 
-    *                                      -> Pilotar
-    * noun                                 -> Pilotar;
+!Verb 'despega' 
+!    *                                      -> Pilotar
+!    * noun                                 -> Pilotar;
 
 Verb 'juega' 'jugar'
     *                                  -> JugarSin

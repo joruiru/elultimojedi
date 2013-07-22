@@ -2,7 +2,7 @@
 !% +language_name=Spanish
 !% $MAX_STATIC_DATA=20000
 !% $MAX_PROP_TABLE_SIZE=99900
-!% $MAX_VERBS=153
+!% $MAX_VERBS=253
 !% $MAX_OBJECTS=750
 !% $DICT_WORD_SIZE=12
 !%
@@ -199,7 +199,7 @@ Constant NUMBER_TASKS = 23;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 320;
 
-Constant SGW_SIN_GRAFICOS;
+!Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -981,10 +981,12 @@ Object  Creditos
          [;
            BorrarPantalla();
            self.cadena = "Mi más sincero agradecimiento a todas las personas que han hecho posible, directa o indirectamente, 
-             que el desarrollo de esa aventura llegase a buen puerto.";
+             que el desarrollo de esa aventura llegase a buen puerto.^^Espero que hayáis disfrutado con EL ULTIMO JEDI al menos
+             la mitad de lo que yo lo he hecho mientras lo creaba.";
            self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
            print (s_user1) "Mi más sincero agradecimiento a todas las personas que han hecho posible, directa o indirectamente, 
-             que el desarrollo de esa aventura llegase a buen puerto.^^*** GRACIAS A TODOS. ***^";
+             que el desarrollo de esa aventura llegase a buen puerto.^^Espero que hayáis disfrutado con EL ULTIMO JEDI al menos
+             la mitad de lo que yo lo he hecho mientras lo creaba.^^*** GRACIAS A TODOS. ***^";
            rtrue;
          ]          
 ;
@@ -1489,7 +1491,7 @@ CompassDirection delante_obj "delante" compass
   with name 'delante' 'alante' 'adelante', door_dir del_to;
 
 !Objeto jugador (sustituye al player por defecto)  
-Object  mySelfObj "(self object)"
+Object mySelfObj "(self object)"
   with  short_name  [;  return L__M(##Miscellany, 18); ],
         !description [;  return L__M(##Miscellany, 19); ],
         description [;
@@ -1590,7 +1592,7 @@ Object  mySelfObj "(self object)"
 !                         else
 !                           turno_combate(self,noun,second);
 !                         rtrue;
-                Pilotar: if (self in CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) <<pilotar oNave>>;
+                Pilotar: if ((noun==nothing) && self in CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) <<pilotar oNave>>;
                          "No es el momento adecuado para pilotar nada.";
                 default: if (self has concentrado) {
 	                         print "Estás demasiado concentrado ahora mismo para hacer cualquier otra cosa.^";
@@ -1694,8 +1696,8 @@ has female nofuerza;
 
 Object oSableLaser "Sable Laser"
   with
-    name 'sable' 'espada' 'laser' 'hoja',
-    adjectives 'cristal',
+    name 'sable' 'espada' 'laser' 'hoja' 'cristal',
+    !adjectives 'cristal',
     bonif_ofensiva 10,
     dado_golpe 2 6 6, !2d6+6
     description [;
@@ -2872,7 +2874,13 @@ Object oVader "Darth Vader" intPasilloCueva
       NotUnderstood, Tell: <<Ask self>>;
     ],
     react_before[;
-      go: <<ask self>>;
+      go: print "Darth Vader no parece querer dejarte escapar.^";
+	      ataque_enemigo(player,self,nothing);
+	      viewImageSlide(pngSablesLuz);
+	      if (self has muerto) {
+		      move self to limbo;
+	      }
+          rtrue;
     ],
     before [;
         Sentir, Concentrar: "El reverso tenebroso es poderoso en un lord Sith. No 
@@ -5263,9 +5271,9 @@ with
     direccion 's',
     before [;
       Push: print "Recuerdas que, siendo todavía un padawan en el templo Jedi, te enseñaron que había que mover la palanca en algunas direcciones.^";
-            <<pushdir d_obj>>;
+            <<pushdir self d_obj>>;
       Pull: print "Recuerdas que, siendo todavía un padawan en el templo Jedi, te enseñaron que había que mover la palanca en algunas direcciones.^";
-            <<pushdir u_obj>>;
+            <<pushdir self u_obj>>;
       Transfer,
       PushDir:
         if (second == u_obj ) {
@@ -5599,8 +5607,8 @@ with
     name 'lugar' 'sitio' 'suelo' 'hangar' 'puerto' 'espacial' 'comercio' 'comerciante' 'vendedor' 
          'comprador' 'pasillo' 'edificio',
     name_mp 'hangares' 'comercios' 'comerciantes' 'vendedores' 'compradores',
-    name_f 'plaza' 'mercancia' 'calle' 'celda' 'base' 'criatura',  
-    name_fp 'mercancias' 'calles' 'celdas' 'criaturas', 
+    name_f 'plaza' 'mercancia' 'calle' 'celda' 'base' 'criatura' 'pared',  
+    name_fp 'mercancias' 'calles' 'celdas' 'criaturas' 'paredes', 
     description [w;
         wn = 2;
         w=NextWord();
@@ -5651,6 +5659,10 @@ with
 	                   PlazaO4: <<look>>;
 	                   CalleO4_1: <<look>>;
 	                   CalleO4_2: <<look>>;
+	                   NivelInfO4_1: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4_2: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4_3: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
 	                   default: "Desde aquí no puedes ver ninguna calle.";
                      }
             'pasillo': switch (location) {
@@ -5673,6 +5685,14 @@ with
 	                      EntradaBaseO4: <<look>>;
 	                      default: "No hay ningún edificio que te llame particularmente la atención.";
                         }
+            'pared',
+            'paredes': switch (location) {
+	                   NivelInfO4_1: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4_2: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4_3: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   NivelInfO4: "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales.";
+	                   default: "Desde aquí no puedes ver ninguna celda.";
+                   }
             default : "Desde aquí no puedes ver eso que dices.";
         };
     ],
@@ -5774,7 +5794,8 @@ Object oModuloControlO4 "Módulo de control" oCuadroO4
   with
     name 'modulo' 'control' 'disco' 'optico',
     adjectives 'uhumele' 'control',
-    description "El módulo de control de la Uhumele lleva en su interior un pequeño disco óptico necesario para poner en marcha la nave.", 
+    description "El módulo de control de la Uhumele, como el de casi todos los vehículos de transporte, es un pequeño disco óptico necesario 
+          para poner en marcha la nave.", 
     before [;
       take,
       remove: if (self in oMesaO4) "Será mejor que no quites nada de la mesa.";
@@ -5833,8 +5854,7 @@ Object oMeettoO4 "Meetto" limbo
 	    Attack: "Mejor no llamar la atención provocando un alboroto.^";
         tell,answer,
         ask: tema=AveriguarTema(TemasOrvax4);
-   	         PlazaO4.sgw_img=pngMeetto; !Se cambia la imagen por la de Meetto
-	         viewImageCenter(PlazaO4.sgw_img);
+	         viewImageCenter(pngMeetto); !Se cambia la imagen por la de Meetto
              if (self.soborno==0) {
 	           switch(tema) {
                  t_familiabomoO4,
@@ -6203,9 +6223,7 @@ with  describe
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
-       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
-       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
-       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL,
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
@@ -6302,9 +6320,7 @@ with  describe
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
-       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
-       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
-       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL,
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
@@ -6337,9 +6353,7 @@ with  describe
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
-       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
-       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
-       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL,
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
@@ -6543,9 +6557,7 @@ with  describe
        'estructuras' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
        'vivienda' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO
        'viviendas' "Las viviendas del nivel inferior son destartaladas y están construidas con todo tipo de deshechos." G_FEMENINO+G_PLURAL
-       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL
-       'calle' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO
-       'calles' "Las calles del nivel inferior de Orvax IV son estrechas y agobiantes. Todas te parecen iguales." G_FEMENINO+G_PLURAL, 
+       'seres' "Los habitantes de esta parte de la ciudad no te transmiten buenas sensaciones. Mejor pasar de largo para no meterte en lios." G_PLURAL,
   before[;
     examine: rfalse;
     default: "No conviene hacer eso.";
@@ -6783,15 +6795,19 @@ with
              t_prisioneroO4: HablaPersonaje("Mixa","¡Esos malditos guardias se llevaron a Resa para venderla y mataron a Mesa 
                cuando intentaba evitar que se la llevaran!");
                give self conocido;
+               oMixaAgonizanteO4.hablado=1;
              t_mesaO4: HablaPersonaje("Mixa","Mesa está muerta... Vinieron a llevarse a Resa y se opuso a que se llevaran
                a su hija... ¡los guardias la mataron aquí mismo!");
                give self conocido;
+               oMixaAgonizanteO4.hablado=1;
              t_resaO4: HablaPersonaje("Mixa","Vinieron y se llevaron a Resa. Mesa hizo todo lo posible para que no se 
                llevaran a su hija... ¡y los guardias la mataron!");
                give self conocido;
+               oMixaAgonizanteO4.hablado=1;
              t_palizaO4,
              t_guardiasO4: HablaPersonaje("Mixa","¡Esos malditos guardias mataron a Mesa y se llevaron a Resa!");
                give self conocido;
+               oMixaAgonizanteO4.hablado=1;
              t_simismoO4: HablaPersonaje("Mixa","Tienes que sacarnos de aquí. ¡No queremos ser vendidos como esclavos! ¡Se llevaron a Resa!");
              t_ayudaO4: HablaPersonaje("Mixa","¡No nos dejes en esta celda! ¡No queremos ser vendidos a nadie! ¡Se llevaron a Resa!");
              default: HablaPersonaje("Mixa","¡General Jennir! ¡Sácanos de esta celda!."); 
@@ -8424,7 +8440,6 @@ with
                 if (oBobaFettO4 hasnt muerto) {
 	                move oBobaFettO4 to Pasillo4BaseO4;
 	                Pasillo4BaseO4.sgw_img=pngPasilloSottaBobba; !Se cambia la imagen por la del pasillo con Bobba Fett
-	                viewImageCenter(Pasillo4BaseO4.sgw_img);
                 }
                 "Activas el ascensor que da acceso al segundo piso. Ahora parece que el ascensor es utilizable.";
       SwitchOff: if (self has muerto) "El impulso electromagnético de la granada ha inutilizado el interruptor.";
@@ -10329,7 +10344,7 @@ Object  -> t_bomo "_bomo" with name 'bomo';
 Object  -> t_crys "crys" with name 'crys' 'taanzer' 'piloto' 'mujer' 'humana' 'chica';
 Object  -> t_vill "vill" with name 'vill' 'comandante';
 Object  -> t_simismo with name 'ti' 'si' 'mismo' 'como' 'estas' 'bien' 'encuentras';
-Object  -> t_halfaxe "half axe" with name 'half' 'axe' 'paso';
+Object  -> t_halfaxe "half axe" with name 'half' 'axe' 'paso' 'half-axe';
 Object  -> t_tripulacion "tripulacion" with name 'tripulacion' 'companeros' 'resto' 'otros';
 Object  -> t_naves "naves" with name 'naves' 'bloqueo' 'nave' 'transporte';
 Object  -> t_orvax "Orvax IV"  with name 'orvax' 'esclavos';
