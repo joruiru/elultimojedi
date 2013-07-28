@@ -3,6 +3,7 @@ PICTURE pngPaso res/img/paso.png
 PICTURE pngLadera res/img/ladera.png
 PICTURE pngAtaqueClones res/img/ataqueclones.png
 PICTURE pngAgujero res/img/agujero.png
+PICTURE pngBomoAgujero res/img/bomoagujero.png
 PICTURE pngLaderaMuerte res/img/laderamuerte.png
 PICTURE pngCima res/img/cima.png
 PICTURE pngCamino res/img/camino.png

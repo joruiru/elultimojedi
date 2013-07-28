@@ -57,6 +57,7 @@
 !=============================================================================== 
 ! 
 !  Log:
+!  2013/07/28  Joruiru - Arreglos sugeridos por KMBR.
 !  2013/07/21  Joruiru - Añadidas imagenes de localidades con enemigos
 !  2013/07/18  Joruiru - Algunas cosillas tras leer primera parte del transcript
 !                        de saimazoom
@@ -158,7 +159,7 @@ Constant Headline "^(c)2011 Joruiru.^^
                    Para HABLAR con otros personajes, utiliza ~>NOMBRE_PERSONAJE, LO QUE SEA~.^^";
 
 Release 1;
-Serial "121118";
+Serial "130728";
 
 ! Queremos usar el comando 'salidas'
 Constant ADMITIR_COMANDO_SALIDAS;
@@ -666,6 +667,7 @@ Include "VerbLib";
     
     !Objetos iniciales del jugador  
     move oSableLaser to player;
+    move oBlasterLaser to player;
     
 !     move oVwing to location;
 !         move oTrajeTrooper to player;
@@ -755,40 +757,6 @@ Include "VerbLib";
 ! Imprime las curiosidades
 [ Amusing ;
     closeGraphicWindow();
-!    "Ésta es la versión Lite de EL ULTIMO JEDI para la FICOMP 2011, que se corresponde, aproximadamente, con un tercio de la historia completa. 
-!    ^Actualmente se está desarrollando una versión extendida, con la historia desarrollada completamente, nuevos puzles, gráficos y sonidos.
-!    ^El equipo de desarrollo no puede dar una fecha de publicación, pero esperamos que sea lo antes posible...
-!    ^^¿Conseguirá Dass Jennir encontrar y rescatar a la familia de su buen amigo Bomo Greenbark? ¿La búsqueda le costará perder los valores propios
-!    de los Jedi y se verá arrastrado irremediablemente al lado oscuro de la Fuerza?
-!    ^^Información y trasfondo:
-!    ^- http://starwars.wikia.com.
-!    ^- http://www.loresdelsith.net.
-!    ^- Star Wars: Republic.
-!    ^- Star Wars: The Path to Nowhere.
-!    ^- Star Wars: The Revenge of the Sith.
-!    ^- Star Wars: Purgue.
-!    ^- Dark Lord: The Rise of Darth Vader.
-!    ^^Banda Sonora Original (en la versión extendida):
-!    ^- El Último Jedi Main Theme (J.Carlos Martínez).
-!    ^- Bomo's Sorrow Theme (J.Carlos Martínez).
-!    ^- Comandante Vill Theme (J.Carlos Martínez).
-!    ^- V-Wing Theme (J.Carlos Martínez).
-!    ^- Efectos ambientales y sonoros (http://www.freesfx.co.uk).
-!    ^^Gráficos (en la versión extendida):
-!    ^- J.A.E.
-!    ^^Programación:
-!    ^- Joruiru.
-!    ^^Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias:
-!    ^- Damusix, de Eliuk Blau.
-!    ^- sgw+dmx, de Eliuk Blau.
-!    ^- Etemas,  de Zak.
-!    ^- BajoNivel, de Zak (adaptación).
-!    ^- Cortos, de Zak (adaptación).
-!    ^- Barra v2, de Presi.
-!    ^- PNJMovil, de Zak.
-!    ^- intnombre, de Jarel.
-!    ^- ZIPI, de Zak (adaptación).
-!    ^- Decorado, de Zak y Mel Hython.";
     BorrarPantalla();
 	Damusix.PararTodo();
 	Damusix.AsignarCanal(sndMainTheme,0,VOLUMEN_ALTO,1);
@@ -872,7 +840,7 @@ Include "VerbLib";
     jump RRQL;
 ];
 
-! Escena de cinemática de introducción a Orvax IV.
+! Escena de cinemática de los créditos finales.
 Object  Creditos
  class  cortometraje
  with   
@@ -894,23 +862,23 @@ Object  Creditos
          ]
          [;
            BorrarPantalla();
-	       self.cadena = "Gráficos:^- Saimazoom.^- Joruiru.";
+	       self.cadena = "Gráficos:^- KMBR.^- Joruiru.";
 	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
-           print (s_user1) "Gráficos:^- Saimazoom.^- Joruiru.";
+           print (s_user1) "Gráficos:^- KMBR.^- Joruiru.";
            rtrue;
          ]          
          [;
            BorrarPantalla();
 	       self.cadena = "Banda Sonora Original (J.Carlos Martínez):^- El Último Jedi Main Theme.
 	         ^- Bomo's Sorrow Theme.^- Comandante Vill Theme.
-	         ^- V-Wing Theme.^- Kata Rock Theme.
+	         ^- V-Wing Theme.^- Kata Rock (Cantina Theme).
 	         ^- Twi'lek Dance.^- Discovering the truth.
 	         ^Efectos ambientales y sonoros:
 	         ^- http://www.freesfx.co.uk.^- http://www.freesound.org.";
 	       self.delay = LStrLen(self.cadena)*9/velocidad_texto+15;
            print (s_user1) "Banda Sonora Original (J.Carlos Martínez):^- El Último Jedi Main Theme.
 	         ^- Bomo's Sorrow Theme.^- Comandante Vill Theme.
-	         ^- V-Wing Theme.^- Kata Rock Theme.
+	         ^- V-Wing Theme.^- Kata Rock (Cantina Theme).
 	         ^- Twi'lek Dance.^- Discovering the truth.
 	         ^^Efectos ambientales y sonoros:
 	         ^- http://www.freesfx.co.uk.^- http://www.freesound.org.";
@@ -918,9 +886,9 @@ Object  Creditos
          ]          
          [;
            BorrarPantalla();
-	       self.cadena = "Pruebas:^- Comely.^- Saimazoom.";
+	       self.cadena = "Pruebas:^- Comely.^- KMBR.^- JC.";
 	       self.delay = LStrLen(self.cadena)*10/velocidad_texto+15;
-           print (s_user1) "Pruebas:^- Comely.^- Saimazoom.";
+           print (s_user1) "Pruebas:^- Comely.^- KMBR.^- JC.";
            rtrue;
          ]          
          [;
@@ -1246,7 +1214,7 @@ Class CadaverGuardiaOrvax4(50)
 ;
 
 Class CadaverGamorreano(50)
- with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias',
+ with name 'cuerpo' 'cadaver' 'guardia' 'cuerpos' 'cadaveres' 'guardias' 'campeon',
       short_name "cadáver de un guardia de Sotta",
       plural "cadáveres de guardias de Sotta",
       description [x n;
@@ -1694,7 +1662,7 @@ Object oFuerza "Fuerza"
 
 has female nofuerza;
 
-Object oSableLaser "Sable Laser"
+Object oSableLaser "sable láser"
   with
     name 'sable' 'espada' 'laser' 'hoja' 'cristal',
     !adjectives 'cristal',
@@ -1719,6 +1687,22 @@ Object oSableLaser "Sable Laser"
         "Mejor mantener el sable laser oculto. No conviene que vayas alardeando de ser un jedi.";
     ],
 has clothing;
+
+Object oBlasterLaser "rifle láser"
+  with
+    name 'rifle' 'blaster' 'laser' 'arma',
+    description "El rifle bláster E-11 es un arma ligera, compacta y poderosa. Su fuego rápido lo hace ideal para batallas como esta.",
+    bonif_ofensiva 10,
+    dado_golpe 1 6 3, !2d6+6
+    before [;
+      give,
+      drop: "En plena batalla no conviene que te deshagas de tu arma."; 
+      Levitar: "Mejor mantener ocultos tus poderes jedi.";
+      Burn, SwitchOn: "El arma está operativa.";
+      SwitchOff: "Mejor mantener el arma operativa.";
+    ],
+has clothing;
+
 
 Object oBomo "Bomo Greenbark" 
 class PNJMovil
@@ -2132,6 +2116,24 @@ Lugar paso "Paso de Half-Axe"
 	      }
 	  examine: if (noun==e_obj or w_obj) "El estrecho desfiladero de Half-Axe discurre de sur a norte, con escarpadas montañas tanto a este como a oeste.";
 	           rfalse; 
+	  Listen: switch(random(10)) {
+	      1: print (s_underline) "^~¡Ough!~ ", "- puedes ver como uno de tus soldados nosaurianos cae abatido por un disparo
+	                de un soldado clon.^";
+	      2: print (s_underline) "^~¡Mi general! ¡Debemos hacer algo para bloquear el avance de los tanques!~ ", "- te grita un nosauriano^";
+	      3: print "^El ejército clon sigue avanzando implacable entre los árboles, apoyado por los tanques, y cada vez se os hace más
+	                difícil aguantar la posición.^";
+	      4: print "^El ejército clon avanza imparable a costa de la vida de tus soldados... Los nosaurianos esperan de ti, como general Jedi, 
+	                que encuentres una solución milagrosa que detenga a los tanques.^";
+	      5: Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
+	         print (s_underline) "^~¡BOOOOMMMMM!~ ", "- un cañón láser abre brecha entre tus soldados, convirtiéndolos en cadáveres humeantes.^";
+	      6: print "^Esto empieza a ser ya una masacre... Los disparos imperiales son cada vez más certeros, causando verdaderos estragos
+	                entre tus tropas, incapaces de detener el avance de los clones. Debes actuar rápidamente o la derrota será inminente y
+	                no habrá oportunidad de escapar para las mujeres y niños nosaurianos que hacia el puerto espacial de Cadgel Meadows.^";
+	      7: print (s_underline) "^~¡General Jennir! ¡Quizás los árboles nos puedan servir para detener el avance de los tanques!~^";
+	      8: print "^Un disparo láser de uno de los tanques impacta cerca de tu posición, calcinando a uno de tus soldados.^";
+	      9: print (s_underline) "^~¡Se están acercando! ¡Van a aniquilarnos!~^";
+	      10: print (s_underline) "^~¡No podemos pararlos! ¡Deberíamos retirarnos!~^";
+	    };
     ],
     n_to ladera,
 ;
@@ -2156,6 +2158,7 @@ Object -> oArboles "arbol"
       rfalse;
     ],
     before [;
+      disparar: <<attack self oBlasterLaser>>;
       attack,
       cut: if (self has cortado) "No ves ningún otro árbol que cortándolo pudiese bloquear el avance de los clones.";
            if (second ==nothing or oSableLaser) {
@@ -2236,7 +2239,11 @@ Object -> oEjercito "ejercito"
                  posible es la única esperanza que puedes dar a las familias nosaurianas para llegar al puerto espacial y huir.",
     nivel_odio 1,
     before [;
-      attack: if (self.nivel_odio==1) {
+      disparar: <<attack self oBlasterLaser>>;
+      attack: if (second == oBlasterLaser) "Disparas con tu rifle sobre las filas imperiales, derribando algunos soldados. Sin embargo,
+                son tantos que enseguida otros clones ocupan el puesto de los caidos. Te da la sensación de que disparando no conseguirás
+                detener su avance.";
+              if (self.nivel_odio==1) {
 	            print "Entrar en combate siempre debe ser la última opción, según las enseñanzas Jedi. Sin embargo, la situación es desesperada
 	                   y empiezas a dudar si el combate directo sería la mejor opción. Más bien pensado, eso no bloquearía el paso de los
 	                   tanques y no dentendría su avance.";
@@ -2282,6 +2289,26 @@ Object oNosaurianos "nosaurianos"
     description "El ejército enemigo avanza y el tuyo va menguando... Debes encontrar urgentemente la forma de detener los tanques imperiales
                  o vuestra derrota será inminente. Los nosaurianos confían en ti.",
 	found_in paso ladera,
+	before [;
+      Sanar: "Son demasiados.";
+      Levitar: "Son demasiados.";
+      Sentir, 
+      Concentrar: "Los nosaurianos confían en ti para detener el avance de las tropas imperiales.";
+      Enganyar: "";
+      disparar: <<attack self oBlasterLaser>>;
+      Attack: player.oscuro++;
+              if (player.oscuro>2) {
+	                print "El impulso que sientes es más fuerte que tu voluntad y consigue vencerla. Sacas tu sable láser y atacas a traición a 
+	                  tus soldados, muchos de los cuales ni siquiera se dan cuenta de lo que le ha pasado...^";
+	                viewImageSlide(pngSablesLuz);
+	                deadflag=4;
+	                print "^Al ver a tu amigo Bomo en el suelo sin vida, el odio y la rabia te consumen. Te sientes extrañamente bien... quizás el 
+	                  lado oscuro de la Fuerza no sea tan malo como siempre te habían hecho creer.";
+	                rtrue;
+              };
+              "Tú mismo te sorprendes al tener pensamientos sobre atacar a tus propias tropas. Sólo un Sith permite esos pensamientos. ¿Significará 
+              que no hay esperanza para tí y tus impulsos te arrastran hacia el lado oscuro de la Fuerza?";	
+    ],
 has scenery;
 
 Lugar ladera "Ladera del Paso de Half-Axe"
@@ -2300,6 +2327,24 @@ Lugar ladera "Ladera del Paso de Half-Axe"
 	      }
 	  examine: if (noun==e_obj or w_obj) "El estrecho desfiladero de Half-Axe discurre de sur a norte, con escarpadas montañas tanto a este como a oeste.";
 	           rfalse; 
+	  Listen: switch(random(10)) {
+	      1: print (s_underline) "^~¡Ough!~ ", "- puedes ver como uno de tus soldados nosaurianos cae abatido por un disparo
+	                de un soldado clon.^";
+	      2: print (s_underline) "^~¡Mi general! ¡Debemos hacer algo para bloquear el avance de los tanques!~ ", "- te grita un nosauriano^";
+	      3: print "^El ejército clon sigue avanzando implacable entre los árboles, apoyado por los tanques, y cada vez se os hace más
+	                difícil aguantar la posición.^";
+	      4: print "^El ejército clon avanza imparable a costa de la vida de tus soldados... Los nosaurianos esperan de ti, como general Jedi, 
+	                que encuentres una solución milagrosa que detenga a los tanques.^";
+	      5: Damusix.TocarV(sndExplosion,VOLUMEN_ALTO);
+	         print (s_underline) "^~¡BOOOOMMMMM!~ ", "- un cañón láser abre brecha entre tus soldados, convirtiéndolos en cadáveres humeantes.^";
+	      6: print "^Esto empieza a ser ya una masacre... Los disparos imperiales son cada vez más certeros, causando verdaderos estragos
+	                entre tus tropas, incapaces de detener el avance de los clones. Debes actuar rápidamente o la derrota será inminente y
+	                no habrá oportunidad de escapar para las mujeres y niños nosaurianos que hacia el puerto espacial de Cadgel Meadows.^";
+	      7: print (s_underline) "^~¡General Jennir! ¡Quizás los árboles nos puedan servir para detener el avance de los tanques!~^";
+	      8: print "^Un disparo láser de uno de los tanques impacta cerca de tu posición, calcinando a uno de tus soldados.^";
+	      9: print (s_underline) "^~¡Se están acercando! ¡Van a aniquilarnos!~^";
+	      10: print (s_underline) "^~¡No podemos pararlos! ¡Deberíamos retirarnos!~^";
+	    };
     ],
     s_to paso,
 ;
@@ -2316,6 +2361,7 @@ Object -> oArboles2 "arboles"
       rfalse;
     ],
     before [;
+      disparar: <<attack self oBlasterLaser>>;
       attack,
       cut: if (self has cortado) "No ves ningún otro árbol que cortándolo pudiese bloquear el avance de los clones.";
            if (second ==nothing or oSableLaser) {
@@ -2377,7 +2423,11 @@ Object -> oEjercito2 "ejercito"
                  posible es la única esperanza que tienen las familias nosaurianas para llegar al puerto espacial y huir.",
     nivel_odio 1,
     before [;
-      attack: if (self.nivel_odio==1) {
+      disparar: <<attack self oBlasterLaser>>;
+      attack: if (second == oBlasterLaser) "Disparas con tu rifle sobre las filas imperiales, derribando algunos soldados. Sin embargo,
+                son tantos que enseguida otros clones ocupan el puesto de los caidos. Te da la sensación de que disparando no conseguirás
+                detener su avance.";
+              if (self.nivel_odio==1) {
 	            print "Entrar en combate siempre debe ser la última opción, según las enseñanzas Jedi. Sin embargo, la situación es desesperada
 	                   y empiezas a dudar si el combate directo sería la mejor opción.";
                 self.nivel_odio=2;
@@ -2405,6 +2455,7 @@ Object -> oEjercito2 "ejercito"
 		           give self cortado;
 		           playerTo(agujero, 2);
 		           move oBomo to agujero;
+		           move oBlasterLaser to limbo;
 		           bomo_sigue=0;
 		           fase = 2;
 		           glk_request_timer_events(0); ! desactivamos los mensajes aleatorios
@@ -2458,7 +2509,13 @@ Lugar agujero "En el agujero"
 	              self.ayuda++;
 	              rtrue;
                }
+               if (noun == oBomo) {
+		          viewImageCenter(pngBomoAgujero);
+	              rfalse;
+               }
                rfalse;
+      Look: viewImageCenter(self.sgw_img);
+            rfalse;
       Go: if (noun == out_obj or u_obj) {
 	          print "No alcanzas el borde del agujero. Está demasiado alto.";
 	          if (self.ayuda > 0) print "^Bomo: ",(s_underline) "~A veces dudo de que seas un jedi. ¿Por qué no usas tus poderes para salir de aquí?~";
@@ -2706,6 +2763,10 @@ Lugar camino "Camino a Cadgel Meadows"
 	        } else {
 		        rfalse;
 	        };
+	  sentir,
+	  Listen: "Percibes algo peligroso, algo perverso. Miras a tu alrededor para intentar
+          descubrir qué es lo que emite un halo tan potente. Parece que proviene de
+          algún lugar tras los árboles.";
     ],
 ;
 
@@ -4254,6 +4315,8 @@ Object -> oUhumele "Uhumele"
 		       move oCrys to hangarEste;
 		       move oCrysAusente to limbo;
 		       if (player has disfrazado) {
+   	               hangarEste.sgw_img=pngUhumeleAbierta; !Se cambia la imagen por la de la Uhumele abierta
+	               viewImageCenter(hangarEste.sgw_img);
 			       print "^La mujer repara en tí mientras murmura algo que no alcanzas a oir...";
 			       print "^~Malditos imperiales...~ - es lo único que puedes leer en su mente antes de que se gire y vuelva al 
 			             interior de la nave, cerrando la rampa de acceso tras ella, no sin antes echarte una última mirada 
@@ -4261,8 +4324,13 @@ Object -> oUhumele "Uhumele"
 			       self.abierta = 0;
 			       move oCrys to limbo;
 			       move oCrysAusente to hangarEste;
+                   viewImageSlide(pngCrys);
    	               hangarEste.sgw_img=pngUhumeleCerrada; !Se cambia la imagen por la de la Uhumele cerrada
 	               viewImageCenter(hangarEste.sgw_img);
+   		           if (random(2)<2) {
+                     print "^Bomo (susurrando): ", (s_underline) "~¿Has visto? Esa mujer ha creído que eres un soldado
+                       y se ha vuelto a su nave. Parece que no tiene simpatía por los imperiales. ¡Quizás podría ayudarnos!~";
+                   };
 		       } else {
    	               hangarEste.sgw_img=pngUhumeleAbierta; !Se cambia la imagen por la de la Uhumele abierta
 	               viewImageCenter(hangarEste.sgw_img);
@@ -5588,7 +5656,13 @@ has nosalidas;
  planeta=2;
  glk_request_timer_events(0);
  mensajes_aleatorios = false;
- EsperarTecla("...[Pulsa una tecla]...");
+ EsperarTecla("^...[Pulsa una tecla]...");
+ closeGraphicWindow();
+ BorrarPantalla();
+ Damusix.PararTodo();
+ print (s_user1) "ORVAX IV";
+ EsperarTecla("^...[Pulsa una tecla]...");
+ openGraphicWindow(40);
  BorrarPantalla();
  viewImageCenter(pngUhumele);
  Corto_Fase2.proyeccion();
@@ -5674,6 +5748,7 @@ with
                        }
             'celda',
             'celdas': switch (location) {
+	                   CeldasO4: <<examine oCeldas>>;
 	                   CeldasBaseO4: "Ambas celdas están absolutamente vacías.";
 	                   default: "Desde aquí no puedes ver ninguna celda.";
                      }
@@ -5719,7 +5794,7 @@ with
   s_to PlazaO4,
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
-    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(25);
   ],
 ;
 
@@ -5810,6 +5885,7 @@ Object oModuloControlO4 "Módulo de control" oCuadroO4
 	            move self to oMesaO4;
 	            print "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
                 créditos y dice: ",(s_underline)"~Está bien, juguemos.~";
+	            print "^^[Para jugar al Dejarik teclea JUGAR]";
                 rtrue;
               }
               if (second==oCuadroO4) {
@@ -5821,7 +5897,7 @@ Object oModuloControlO4 "Módulo de control" oCuadroO4
 	          oJaxfSevalO4.jugando=1;
 	          move oModuloControlO4 to oJaxfSevalO4;
 	          "Pones el módulo de control de la Uhumele en la mesa. Jaxf Seval te mira con atención, saca un fardo de
-              créditos y dice: ",(s_underline)"~Está bien, juguemos.~";
+              créditos y dice: ",(s_underline)"~Está bien, juguemos.~ ^^[Para jugar al Dejarik teclea JUGAR]";
             } else
               "No puedes ir entregando el módulo de control de la Uhumele a cualquiera.";
     ],
@@ -5839,7 +5915,11 @@ with
   w_to CalleO4_2,
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
-    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(25);
+  ],
+  before [;
+      Look: viewImageCenter(self.sgw_img);
+            rfalse;
   ],
 ;
 
@@ -5960,7 +6040,7 @@ with
   ],
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
-    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(25);
   ],
 ;
 
@@ -6004,7 +6084,7 @@ with
   ],
   each_turn [;
     !Si el jugador libera a los nosaurianos, se muestra mensaje aleatorio
-    if (oCeldaNosaurianos has open) RandomEffectsOrvax(60);
+    if (oCeldaNosaurianos has open) RandomEffectsOrvax(25);
   ],
 ;
 
@@ -6571,10 +6651,16 @@ with  describe
                       Puedes distinguir el cuerpo de Mixa entre los cadáveres." G_PLURAL
        'prisioneros' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
                       Puedes distinguir el cuerpo de Mixa. entre los cadáveres" G_PLURAL
+       'niños' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
+                      Puedes distinguir el cuerpo de Mixa. entre los cadáveres" G_PLURAL
        'nosaurianas' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
                       Puedes distinguir el cuerpo de Mixa entre los cadáveres." G_FEMENINO+G_PLURAL
        'prisioneras' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
                       Puedes distinguir el cuerpo de Mixa entre los cadáveres." G_FEMENINO+G_PLURAL
+       'mujeres' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
+                      Puedes distinguir el cuerpo de Mixa entre los cadáveres." G_FEMENINO+G_PLURAL
+       'niñas' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
+                      Puedes distinguir el cuerpo de Mixa. entre los cadáveres" G_PLURAL
        'cadaveres' "Son los cuerpos sin vida de las mujeres y niños nosaurianos que acabas de liberar. 
                     Puedes distinguir el cuerpo de Mixa entre los cadáveres." G_PLURAL,
   before[;
@@ -6670,7 +6756,7 @@ with
 
 Object oCeldas "celdas" CeldasO4
 with
-  name 'celdas' 'huecos',
+  name 'huecos',
   description [;
        give oNosaurianosCeldaO4 ~scenery;
        Achieved(12);
@@ -6753,6 +6839,7 @@ with
             }
             "No puedes abrir la celda de los nosaurianos.";
     levitar: <<unlock self oFuerza>>;
+    attack: <<unlock self second>>;
     enter: if (self has locked) "Una reja de acero te impide bajar a la celda.";
            if (oNosaurianaCeldaO4 has conocido) "Bajando a la celda solo perderías un valioso tiempo que puede ser vital para rescatar a la hija de Bomo.";
            "Bajando a la celda solo perderías un valioso tiempo que puede ser vital para rescatar a la familia de Bomo.";
@@ -7205,6 +7292,7 @@ Object oJaxfSevalO4 "Jaxf Seval" limbo
     orders [;
       Mild, Strong: "Ahora mismo no te conviene montar ningún jaleo.^";
       NotUnderstood, Tell: <<Ask self>>;
+      Jugar: <<Ask self>>;;
     ],
     before [;
       Sanar,
@@ -7831,7 +7919,7 @@ with
 
 Object CamposFuerzaBaseO4 CeldasBaseO4
 with  
-  name 'campo' 'campos' 'fuerza' 'fuerzas' 'celda' 'celdas',
+  name 'campo' 'campos' 'fuerza' 'fuerzas',
   description "Los rojizos campos de fuerza hacen de rejas para cada una de las celdas. Abrasarían a cualquiera con solo tocarlos.",
   before[;
     examine: rfalse;
@@ -8727,8 +8815,8 @@ Object oBobaFettO4 "cazarrecompensas" limbo
         vez que nos encontremos, pues no tendré piedad de ti!");
       ViewImageSlide(pngBobbaFett);
       "^Te das cuenta de que la joven voz del mandaloriano emana un profundo odio, 
-       mientras ves como desaparece por el pasillo. ^A la par, te parece escuchar
-       movimientos en la habitación que hay al este.";
+       mientras ves como desaparece por el pasillo. ^A la par, te parece ver
+       que alguien entra en la habitación que hay al este.";
     ],
     resisteFuerza [;
       if (random(3)<3) {
@@ -10021,8 +10109,8 @@ Object  Corto_Caida
         "^El gigantesco tronco arranca, al caer, las enormes raíces del suelo, provocando un inmenso agujero en la tierra justo donde
           os encontrábais Bomo y tú.^"
         
-        "^Arrastrado por piedras y tierra, caes... Caes hasta que sientes el tremendo golpe provocado al chocar contra el suelo... 
-         Luego te sumerges en la oscuridad de la inconsciencia...^"
+        "^Caes arrastrado por piedras y tierra, obligado a tener que soltar tu rifle... Caes hasta que sientes el tremendo golpe provocado 
+          al chocar contra el suelo... Luego te sumerges en la oscuridad de la inconsciencia...^"
 ;
 
 ! Escena de cinemática cuando Bomo y Dass caen al agujero
@@ -10058,8 +10146,8 @@ Object  Corto_Caida2
         "^El gigantesco tronco arranca, al caer, las enormes raíces del suelo, provocando un inmenso agujero en la tierra justo donde
           os encontrábais Bomo y tú.^"
         
-        "^Arrastrado por piedras y tierra, caes... Caes hasta que sientes el tremendo golpe provocado al chocar contra el suelo... 
-         Luego te sumerges en la oscuridad de la inconsciencia...^"
+        "^Caes arrastrado por piedras y tierra, obligado a tener que soltar tu rifle... Caes hasta que sientes el tremendo golpe provocado 
+          al chocar contra el suelo... Luego te sumerges en la oscuridad de la inconsciencia...^"
 ;
 
 ! Escena de cinemática al salir del agujero.
