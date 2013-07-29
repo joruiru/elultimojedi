@@ -21,6 +21,8 @@ with
     ZIPI_Menu9
     ZIPI_Otro10
     ZIPI_Menu10
+    ZIPI_Otro26
+    ZIPI_Otro27
 ;
 ZIPI_Menu ZIPI_Menu1
 with
@@ -782,6 +784,25 @@ with
        print "^ ";
        print "^******** FIN ******** ";
        print "^^";
+  ];
+ZIPI_Otro ZIPI_Otro26
+with
+  ZIPI_titulo "",
+  ZIPI_ejecutar [;
+       rtrue;
+  ];
+ZIPI_Otro ZIPI_Otro27
+with
+  ZIPI_titulo "Créditos",
+  ZIPI_ejecutar [;
+  barra_estado.numero_lineas = 1;
+  barra_estado.dibujar();
+  BorrarPantalla();
+  Creditos.proyeccion();
+  BorrarPantalla();
+  barra_estado.numero_lineas = 26;
+  barra_estado.dibujar();
+  ZIPI_Empezar();
   ];
 [ ZIPI_Empezar ;
 !  ZIPI_InitGlk();

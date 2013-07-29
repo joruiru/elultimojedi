@@ -562,6 +562,66 @@ próximo movimiento y podrás ganarle con facilidad.
     </MENU>
     
   </MENU>
+
+  <NADA>
+    
+  <TEXTO>Créditos
+  <CENTRA>
+EL ULTIMO JEDI
+Una aventura de JORUIRU.
+
+Gráficos:
+KMBR.
+Joruiru.
+
+Banda Sonora Original (J.Carlos Martínez):
+El Último Jedi Main Theme. 
+Bomo's Sorrow Theme.
+Comandante Vill Theme. 
+V-Wing Theme.
+Kata Rock (Cantina Theme). 
+Twi'lek Dance.
+Discovering the truth. 
+
+Efectos ambientales y sonoros: 
+http://www.freesfx.co.uk.
+http://www.freesound.org.
+
+Pruebas:
+Comely.
+KMBR.
+
+Información y trasfondo: 
+http://starwars.wikia.com. 
+http://www.loresdelsith.net. 
+Star Wars: Republic. 
+Star Wars: Dark Times: The Path to Nowhere. 
+Star Wars: The Revenge of the Sith. 
+Star Wars: Purgue. 
+Dark Lord: The Rise of Darth Vader.
+
+Revisión de textos:
+Johan Paz.
+
+Desarrollado en INFSP6 (Inform6 in Spanish). Se han usado las siguientes librerias: 
+Damusix, de Eliuk Blau. 
+sgw+dmx, de Eliuk Blau. 
+Etemas,  de Zak. 
+BajoNivel, de Zak (adaptación). 
+Cortos, de Zak (adaptación). 
+Barra v2, de Presi. 
+PNJMovil, de Zak. 
+intnombre, de Jarel. 
+ZIPI, de Zak (adaptación). 
+Decorado, de Zak y Mel Hython.
+
+Mi más sincero agradecimiento a todas las personas que han hecho posible, directa o indirectamente, que el desarrollo de esa aventura llegase a buen puerto.
+
+Espero que hayáis disfrutado con EL ULTIMO JEDI al menos la mitad de lo que yo lo he hecho mientras lo creaba.
+
+*** GRACIAS A TODOS. ***
+  </CENTRA>
+  </TEXTO>  
   
 </MENU>
 
