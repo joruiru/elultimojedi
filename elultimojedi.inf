@@ -200,7 +200,7 @@ Constant NUMBER_TASKS = 23;
 ! Puntuacion maxima del juego (por defecto: 0)
 Constant MAX_SCORE = 320;
 
-!Constant SGW_SIN_GRAFICOS;
+Constant SGW_SIN_GRAFICOS;
 
 ! Puntuación que obtendra el jugador por cada objeto con puntuacion
 ! cuando lo coja por primera vez (por defecto: 4)
@@ -1317,9 +1317,7 @@ Lugar limbo "limbo"
 ! Objeto para que reaccione a <<Mirar <nombre localidad>>>
 Object oLocGenerico "lugar"
 with
-    name 'lugar' 'sitio' 'suelo' 'paso' 'desfiladero' 'camino' 'puerto' 'cadgel' 'meadows' 
-         'hangar' 'hangares' 'rio' 'tripulantes',
-    name_f 'pista' 'ladera' 'cima' 'cabina' 'montana' 'montanas' 'vegetacion' 'planta' 'plantas' 'agua' 'tripulacion',
+    name 'lugar' 'sitio' 'suelo' ,
     description [w;
         wn = 2;
         w=NextWord();
@@ -1428,7 +1426,7 @@ with
         };
     ],
     found_in [;
-      if (planeta == 1) rtrue;
+      if (planeta == 99) rtrue;
       else rfalse;
     ],
     before [;
@@ -1437,6 +1435,206 @@ with
                  rtrue;    
     ],
 has scenery concealed;
+
+Object oLocGenerico2 "lugar"
+class decorado
+with
+    describe
+	        'lugar' [; location.describe(); return null;] 0
+	        'sitio' [; location.describe(); return null;] 0
+	        'suelo' [; location.describe(); return null;] 0
+	        'desfiladero' [; switch (location) {
+	                         paso,
+	                         ladera,ladera2,cima: return "El desfiladero de Half Axe es un estrecho paso entre montañas que discurre de norte a sur.
+	                             Pequeños arroyos bajan de las montañas y se unen cuando llegan al paso, formando un río que se 
+	                             pierde por el sur. Árboles colosales y abundante vegetación crecen a ambas orillas del río.";
+	                         default: return "Desde aquí no puedes ver ningún desfiladero.";
+                           }
+                           ] 0
+	        'paso' [; switch (location) {
+	                   paso: return "El desfiladero de Half Axe es un estrecho paso entre montañas que discurre de norte a sur.
+	                          Pequeños arroyos bajan de las montañas y se unen cuando llegan al paso, formando un río que se 
+	                          pierde por el sur. Árboles colosales y abundante vegetación crecen a ambas orillas del río.";
+	                   ladera,ladera2,cima: return "El paso está en lo más bajo de Half Axe.";
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                    ] 0
+            'arroyos' [; switch (location) {
+	                         paso,
+	                         ladera,ladera2,cima: return "El desfiladero de Half Axe es un estrecho paso entre montañas que discurre de norte a sur.
+	                             Pequeños arroyos bajan de las montañas y se unen cuando llegan al paso, formando un río que se 
+	                             pierde por el sur. Árboles colosales y abundante vegetación crecen a ambas orillas del río.";
+	                         default: return "Desde aquí no puedes ver ningún arroyo.";
+                           }
+                      ] G_PLURAL
+	        'arroyo' [; switch (location) {
+	                         paso,
+	                         ladera,ladera2,cima: return "El desfiladero de Half Axe es un estrecho paso entre montañas que discurre de norte a sur.
+	                             Pequeños arroyos bajan de las montañas y se unen cuando llegan al paso, formando un río que se 
+	                             pierde por el sur. Árboles colosales y abundante vegetación crecen a ambas orillas del río.";
+	                         default: return "Desde aquí no puedes ver ningún arroyo.";
+                           }
+                      ] 0
+            'planta' [; switch (location) {
+	                        paso,
+	                        ladera: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.
+	                              Dificulta el avance de los soldados, pero no frena a los tanques imperiales.";
+	                        ladera2: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.";
+	                        cima,
+	                        camino: return "La vegetación es verde y frondosa, aunque menos abundante que en el paso de Half-Axe.";
+	                        default: return "Desde aquí no puedes ver eso que dices.";
+                          }
+                         ] G_FEMENINO
+            'plantas' [; switch (location) {
+	                        paso,
+	                        ladera: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.
+	                              Dificulta el avance de los soldados, pero no frena a los tanques imperiales.";
+	                        ladera2: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.";
+	                        cima,
+	                        camino: return "La vegetación es verde y frondosa, aunque menos abundante que en el paso de Half-Axe.";
+	                        default: return "Desde aquí no puedes ver eso que dices.";
+                          }
+                         ] G_FEMENINO+G_PLURAL
+            'vegetacion' [; switch (location) {
+	                        paso,
+	                        ladera: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.
+	                              Dificulta el avance de los soldados, pero no frena a los tanques imperiales.";
+	                        ladera2: return "La abundante vegetación crece fuerte y alta a ambas orillas del río que discurre por el desfiladero.";
+	                        cima,
+	                        camino: return "Verde y frondosa, aunque menos abundante que en el paso de Half-Axe.";
+	                        default: return "Desde aquí no puedes ver eso que dices.";
+                          }
+                         ] G_FEMENINO
+            'agua' [; switch (location) {
+	                   paso: if (oArboles has cortado) return "El río discurre a lo largo de todo el Paso de Half-Axe, perdiéndose por el sur.";
+	                        return "El río discurre a lo largo de todo el Paso de Half-Axe. Tan sólo cambia su curso, cerca de las zona por la que
+	                         están cruzando las tropas imperiales, para rodear uno de los enormes árboles que ha crecido junto al río.";
+	                   ladera,ladera2,cima: return "El río está en lo más bajo de Half Axe, discurriendo de norte a sur.";
+	                   default: return "Desde aquí no puedes ver ningún rio.";
+                     }
+                   ] G_FEMENINO 
+	        'rio' [; switch (location) {
+	                   paso: if (oArboles has cortado) return "El río discurre a lo largo de todo el Paso de Half-Axe, perdiéndose por el sur.";
+	                        return "El río discurre a lo largo de todo el Paso de Half-Axe. Tan sólo cambia su curso, cerca de las zona por la que
+	                         están cruzando las tropas imperiales, para rodear uno de los enormes árboles que ha crecido junto al río.";
+	                   ladera,ladera2,cima: return "El río está en lo más bajo de Half Axe, discurriendo de norte a sur.";
+	                   default: return "Desde aquí no puedes ver ningún rio.";
+                     }
+                   ] 0
+	        'ladera' [; switch (location) {
+	                   paso: return "La ladera sube hasta la cima de Half Axe.";
+	                   ladera,ladera2: location.describe(); return null;
+	                   cima: return "La ladera baja hasta el paso de Half Axe.";
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] G_FEMENINO
+            'montana' [; switch (location) {
+	                      paso: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      ladera,ladera2: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      cima: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      default: return "Desde aquí no puedes ver las montañas.";
+                        } 
+                       ] G_FEMENINO
+            'montanas' [; switch (location) {
+	                      paso: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      ladera,ladera2: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      cima: return "Escarpadas montañas tanto a este como a oeste limitan el acceso al estrecho desfiladero de Half-Axe.";
+	                      default: return "Desde aquí no puedes ver las montañas.";
+                        } 
+                       ] G_FEMENINO+G_PLURAL
+	        'cima' [; switch (location) {
+	                   paso,
+	                   ladera,ladera2: return "La cima está en lo más alto de Half Axe.";
+	                   cima: location.describe(); return null;
+	                   camino: return "La cima está en lo más alto de Half Axe.";
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                    ] G_FEMENINO
+            'camino' [; switch (location) {
+	                    cima: return "El camino lleva hacia el este.";
+	                    camino: location.describe(); return null;
+	                    extOeste: return "El camino lleva hacia Half Axe.";
+	                    default: return "Desde aquí no puedes ver eso que dices.";
+                      }
+                     ] 0
+            'cadgel' [; switch (location) {
+	                   extOeste,extNorte,extEste,extSur: location.describe(); return null;
+	                   pista:location.describe(); return null;
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: location.describe(); return null;
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] 0
+            'meadows' [; switch (location) {
+	                   extOeste,extNorte,extEste,extSur: location.describe(); return null;
+	                   pista:location.describe(); return null;
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: location.describe(); return null;
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] 0
+            'puerto' [; switch (location) {
+	                   extOeste,extNorte,extEste,extSur:location.describe(); return null;
+	                   pista:location.describe(); return null;
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: location.describe(); return null;
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] 0
+            'pista' [; switch (location) {
+	                   pista:location.describe(); return null;
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: return "Desde aquí puedes ver que la pista está vacía.";
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                    ] G_FEMENINO
+            'tripulantes' [; switch (location) {
+	                         interiorUhumele: return "La Uhumele tiene 7 tripulantes, incluido el capitán.";
+	                         default: return "Desde aquí no puedes ver ninguna tripulacion.";
+                           }
+                          ] G_PLURAL
+            'tripulacion' [; switch (location) {
+	                         interiorUhumele: return "La Uhumele tiene 7 tripulantes, incluido el capitán.";
+	                         default: return "Desde aquí no puedes ver ninguna tripulacion.";
+                           }
+                          ] G_FEMENINO
+            'hangares' [; switch (location) {
+	                   pista: return "Desde aquí puedes ver los hangares en cualquier dirección.";
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: location.describe(); return null;
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] G_PLURAL
+            'hangar' [; switch (location) {
+	                   pista: return "Desde aquí puedes ver los hangares en cualquier dirección.";
+	                   hangarNorte,hangarSur,hangarEste,hangarOeste: location.describe(); return null;
+	                   CazaVwing,CazaVwingN,CazaVwingS,CazaVwingE,CazaVwingO,CazaVwingP: location.describe(); return null;
+	                   default: return "Desde aquí no puedes ver eso que dices.";
+                     }
+                     ] 0
+            !'agujero' : if (location == agujero) <<look>>; else "Desde aquí no puedes ver eso que dices.";
+            !'cuartel' : if (location == CuartelMando) <<look>>; else "Desde aquí no puedes ver eso que dices.";
+            'cabina' [; if (location==CazaVwing or CazaVwingN or CazaVwingS or CazaVwingE or CazaVwingO or CazaVwingP) {location.describe(); return null;}
+	                  else return "Desde aquí no puedes ver eso que dices.";
+	                 ] G_FEMENINO,
+    found_in [;
+      if (planeta == 1) rtrue;
+      else rfalse;
+    ],
+    before [;
+      Examine: rfalse;
+      Take: "No puedes hacerlo, ya que está", (n) self, " fij", (o) self,
+               " en su sitio.";
+      Push: print_ret (The) self, " no parece que pueda", (n) self,
+               " ser empujad", (o) self, ".";
+      Smell: "No parece que huela", (n) self, " a nada especial.";
+      Listen: "No produce", (n) self, " ningún sonido.";
+      Search: "No hay nada que buscar en eso.";
+      Touch: "No notas nada especial al tacto.";
+      default: print "Después de estudiar las posibilidades, llegas a la conclusión de que sería una tonteria ";LanguageVerb(verb_word);print " eso.";
+                 rtrue;    
+    ],
+;
 
 Object barra_estado
   class objeto_barra_estado
